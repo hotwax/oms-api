@@ -63,10 +63,12 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
     })
 
     if (resp?.status == 200) {
+      // TODO: return some basic information on success
       return 'success';
     }
   } catch (err) {
     console.error(err)
+    // TODO: return err
     return ''
   }
 
