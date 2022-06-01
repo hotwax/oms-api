@@ -34,7 +34,6 @@ export async function getOrderDetails (orderId: string): Promise<Order | null> {
           email: orderDetails.customerEmailId
         },
         items: group.doclist.docs.map((item: any) => ({
-          orderItemGroupId: item.orderItemSeqId,
           productId: item.productId,
           quantity: item.quantity,
           statusId: item.orderItemStatusId
