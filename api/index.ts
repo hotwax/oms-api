@@ -4,6 +4,7 @@ import {
   StatusCodes
 } from 'http-status-codes';
 import { setupCache } from 'axios-cache-adapter'
+import { events } from '../types';
 
 const emitter = mitt();
 
@@ -47,7 +48,7 @@ axios.interceptors.response.use(function (response) {
         // TODO Handle case for failed queue request
         const { status } = error.response;
         if (status == StatusCodes.UNAUTHORIZED) {
-          emitter.emit('unauthorized')
+          emitter.emit(events.UNAUTHORIZED)
         }
     }
     // Any status codes that falls outside the range of 2xx cause this function to trigger
