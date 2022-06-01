@@ -3,11 +3,13 @@ import mitt from 'mitt'
 import {
   StatusCodes
 } from 'http-status-codes';
+import { setupCache } from 'axios-cache-adapter'
 
 const emitter = mitt();
 
 let token = ''
 let instanceUrl = ''
+let cacheMaxAge = 0
 
 export function updateToken(key: string) {
   token = key
@@ -15,6 +17,12 @@ export function updateToken(key: string) {
 
 export function updateInstanceUrl(url: string) {
   instanceUrl = url
+}
+
+export function init(key: string, url: string, cacheAge: string) {
+  token = key
+  instanceUrl = url
+  cacheMaxAge = cacheAge
 }
 
 axios.interceptors.request.use(async (config: any) => {
@@ -47,6 +55,9 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(error);
   });
 
+const axiosCache = setupCache({
+  maxAge: cacheMaxAge * 1000
+})
 
 /**
  * Generic method to call APIs
@@ -73,6 +84,8 @@ const api = async (customConfig: any) => {
     }
     const baseURL = instanceUrl;
     if (baseURL) config.baseURL = `https://${baseURL}.hotwax.io/api/`;
+
+    if(customConfig.cache) config.adapter = axiosCache.adapter;
 
     if (customConfig.queue) {
         if (!config.headers) config.headers = { ...axios.defaults.headers.common, ...config.headers };
