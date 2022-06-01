@@ -19,7 +19,7 @@ export function updateInstanceUrl(url: string) {
   instanceUrl = url
 }
 
-export function init(key: string, url: string, cacheAge: string) {
+export function init(key: string, url: string, cacheAge: number) {
   token = key
   instanceUrl = url
   cacheMaxAge = cacheAge
