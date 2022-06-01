@@ -1,0 +1,25 @@
+{
+  "name": "@hotwax/oms-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "author": "HotWax Commerce",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "typescript": "^4.7.2"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "dependencies": {
+    "axios": "^0.27.2",
+    "mitt": "^3.0.0"
+  }
+}
