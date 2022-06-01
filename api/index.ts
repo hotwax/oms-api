@@ -1,5 +1,8 @@
 import axios from 'axios';
 import mitt from 'mitt'
+import {
+  StatusCodes
+} from 'http-status-codes';
 
 const emitter = mitt();
 
@@ -35,7 +38,7 @@ axios.interceptors.response.use(function (response) {
     if (error.response) {
         // TODO Handle case for failed queue request
         const { status } = error.response;
-        if (status == 401) {
+        if (status == StatusCodes.UNAUTHORIZED) {
           emitter.emit('unauthorized')
         }
     }
