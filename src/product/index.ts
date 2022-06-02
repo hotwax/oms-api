@@ -16,6 +16,8 @@ export async function getProductDetails (productId: string): Promise<any> {
     }
   }
 
+  findProducts(productId)
+  
   try {
     const resp = await api({
       url: 'solr-query',
@@ -51,6 +53,73 @@ export async function getProductDetails (productId: string): Promise<any> {
       }
 
       return product;
+    }
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+
+  return null
+}
+
+async function findProducts(payload: any) {
+  const query = {
+      "json": {
+        "params": {
+          "group": true,
+          "group.field": `groupId`,
+          "group.limit": 10000,
+          "group.ngroups": true,
+          "rows": payload.json.params.rows,
+          "start": payload.json.params.start
+        } as any,
+        "query": "*:*",
+        "filter": `docType: PRODUCT`
+      }
+    }
+
+  try {
+    const resp = await api({
+      url: 'solr-query',
+      method: 'post',
+      data: query
+    })
+
+    if (resp?.status == 200 && resp.data?.grouped?.groupId?.groups?.length > 0) {
+      const groups = resp.data.grouped.groupId.groups
+
+      console.log(groups);
+
+
+      groups.map((group: any) => {
+        const productDetails = group.doclist.docs[0]
+
+        const imageUrls = productDetails.additionalImageUrls
+        imageUrls.push(productDetails.mainImageUrl)
+  
+        const variants: Array<any> = group.doclist.docs
+  
+        const product: Product = {
+          id: productDetails.productId,
+          name: productDetails.productName, 
+          description: productDetails.description,
+          brand: productDetails.brandName,
+          price: productDetails.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
+          sku: productDetails.sku,
+          identifications: productDetails.goodIdentifications,
+          /** An array containing assets like images and videos */
+          assets: imageUrls,
+          mainImage: productDetails.mainImageUrl,
+          parentProductId: productDetails.parentProductName,
+          type: productDetails.productTypeId, // TODO: need to fetch the type description
+          category: productDetails.productCategoryNames,
+          feature: productDetails.productFeatures,
+          variants: variants, // TODO: need to fetch the variant details
+          isVirtual: productDetails.isVirtual,
+          isVariant: productDetails.isVariant
+        }
+        return product;
+      })      
     }
   } catch (err) {
     console.error(err)
