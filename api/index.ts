@@ -1,10 +1,16 @@
 import axios from 'axios';
 import mitt from 'mitt'
+import {
+  StatusCodes
+} from 'http-status-codes';
+import { setupCache } from 'axios-cache-adapter'
+import { events } from '../types';
 
 const emitter = mitt();
 
 let token = ''
 let instanceUrl = ''
+let cacheMaxAge = 0
 
 export function updateToken(key: string) {
   token = key
@@ -12,6 +18,12 @@ export function updateToken(key: string) {
 
 export function updateInstanceUrl(url: string) {
   instanceUrl = url
+}
+
+export function init(key: string, url: string, cacheAge: number) {
+  token = key
+  instanceUrl = url
+  cacheMaxAge = cacheAge
 }
 
 axios.interceptors.request.use(async (config: any) => {
@@ -35,8 +47,8 @@ axios.interceptors.response.use(function (response) {
     if (error.response) {
         // TODO Handle case for failed queue request
         const { status } = error.response;
-        if (status == 401) {
-          emitter.emit('unauthorized')
+        if (status == StatusCodes.UNAUTHORIZED) {
+          emitter.emit(events.UNAUTHORIZED)
         }
     }
     // Any status codes that falls outside the range of 2xx cause this function to trigger
@@ -44,6 +56,9 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(error);
   });
 
+const axiosCache = setupCache({
+  maxAge: cacheMaxAge * 1000
+})
 
 /**
  * Generic method to call APIs
@@ -70,6 +85,8 @@ const api = async (customConfig: any) => {
     }
     const baseURL = instanceUrl;
     if (baseURL) config.baseURL = `https://${baseURL}.hotwax.io/api/`;
+
+    if(customConfig.cache) config.adapter = axiosCache.adapter;
 
     if (customConfig.queue) {
         if (!config.headers) config.headers = { ...axios.defaults.headers.common, ...config.headers };

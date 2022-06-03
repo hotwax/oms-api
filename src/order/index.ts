@@ -1,7 +1,8 @@
 import api from '../../api'
-import { Order, OrderItem } from '../../types'
+import { Order, OrderItem, Response } from '../../types'
+import { hasError } from '../util'
 
-export async function getOrderDetails (orderId: string): Promise<Order | null> {
+export async function getOrderDetails (orderId: string): Promise<Order | Response> {
   const payload = {
     "json": {
       "params": {
@@ -15,6 +16,8 @@ export async function getOrderDetails (orderId: string): Promise<Order | null> {
     }
   }
 
+  let response = {} as Order | Response
+
   try {
     const resp = await api({
       url: 'solr-query',
@@ -22,7 +25,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | null> {
       data: payload
     })
 
-    if (resp?.status == 200 && resp.data?.grouped?.orderId?.groups?.length > 0) {
+    if (resp?.status == 200 && resp.data?.grouped?.orderId?.groups?.length > 0 && !hasError(resp)) {
       const group = resp.data.grouped.orderId.groups[0]
       const orderDetails = group.doclist.docs[0]
       const order: Order = {
@@ -34,7 +37,6 @@ export async function getOrderDetails (orderId: string): Promise<Order | null> {
           email: orderDetails.customerEmailId
         },
         items: group.doclist.docs.map((item: any) => ({
-          orderItemGroupId: item.orderItemSeqId,
           productId: item.productId,
           quantity: item.quantity,
           statusId: item.orderItemStatusId
@@ -43,17 +45,29 @@ export async function getOrderDetails (orderId: string): Promise<Order | null> {
         statusDesc: orderDetails.orderStatusDesc,
         identifications: orderDetails.orderIdentifications,
       }
-      return order;
+      response = order
+    } else {
+      response = {
+        code: 'error',
+        message: `Unable to fetch order details for orderId: ${orderId}`,
+        serverResponse: resp
+      }
     }
   } catch (err) {
     console.error(err)
-    return null
+    response = {
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    }
   }
 
-  return null
+  return response;
 }
 
-export async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<string> {
+export async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
+
+  let response = {} as Response
 
   try {
     const resp = await api({
@@ -62,15 +76,27 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
       data: payload
     })
 
-    if (resp?.status == 200) {
-      // TODO: return some basic information on success
-      return 'success';
+    if (resp?.status == 200 && !hasError(resp)) {
+      response = {
+        code: 'success',
+        message: 'Order status updated',
+        serverResponse: resp.data
+      };
+    } else {
+      response = {
+        code: 'error',
+        message: 'Unable to update order status',
+        serverResponse: resp
+      }
     }
   } catch (err) {
     console.error(err)
-    // TODO: return err
-    return ''
+    response = {
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    }
   }
 
-  return ''
+  return response
 }
