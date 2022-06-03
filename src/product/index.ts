@@ -1,7 +1,7 @@
 import api from '../../api'
 import { Product } from '../../types/Product';
 
-export async function getProductDetails (productId: string): Promise<any> {
+async function getProductDetails (productId: string): Promise<any> {
   const query = {
     "json": {
       "params": {
@@ -16,8 +16,6 @@ export async function getProductDetails (productId: string): Promise<any> {
     }
   }
 
-  findProducts(productId)
-  
   try {
     const resp = await api({
       url: 'solr-query',
@@ -88,38 +86,58 @@ async function findProducts(payload: any) {
     if (resp?.status == 200 && resp.data?.grouped?.groupId?.groups?.length > 0) {
       const groups = resp.data.grouped.groupId.groups
 
-      console.log(groups);
+      const products = groups.map((group: any) => {
+        if (group.groupValue !== null) {
+          const productDetails = group.doclist.docs[0]
 
-
-      groups.map((group: any) => {
-        const productDetails = group.doclist.docs[0]
-
-        const imageUrls = productDetails.additionalImageUrls
-        imageUrls.push(productDetails.mainImageUrl)
+          const imageUrls = productDetails.additionalImageUrls
+          imageUrls.push(productDetails.mainImageUrl)
   
-        const variants: Array<any> = group.doclist.docs
-  
-        const product: Product = {
-          id: productDetails.productId,
-          name: productDetails.productName, 
-          description: productDetails.description,
-          brand: productDetails.brandName,
-          price: productDetails.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
-          sku: productDetails.sku,
-          identifications: productDetails.goodIdentifications,
-          /** An array containing assets like images and videos */
-          assets: imageUrls,
-          mainImage: productDetails.mainImageUrl,
-          parentProductId: productDetails.parentProductName,
-          type: productDetails.productTypeId, // TODO: need to fetch the type description
-          category: productDetails.productCategoryNames,
-          feature: productDetails.productFeatures,
-          variants: variants, // TODO: need to fetch the variant details
-          isVirtual: productDetails.isVirtual,
-          isVariant: productDetails.isVariant
-        }
-        return product;
+          const variantsGroup: Array<any> = group.doclist.docs.map((variant: any) => {
+            variant = {
+              id: variant.productId,
+              name: variant.productName, 
+              description: variant.description,
+              brand: variant.brandName,
+              price: variant.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
+              sku: variant.sku,
+              identifications: variant.goodIdentifications,
+              /** An array containing assets like images and videos */
+              assets: imageUrls,
+              mainImage: variant.mainImageUrl,
+              parentProductId: variant.parentProductName,
+              type: variant.productTypeId, // TODO: need to fetch the type description
+              category: variant.productCategoryNames,
+              feature: variant.productFeatures,
+              isVirtual: productDetails.isVirtual,
+              isVariant: productDetails.isVariant
+            }
+            return variant
+          })
+    
+          const product: Product = {
+            id: productDetails.productId,
+            name: productDetails.productName, 
+            description: productDetails.description,
+            brand: productDetails.brandName,
+            price: productDetails.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
+            sku: productDetails.sku,
+            identifications: productDetails.goodIdentifications,
+            /** An array containing assets like images and videos */
+            assets: imageUrls,
+            mainImage: productDetails.mainImageUrl,
+            parentProductId: productDetails.parentProductName,
+            type: productDetails.productTypeId, // TODO: need to fetch the type description
+            category: productDetails.productCategoryNames,
+            feature: productDetails.productFeatures,
+            variants: variantsGroup, // TODO: need to fetch the variant details
+            isVirtual: productDetails.isVirtual,
+            isVariant: productDetails.isVariant
+          }        
+          return product;
+        } else return null
       })      
+      return {products: products, totalVirtual: resp.data.grouped.groupId.ngroups, totalVariant: resp.data.grouped.groupId.matches}
     }
   } catch (err) {
     console.error(err)
@@ -186,4 +204,9 @@ async function getVariant(variantProductIds: Array<string>): Promise<any> {
     console.log(err);
   }    
   return variants
+}
+
+export {
+  getProductDetails,
+  findProducts,
 }
