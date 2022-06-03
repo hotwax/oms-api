@@ -43,7 +43,7 @@ axios.interceptors.response.use(function (response) {
     // Currently when the app gets offline, the time between adding a loader and removing it is fractional due to which loader dismiss is called before loader present
     // which cause loader to run indefinitely
     // Following gives dismiss loader a delay of 100 microseconds to get both the actions in sync
-    setTimeout(() => emitter.emit("dismissLoader"), 100);
+    setTimeout(() => emitter.emit(events.DISMISS_LOADER), 100);
     if (error.response) {
         // TODO Handle case for failed queue request
         const { status } = error.response;
@@ -91,7 +91,7 @@ const api = async (customConfig: any) => {
     if (customConfig.queue) {
         if (!config.headers) config.headers = { ...axios.defaults.headers.common, ...config.headers };
 
-        emitter.emit("queueTask", {
+        emitter.emit(events.QUEUE_TASK, {
             callbackEvent: customConfig.callbackEvent,
             payload: config
         });
