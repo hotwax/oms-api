@@ -104,9 +104,6 @@ async function findProducts(payload: any): Promise<object> {
         if (group.groupValue !== null) {
           const productDetails = group.doclist.docs[0]
 
-          const imageUrls = productDetails.additionalImageUrls
-          imageUrls.push(productDetails.mainImageUrl)
-  
           const variantsGroup: Array<any> = group.doclist.docs.map((variant: any) => {
             variant = {
               id: variant.productId,
@@ -117,7 +114,7 @@ async function findProducts(payload: any): Promise<object> {
               sku: variant.sku,
               identifications: variant.goodIdentifications,
               /** An array containing assets like images and videos */
-              assets: imageUrls,
+              assets: productDetails.additionalImageUrls,
               mainImage: variant.mainImageUrl,
               parentProductId: variant.parentProductName,
               type: variant.productTypeId, // TODO: need to fetch the type description
@@ -138,7 +135,7 @@ async function findProducts(payload: any): Promise<object> {
             sku: productDetails.sku,
             identifications: productDetails.goodIdentifications,
             /** An array containing assets like images and videos */
-            assets: imageUrls,
+            assets: productDetails.additionalImageUrls,
             mainImage: productDetails.mainImageUrl,
             parentProductId: productDetails.parentProductName,
             type: productDetails.productTypeId, // TODO: need to fetch the type description
@@ -166,7 +163,7 @@ async function findProducts(payload: any): Promise<object> {
   return response
 }
 
-async function getVariant(variantProductIds: Array<string>): Promise<Array<any>> {
+async function getVariant(variantProductIds: Array<string>): Promise<Array<Product>> {
   let variants: Array<Product> = []
 
   const payload: object = {
@@ -195,9 +192,6 @@ async function getVariant(variantProductIds: Array<string>): Promise<Array<any>>
       const variantProducts = variantProductGroup.doclist.docs
 
       variantProducts.map((variantProductDetails: any) => {
-        const urls = variantProductDetails.additionalImageUrls
-        urls.push(variantProductDetails.mainImageUrl)
-
         const details: Product = {
           id: variantProductDetails.productId,
           name: variantProductDetails.productName, 
@@ -207,7 +201,7 @@ async function getVariant(variantProductIds: Array<string>): Promise<Array<any>>
           sku: variantProductDetails.sku,
           identifications: variantProductDetails.goodIdentifications,
           /** An array containing assets like images and videos */
-          assets: urls,
+          assets: variantProductDetails.additionalImageUrls,
           mainImage: variantProductDetails.mainImageUrl,
           parentProductId: variantProductDetails.parentProductName,
           type: variantProductDetails.productTypeId, // TODO: need to fetch the type description
