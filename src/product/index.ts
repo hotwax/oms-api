@@ -1,7 +1,7 @@
 import api from '../../api'
-import { Product } from '../../types/Product';
+import { Product, Response } from '../../types'
 
-async function getProductDetails (productId: string): Promise<any> {
+async function getProductDetails (productId: string): Promise<Product | Response> {
   const query = {
     "json": {
       "params": {
@@ -15,6 +15,8 @@ async function getProductDetails (productId: string): Promise<any> {
       "filter": `docType: PRODUCT AND productId: ${productId}`
     }
   }
+
+  let response = {} as Product | Response
 
   try {
     const resp = await api({
@@ -51,13 +53,23 @@ async function getProductDetails (productId: string): Promise<any> {
       }
 
       return product;
+    } else {
+      response = {
+        code: 'error',
+        message: `Unable to fetch product details for productId: ${productId}`,
+        serverResponse: resp
+      }
     }
   } catch (err) {
     console.error(err)
-    return null
+    response = {
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    }
   }
 
-  return null
+  return response
 }
 
 async function findProducts(payload: any) {
