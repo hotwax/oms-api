@@ -25,7 +25,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       data: payload
     })
 
-    if (resp?.status == 200 && resp.data?.grouped?.orderId?.groups?.length > 0 && !hasError(resp)) {
+    if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.orderId?.groups?.length > 0) {
       const group = resp.data.grouped.orderId.groups[0]
       const orderDetails = group.doclist.docs[0]
       const order: Order = {

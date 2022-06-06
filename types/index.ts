@@ -2,7 +2,9 @@ import { Order, OrderItem, OrderItemGroup } from './Order';
 import { Product } from './Product'
 
 export const events = {
-  'UNAUTHORIZED': 'unauthorized'
+  'UNAUTHORIZED': 'unauthorized',
+  'QUEUE_TASK': 'queueTask',
+  'DISMISS_LOADER': 'dismissLoader'
 }
 
 export interface Response {
