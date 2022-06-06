@@ -72,7 +72,7 @@ async function getProductDetails (productId: string): Promise<Product | Response
   return response
 }
 
-async function findProducts(payload: any) {
+async function findProducts(payload: any): Promise<object> {
   const query = {
       "json": {
         "params": {
@@ -87,6 +87,8 @@ async function findProducts(payload: any) {
         "filter": `docType: PRODUCT`
       }
     }
+
+  let response = {} as Product | Response
 
   try {
     const resp = await api({
@@ -148,18 +150,23 @@ async function findProducts(payload: any) {
           }        
           return product;
         } else return null
-      })      
-      return {products: products, totalVirtual: resp.data.grouped.groupId.ngroups, totalVariant: resp.data.grouped.groupId.matches}
+      })  
+
+      return { products: products, totalVirtual: resp.data.grouped.groupId.ngroups, totalVariant: resp.data.grouped.groupId.matches }
     }
   } catch (err) {
     console.error(err)
-    return null
+    return response = {
+      code: 'error',
+      message: 'something went wrong',
+      serverResponse: err
+    }
   }
 
-  return null
+  return response
 }
 
-async function getVariant(variantProductIds: Array<string>): Promise<any> {
+async function getVariant(variantProductIds: Array<string>): Promise<Array<any>> {
   let variants: Array<Product> = []
 
   const payload: object = {
