@@ -83,8 +83,8 @@ export async function findProducts(payload: any): Promise<object> {
         "group.field": `groupId`,
         "group.limit": 10000,
         "group.ngroups": true,
-        "rows": payload.json.params.rows,
-        "start": payload.json.params.start
+        "rows": payload.rows,
+        "start": payload.start
       } as any,
       "query": "*:*",
       "filter": `docType: PRODUCT`
@@ -107,27 +107,24 @@ export async function findProducts(payload: any): Promise<object> {
         if (group.groupValue !== null) {
           const productDetails = group.doclist.docs[0]
 
-          const variantsGroup: Array<any> = group.doclist.docs.map((variant: any) => {
-            variant = {
-              id: variant.productId,
-              name: variant.productName, 
-              description: variant.description,
-              brand: variant.brandName,
-              price: variant.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
-              sku: variant.sku,
-              identifications: variant.goodIdentifications,
-              /** An array containing assets like images and videos */
-              assets: productDetails.additionalImageUrls,
-              mainImage: variant.mainImageUrl,
-              parentProductId: variant.parentProductName,
-              type: variant.productTypeId, // TODO: need to fetch the type description
-              category: variant.productCategoryNames,
-              feature: variant.productFeatures,
-              isVirtual: productDetails.isVirtual,
-              isVariant: productDetails.isVariant
-            }
-            return variant
-          })
+          const variants: Array<Product> = group.doclist.docs.map((variant: any) => ({
+            id: variant.productId,
+            name: variant.productName, 
+            description: variant.description,
+            brand: variant.brandName,
+            price: variant.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
+            sku: variant.sku,
+            identifications: variant.goodIdentifications,
+            /** An array containing assets like images and videos */
+            assets: variant.additionalImageUrls,
+            mainImage: variant.mainImageUrl,
+            parentProductId: variant.parentProductName,
+            type: variant.productTypeId, // TODO: need to fetch the type description
+            category: variant.productCategoryNames,
+            feature: variant.productFeatures,
+            isVirtual: variant.isVirtual,
+            isVariant: variant.isVariant
+          }))
     
           const product: Product = {
             id: productDetails.productId,
@@ -144,19 +141,25 @@ export async function findProducts(payload: any): Promise<object> {
             type: productDetails.productTypeId, // TODO: need to fetch the type description
             category: productDetails.productCategoryNames,
             feature: productDetails.productFeatures,
-            variants: variantsGroup, // TODO: need to fetch the variant details
+            variants: variants, // TODO: need to fetch the variant details
             isVirtual: productDetails.isVirtual,
             isVariant: productDetails.isVariant
           }        
           return product;
-        } else return null
+        }
       })
 
       return { products: products, totalVirtual: resp.data.grouped.groupId.ngroups, totalVariant: resp.data.grouped.groupId.matches }
+    } else {
+      response = {
+        code: 'error',
+        message: 'Unable to fetch product details',
+        serverResponse: resp
+      }
     }
   } catch (err) {
     console.error(err)
-    return response = {
+    response = {
       code: 'error',
       message: 'something went wrong',
       serverResponse: err
