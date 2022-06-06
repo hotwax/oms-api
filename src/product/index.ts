@@ -1,7 +1,8 @@
 import api from '../../api'
 import { Product, Response } from '../../types'
+import { hasError } from '../util'
 
-async function getProductDetails (productId: string): Promise<Product | Response> {
+export async function getProductDetails (productId: string): Promise<Product | Response> {
   const query = {
     "json": {
       "params": {
@@ -25,29 +26,31 @@ async function getProductDetails (productId: string): Promise<Product | Response
       data: query
     })
 
-    if (resp?.status == 200 && resp.data?.grouped?.groupId?.groups?.length > 0) {
-      const group = resp.data.grouped.groupId.groups[0]
-      const productDetails = group.doclist.docs[0]
-      const imageUrls = productDetails.additionalImageUrls
-      imageUrls.push(productDetails.mainImageUrl)
-      const getVariantsDetail = await getVariant(productDetails.variantProductIds)
+    if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.groupId?.groups?.length > 0) {
+      const productDetails = resp.data.grouped.groupId.groups[0].doclist.docs[0]
+      let getVariantsDetail = undefined
+
+      // fetching variant information only when the current fetched product is a virtual product
+      if (productDetails.isVirtual === "true") {
+        getVariantsDetail = await getVariant(productDetails.variantProductIds)
+      }
 
       const product: Product = {
         id: productDetails.productId,
-        name: productDetails.productName, 
+        name: productDetails.productName,
         description: productDetails.description,
         brand: productDetails.brandName,
         price: productDetails.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
         sku: productDetails.sku,
         identifications: productDetails.goodIdentifications,
         /** An array containing assets like images and videos */
-        assets: imageUrls,
+        assets: productDetails.additionalImageUrls,
         mainImage: productDetails.mainImageUrl,
         parentProductId: productDetails.parentProductName,
         type: productDetails.productTypeId, // TODO: need to fetch the type description
         category: productDetails.productCategoryNames,
         feature: productDetails.productFeatures,
-        variants: getVariantsDetail, // TODO: need to fetch the variant details
+        variants: getVariantsDetail,
         isVirtual: productDetails.isVirtual,
         isVariant: productDetails.isVariant
       }
@@ -72,21 +75,21 @@ async function getProductDetails (productId: string): Promise<Product | Response
   return response
 }
 
-async function findProducts(payload: any): Promise<object> {
+export async function findProducts(payload: any): Promise<object> {
   const query = {
-      "json": {
-        "params": {
-          "group": true,
-          "group.field": `groupId`,
-          "group.limit": 10000,
-          "group.ngroups": true,
-          "rows": payload.json.params.rows,
-          "start": payload.json.params.start
-        } as any,
-        "query": "*:*",
-        "filter": `docType: PRODUCT`
-      }
+    "json": {
+      "params": {
+        "group": true,
+        "group.field": `groupId`,
+        "group.limit": 10000,
+        "group.ngroups": true,
+        "rows": payload.json.params.rows,
+        "start": payload.json.params.start
+      } as any,
+      "query": "*:*",
+      "filter": `docType: PRODUCT`
     }
+  }
 
   let response = {} as Product | Response
 
@@ -97,7 +100,7 @@ async function findProducts(payload: any): Promise<object> {
       data: query
     })
 
-    if (resp?.status == 200 && resp.data?.grouped?.groupId?.groups?.length > 0) {
+    if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.groupId?.groups?.length > 0) {
       const groups = resp.data.grouped.groupId.groups
 
       const products = groups.map((group: any) => {
@@ -147,7 +150,7 @@ async function findProducts(payload: any): Promise<object> {
           }        
           return product;
         } else return null
-      })  
+      })
 
       return { products: products, totalVirtual: resp.data.grouped.groupId.ngroups, totalVariant: resp.data.grouped.groupId.matches }
     }
@@ -214,12 +217,7 @@ async function getVariant(variantProductIds: Array<string>): Promise<Array<Produ
       });
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }    
   return variants
-}
-
-export {
-  getProductDetails,
-  findProducts,
 }
