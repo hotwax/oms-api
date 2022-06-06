@@ -169,8 +169,8 @@ export async function findProducts(payload: any): Promise<object> {
   return response
 }
 
-async function getVariant(variantProductIds: Array<string>): Promise<Array<Product>> {
-  let variants: Array<Product> = []
+async function getVariant(variantProductIds: Array<string>): Promise<Array<Product> | Response> {
+  let response = {} as Array<Product> | Response
 
   const payload: object = {
     "json": {
@@ -193,34 +193,42 @@ async function getVariant(variantProductIds: Array<string>): Promise<Array<Produ
       data: payload
     })
 
-    if (resp?.status == 200 && resp.data?.grouped?.groupId?.groups?.length > 0) {
-      const variantProductGroup = resp.data.grouped.groupId.groups[0]
-      const variantProducts = variantProductGroup.doclist.docs
+    if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.groupId?.groups?.length > 0) {
+      const variantProducts = resp.data.grouped.groupId.groups[0].doclist.docs
 
-      variantProducts.map((variantProductDetails: any) => {
-        const details: Product = {
-          id: variantProductDetails.productId,
-          name: variantProductDetails.productName, 
-          description: variantProductDetails.description,
-          brand: variantProductDetails.brandName,
-          price: variantProductDetails.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
-          sku: variantProductDetails.sku,
-          identifications: variantProductDetails.goodIdentifications,
-          /** An array containing assets like images and videos */
-          assets: variantProductDetails.additionalImageUrls,
-          mainImage: variantProductDetails.mainImageUrl,
-          parentProductId: variantProductDetails.parentProductName,
-          type: variantProductDetails.productTypeId, // TODO: need to fetch the type description
-          category: variantProductDetails.productCategoryNames,
-          feature: variantProductDetails.productFeatures,
-          isVirtual: variantProductDetails.isVirtual,
-          isVariant: variantProductDetails.isVariant
-        }
-        variants.push(details)
-      });
+      const variants: Array<Product> = variantProducts.map((variantProductDetails: any) => ({
+        id: variantProductDetails.productId,
+        name: variantProductDetails.productName, 
+        description: variantProductDetails.description,
+        brand: variantProductDetails.brandName,
+        price: variantProductDetails.BASE_PRICE_PURCHASE_USD_NN_STORE_GROUP_price,
+        sku: variantProductDetails.sku,
+        identifications: variantProductDetails.goodIdentifications,
+        /** An array containing assets like images and videos */
+        assets: variantProductDetails.additionalImageUrls,
+        mainImage: variantProductDetails.mainImageUrl,
+        parentProductId: variantProductDetails.parentProductName,
+        type: variantProductDetails.productTypeId, // TODO: need to fetch the type description
+        category: variantProductDetails.productCategoryNames,
+        feature: variantProductDetails.productFeatures,
+        isVirtual: variantProductDetails.isVirtual,
+        isVariant: variantProductDetails.isVariant
+      }));
+      return variants
+    } else {
+      response = {
+        code: 'error',
+        message: 'Unable to fetch product details',
+        serverResponse: resp
+      }
     }
   } catch (err) {
     console.error(err);
+    response = {
+      code: 'error',
+      message: 'Unable to fetch product details',
+      serverResponse: err
+    }
   }    
-  return variants
+  return response
 }
