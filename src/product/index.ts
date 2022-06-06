@@ -28,7 +28,7 @@ export async function getProductDetails (productId: string): Promise<Product | R
 
     if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.groupId?.groups?.length > 0) {
       const productDetails = resp.data.grouped.groupId.groups[0].doclist.docs[0]
-      let getVariantsDetail = undefined
+      let getVariantsDetail: Array<Product> | undefined = undefined
 
       // fetching variant information only when the current fetched product is a virtual product
       if (productDetails.isVirtual === "true") {
@@ -169,7 +169,7 @@ export async function findProducts(payload: any): Promise<object> {
   return response
 }
 
-async function getVariant(variantProductIds: Array<string>): Promise<Array<Product> | Response> {
+async function getVariant(variantProductIds: Array<string>): Promise<Array<Product> | undefined> {
   let response = {} as Array<Product> | Response
 
   const payload: object = {
@@ -230,5 +230,5 @@ async function getVariant(variantProductIds: Array<string>): Promise<Array<Produ
       serverResponse: err
     }
   }    
-  return response
+  return undefined
 }
