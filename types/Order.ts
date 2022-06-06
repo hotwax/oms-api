@@ -7,6 +7,7 @@ export interface Order {
   /** An array containing the groups of items purchased in this order */
   itemGroups?: Array<OrderItemGroup>;
   total?: number;
+  // TODO: use the status type that will contain id and description
   statusId: string;
   statusDesc?: string;
   identifications?: any;
