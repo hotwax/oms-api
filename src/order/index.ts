@@ -1,6 +1,7 @@
-import api from '../../api'
-import { Order, OrderItem, Response } from '../../types'
+import api from '../api'
+import { Order, Response } from '../types'
 import { hasError } from '../util'
+import { DataTransform } from 'node-json-transform'
 
 export async function getOrderDetails (orderId: string): Promise<Order | Response> {
   const payload = {
@@ -28,24 +29,19 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
     if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.orderId?.groups?.length > 0) {
       const group = resp.data.grouped.orderId.groups[0]
       const orderDetails = group.doclist.docs[0]
-      const order: Order = {
-        orderId: orderDetails.orderId,
-        orderName: orderDetails.orderName,
-        customer: {
-          id: orderDetails.customerPartyId,
-          name: orderDetails.customerPartyName,
-          email: orderDetails.customerEmailId
-        },
-        items: group.doclist.docs.map((item: any) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          statusId: item.orderItemStatusId
-        })) as OrderItem[],
-        statusId: orderDetails.orderStatusId,
-        statusDesc: orderDetails.orderStatusDesc,
-        identifications: orderDetails.orderIdentifications,
+      const dataTransform: any =  new (DataTransform as any)(orderDetails, {
+        item: {
+          orderId: "orderId",
+          orderName: "orderName",
+          statusId: "orderStatusId"
+        }
+      });
+
+      response = {
+        code: 'success',
+        message: JSON.stringify(dataTransform.transform()),
+        serverResponse: resp
       }
-      response = order
     } else {
       response = {
         code: 'error',

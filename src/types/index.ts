@@ -1,4 +1,4 @@
-import { Order, OrderItem, OrderItemGroup } from './Order';
+import { Order } from './Order';
 
 export const events = {
   'UNAUTHORIZED': 'unauthorized',
@@ -14,7 +14,5 @@ export interface Response {
 }
 
 export {
-  Order,
-  OrderItem,
-  OrderItemGroup
+  Order
 }
