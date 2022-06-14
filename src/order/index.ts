@@ -1,5 +1,5 @@
 import api from '../api'
-import { Order, OrderItem, OrderPart, Response } from '../types'
+import { Enumeration, Order, OrderItem, OrderPart, Response } from '../types'
 import { hasError } from '../util'
 import { DataTransform } from 'node-json-transform'
 
@@ -30,9 +30,10 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       const group = resp.data.grouped.orderId.groups[0]
       const orderDetails = group.doclist.docs[0]
 
-      const orderShipGroup = group.doclist.docs.reduce((shipGroups: any, orderItem: any) => {
+      const orderShipGroup: OrderPart[] = group.doclist.docs.reduce((shipGroups: any, orderItem: any) => {
         const group = shipGroups.find((group: any) => group.orderPartSeqId === orderItem.shipGroupSeqId)
 
+        // tranforming to order item schema
         const orderItemTransform: any =  new (DataTransform as any)(orderItem, {
           item: {
             orderId: "orderId",
@@ -41,13 +42,23 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
             productId: "productId",
             quantity: "quantity",
             unitAmount: "unitPrice",
-            unitListPrice: "unitListPrice"
+            unitListPrice: "unitListPrice",
+            itemType: {
+              enumId: "productTypeId",
+              description: "productTypeDesc"
+            } as Enumeration,
+            product: {
+              productId: "productId",
+              productTypeEnumId: "productTypeId",
+              productName: "productName"
+            }
           }
         });
         const item: OrderItem = orderItemTransform.transform()
         if (group) {
           group.items.push(item)
         } else {
+          // tranforming to order part schema
           const orderPartTransform: any =  new (DataTransform as any)(orderItem, {
             item: {
               orderId: "orderId",
@@ -57,7 +68,19 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
               customerPartyId: "customerPartyId",
               facilityId: "facilityId",
               carrierPartyId: "carrierPartyId",
-              shipmentMethodEnumId: "shipmentMethodTypeId"
+              shipmentMethodEnumId: "shipmentMethodTypeId",
+              customer: {
+                partyId: "customerPartyId",
+                person: {
+                  partyId: "customerPartyId",
+                  firstName: "customerPartyName"
+                }
+              },
+              facility: {
+                facilityId: "facilityId",
+                facilityTypeEnumId: "facilityTypeId",
+                facilityName: "facilityName"
+              }
             }
           });
 
@@ -69,13 +92,19 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
         return shipGroups
       }, [])
 
+      // tranforming to order header schema
       const dataTransform: any =  new (DataTransform as any)(orderDetails, {
         item: {
           orderId: "orderId",
           orderName: "orderName",
           statusId: "orderStatusId",
           placedDate: "orderDate",
-          currencyUomId: "currencyUomId"
+          currencyUomId: "currencyUomId",
+          salesChannelEnumId: "salesChannelEnumId",
+          salesChannel: {
+            enumId: "salesChannelEnumId",
+            description: "salesChannelDesc"
+          }
         }
       });
 
