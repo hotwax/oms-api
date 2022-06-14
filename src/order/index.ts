@@ -1,5 +1,5 @@
 import api from '../api'
-import { Order, Response } from '../types'
+import { Order, OrderItem, OrderPart, Response } from '../types'
 import { hasError } from '../util'
 import { DataTransform } from 'node-json-transform'
 
@@ -29,19 +29,61 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
     if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.orderId?.groups?.length > 0) {
       const group = resp.data.grouped.orderId.groups[0]
       const orderDetails = group.doclist.docs[0]
+
+      const orderShipGroup = group.doclist.docs.reduce((shipGroups: any, orderItem: any) => {
+        const group = shipGroups.find((group: any) => group.orderPartSeqId === orderItem.shipGroupSeqId)
+
+        const orderItemTransform: any =  new (DataTransform as any)(orderItem, {
+          item: {
+            orderId: "orderId",
+            orderItemSeqId: "orderItemSeqId",
+            orderPartSeqId: "shipGroupSeqId",
+            productId: "productId",
+            quantity: "quantity",
+            unitAmount: "unitPrice",
+            unitListPrice: "unitListPrice"
+          }
+        });
+        const item: OrderItem = orderItemTransform.transform()
+        if (group) {
+          group.items.push(item)
+        } else {
+          const orderPartTransform: any =  new (DataTransform as any)(orderItem, {
+            item: {
+              orderId: "orderId",
+              orderPartSeqId: "shipGroupSeqId",
+              partName: "orderName",
+              statusId: "orderItemStatusId",  // TODO: map it with part status id
+              customerPartyId: "customerPartyId",
+              facilityId: "facilityId",
+              carrierPartyId: "carrierPartyId",
+              shipmentMethodEnumId: "shipmentMethodTypeId"
+            }
+          });
+
+          const part: OrderPart = orderPartTransform.transform()
+          part["items"] = [item]
+          shipGroups.push(part)
+        }
+
+        return shipGroups
+      }, [])
+
       const dataTransform: any =  new (DataTransform as any)(orderDetails, {
         item: {
           orderId: "orderId",
           orderName: "orderName",
-          statusId: "orderStatusId"
+          statusId: "orderStatusId",
+          placedDate: "orderDate",
+          currencyUomId: "currencyUomId"
         }
       });
 
-      response = {
-        code: 'success',
-        message: JSON.stringify(dataTransform.transform()),
-        serverResponse: resp
-      }
+      const order: Order = dataTransform.transform()
+
+      order.parts = orderShipGroup
+
+      response = order
     } else {
       response = {
         code: 'error',
