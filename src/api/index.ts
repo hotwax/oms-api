@@ -8,27 +8,37 @@ import { events } from '../types';
 
 const emitter = mitt();
 
-let token = ''
-let instanceUrl = ''
-let cacheMaxAge = 0
-
-export function updateToken(key: string) {
-  token = key
+function APIAdapter() {
+  console.log("here");
+  return {
+    token: '',
+    instanceUrl: '',
+    cacheMaxAge: 0
+  }
 }
 
-export function updateInstanceUrl(url: string) {
-  instanceUrl = url
+const apiAdapter = new (APIAdapter as any)();
+
+
+function updateToken(key: string) {
+  apiAdapter.token = key
 }
 
-export function init(key: string, url: string, cacheAge: number) {
-  token = key
-  instanceUrl = url
-  cacheMaxAge = cacheAge
+function updateInstanceUrl(url: string) {
+  apiAdapter.instanceUrl = url
+}
+
+function init(key: string, url: string, cacheAge: number) {
+  apiAdapter.token = key
+  apiAdapter.instanceUrl = url
+  apiAdapter.cacheMaxAge = cacheAge
+  console.log('url', apiAdapter.instanceUrl)
+  console.log("apiAdapter", apiAdapter);
 }
 
 axios.interceptors.request.use(async (config: any) => {
-    if (token) {
-        config.headers.Authorization =  'Bearer ' + token;
+    if (apiAdapter.token) {
+        config.headers.Authorization =  'Bearer ' + apiAdapter.token;
         config.headers['Content-Type'] = 'application/json';
     }
     return config;
@@ -57,7 +67,7 @@ axios.interceptors.response.use(function (response) {
   });
 
 const axiosCache = setupCache({
-  maxAge: cacheMaxAge * 1000
+  maxAge: apiAdapter.cacheMaxAge * 1000
 })
 
 /**
@@ -83,7 +93,8 @@ const api = async (customConfig: any) => {
         data: customConfig.data,
         params: customConfig.params
     }
-    const baseURL = instanceUrl;
+    const baseURL = apiAdapter.instanceUrl;
+    console.log("apiAdapter", apiAdapter)
     if (baseURL) config.baseURL = `https://${baseURL}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
@@ -110,4 +121,4 @@ const client = (config: any) => {
     return axios.request(config);
 }
 
-export { api as default, client, axios };
+export { api as default, client, axios, init, updateToken, updateInstanceUrl };

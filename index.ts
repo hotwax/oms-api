@@ -1,8 +1,13 @@
 import { getOrderDetails, updateOrderStatus } from './src/order'
-import { events } from './types'
+import { events } from './src/types'
+import api, { init, updateInstanceUrl, updateToken } from './src/api'
 
 export {
+  api,
+  events,
   getOrderDetails,
   updateOrderStatus,
-  events
+  updateInstanceUrl,
+  updateToken,
+  init
 }
