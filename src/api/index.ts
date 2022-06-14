@@ -8,37 +8,28 @@ import { events } from '../types';
 
 const emitter = mitt();
 
-function APIAdapter() {
-  console.log("here");
-  return {
-    token: '',
-    instanceUrl: '',
-    cacheMaxAge: 0
-  }
-}
-
-const apiAdapter = new (APIAdapter as any)();
+let token = ''
+let instanceUrl = ''
+let cacheMaxAge = 0
 
 
 function updateToken(key: string) {
-  apiAdapter.token = key
+  token = key
 }
 
 function updateInstanceUrl(url: string) {
-  apiAdapter.instanceUrl = url
+  instanceUrl = url
 }
 
 function init(key: string, url: string, cacheAge: number) {
-  apiAdapter.token = key
-  apiAdapter.instanceUrl = url
-  apiAdapter.cacheMaxAge = cacheAge
-  console.log('url', apiAdapter.instanceUrl)
-  console.log("apiAdapter", apiAdapter);
+  token = key
+  instanceUrl = url
+  cacheMaxAge = cacheAge
 }
 
 axios.interceptors.request.use(async (config: any) => {
-    if (apiAdapter.token) {
-        config.headers.Authorization =  'Bearer ' + apiAdapter.token;
+    if (token) {
+        config.headers.Authorization =  'Bearer ' + token;
         config.headers['Content-Type'] = 'application/json';
     }
     return config;
@@ -67,7 +58,7 @@ axios.interceptors.response.use(function (response) {
   });
 
 const axiosCache = setupCache({
-  maxAge: apiAdapter.cacheMaxAge * 1000
+  maxAge: cacheMaxAge * 1000
 })
 
 /**
@@ -93,8 +84,7 @@ const api = async (customConfig: any) => {
         data: customConfig.data,
         params: customConfig.params
     }
-    const baseURL = apiAdapter.instanceUrl;
-    console.log("apiAdapter", apiAdapter)
+    const baseURL = instanceUrl;
     if (baseURL) config.baseURL = `https://${baseURL}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
