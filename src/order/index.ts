@@ -1,6 +1,6 @@
 import api from '../api'
 import { Enumeration, Order, OrderItem, OrderPart, Response } from '../types'
-import { hasError } from '../util'
+import { getIdentification, hasError } from '../util'
 import { DataTransform } from 'node-json-transform'
 
 export async function getOrderDetails (orderId: string): Promise<Order | Response> {
@@ -33,7 +33,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       const orderShipGroup: OrderPart[] = group.doclist.docs.reduce((shipGroups: any, orderItem: any) => {
         const group = shipGroups.find((group: any) => group.orderPartSeqId === orderItem.shipGroupSeqId)
 
-        // tranforming to order item schema
+        // transforming to order item schema
         const orderItemTransform: any =  new (DataTransform as any)(orderItem, {
           item: {
             orderId: "orderId",
@@ -43,10 +43,6 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
             quantity: "quantity",
             unitAmount: "unitPrice",
             unitListPrice: "unitListPrice",
-            itemType: {
-              enumId: "productTypeId",
-              description: "productTypeDesc"
-            } as Enumeration,
             product: {
               productId: "productId",
               productTypeEnumId: "productTypeId",
@@ -58,13 +54,16 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
         if (group) {
           group.items.push(item)
         } else {
-          // tranforming to order part schema
+          // transforming to order part schema
           const orderPartTransform: any =  new (DataTransform as any)(orderItem, {
             item: {
               orderId: "orderId",
               orderPartSeqId: "shipGroupSeqId",
               partName: "orderName",
-              statusId: "orderItemStatusId",  // TODO: map it with part status id
+              // TODO: mapped orderItemStatusId with part status id as we are not maintaining status at part
+              // level, for item status we will use the same field and will handle the scenario of cancelled
+              // item using cancelledQuantity
+              statusId: "orderItemStatusId",
               customerPartyId: "customerPartyId",
               facilityId: "facilityId",
               carrierPartyId: "carrierPartyId",
@@ -73,14 +72,40 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
                 partyId: "customerPartyId",
                 person: {
                   partyId: "customerPartyId",
-                  firstName: "customerPartyName"
+                  firstName: "customerPartyName",
+                  lastName: "customerPartyName"
                 }
               },
               facility: {
                 facilityId: "facilityId",
                 facilityTypeEnumId: "facilityTypeId",
                 facilityName: "facilityName"
-              }
+              },
+              contactMechs: [{
+                orderId: "orderId",
+                orderPartSeqId: "shipGroupSeqId",
+                contactMechId: "emailId", // TODO: check the mech id as we are not receiving it in current resp
+                contactMech: {
+                  contactMechId: "emailId",
+                  infoString: "customerEmailId"
+                }
+              }]
+            },
+            // as we are receiving the full name in the customerPartyName, used operate to split it into
+            // firstName and lastName
+            operate: [{
+              run: function(val: string) {
+                return val.split(" ")[0]
+              },
+              on: "customer.person.firstName"
+            },{
+              run: function(val: string) {
+                return val.split(" ")[1]
+              },
+              on: "customer.person.lastName"
+            }],
+            defaults: {
+              contactMechId: 'emailId'
             }
           });
 
@@ -92,7 +117,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
         return shipGroups
       }, [])
 
-      // tranforming to order header schema
+      // transforming to order header schema
       const dataTransform: any =  new (DataTransform as any)(orderDetails, {
         item: {
           orderId: "orderId",
@@ -104,8 +129,15 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
           salesChannel: {
             enumId: "salesChannelEnumId",
             description: "salesChannelDesc"
-          }
-        }
+          },
+          externalId: "orderIdentifications"
+        },
+        operate: [{
+          run: function (orderIdentifications: Array<string>) {
+            return getIdentification(orderIdentifications, 'SHOPIFY_ORD_ID')
+          },
+          on: "externalId"
+        }]
       });
 
       const order: Order = dataTransform.transform()

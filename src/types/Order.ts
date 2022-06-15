@@ -258,8 +258,8 @@ export interface OrderPart {
   contactMechs?: Array<{
     orderId: string,
     orderPartSeqId: string,
-    contactMechPurposeId: string,
-    contactMechId: string,
+    contactMechPurposeId?: string,
+    contactMechId?: string,
     contactMech?: ContactMech
   }>,
   vendor?: Party,
