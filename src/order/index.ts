@@ -85,7 +85,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
           });
 
           const part: OrderPart = orderPartTransform.transform()
-          part["items"] = [item]
+          part["items"] = [item] as OrderItem[]
           shipGroups.push(part)
         }
 
@@ -110,7 +110,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
 
       const order: Order = dataTransform.transform()
 
-      order.parts = orderShipGroup
+      order.parts = orderShipGroup as OrderPart[]
 
       response = order
     } else {
