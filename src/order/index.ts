@@ -1,5 +1,5 @@
 import api from '../api'
-import { Enumeration, Order, OrderItem, OrderPart, Response } from '../types'
+import { Order, OrderItem, OrderPart, Response } from '../types'
 import { getIdentification, hasError } from '../util'
 import { DataTransform } from 'node-json-transform'
 
@@ -72,8 +72,8 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
                 partyId: "customerPartyId",
                 person: {
                   partyId: "customerPartyId",
-                  firstName: "customerPartyName",
-                  lastName: "customerPartyName"
+                  firstName: "customerPartyName", // assigning customerPartyName to firstName and then using operate on this field to get the firstName
+                  lastName: "customerPartyName" // assigning customerPartyName to lastName and then using operate on this field to get the lastName
                 }
               },
               facility: {
@@ -84,12 +84,24 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
               contactMechs: [{
                 orderId: "orderId",
                 orderPartSeqId: "shipGroupSeqId",
-                contactMechId: "emailId", // TODO: check the mech id as we are not receiving it in current resp
+                contactMechId: "", // TODO: check for mech id as we are not receiving it in current resp
                 contactMech: {
-                  contactMechId: "emailId",
+                  contactMechId: "",
                   infoString: "customerEmailId"
                 }
-              }]
+              }],
+              postal: {
+                postalAddress: {
+                  toName: "customerPartyName",
+                  city: "shipToCity",
+                  countryGeo: {
+                    geoName: "shipToCountry"
+                  },
+                  stateProvinceGeo: {
+                    geoName: "shipToState"
+                  }
+                }
+              }
             },
             // as we are receiving the full name in the customerPartyName, used operate to split it into
             // firstName and lastName
@@ -105,6 +117,9 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
               on: "customer.person.lastName"
             }],
             defaults: {
+              // This assign the default value (here emailId) to the specific key (here contactMechId) only
+              // if the assigned property does not exist and if we have declared the contactMechId mapping
+              // to an empty string then this default value won't apply
               contactMechId: 'emailId'
             }
           });
@@ -134,6 +149,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
         },
         operate: [{
           run: function (orderIdentifications: Array<string>) {
+            // TODO: store the id (here SHOPIFY_ORD_ID) in a config file
             return getIdentification(orderIdentifications, 'SHOPIFY_ORD_ID')
           },
           on: "externalId"

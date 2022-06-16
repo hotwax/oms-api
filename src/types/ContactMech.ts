@@ -1,7 +1,7 @@
 import { Geo } from "./index"
 
 export interface ContactMech {
-  contactMechId: string,
+  contactMechId?: string,
   contactMechTypeEnumId?: string,
   dataSourceId?: string,
   infoString?: string,
