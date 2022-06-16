@@ -118,7 +118,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
             }],
             defaults: {
               // This assign the default value (here emailId) to the specific key (here contactMechId) only
-              // if the assigned property does not exist and if we have declared the contactMechId mapping
+              // if the assigned property to the key does not exist and if we have declared the key mapping
               // to an empty string then this default value won't apply
               contactMechId: 'emailId'
             }
