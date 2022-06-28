@@ -2,7 +2,7 @@ import api from '../api'
 import { Order, OrderItem, OrderPart, Response } from '../types'
 import { getIdentification, hasError } from '../util'
 import { DataTransform } from 'node-json-transform'
-import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '../mappings/order.js'
+import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '../mappings/order'
 
 export async function getOrderDetails (orderId: string): Promise<Order | Response> {
   const payload = {
