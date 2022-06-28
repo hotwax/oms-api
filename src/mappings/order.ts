@@ -1,18 +1,19 @@
 import { getIdentification } from '../util'
 
 export const orderItemTransformRule = {
-  "item": {
-    "orderId": "orderId",
-    "orderItemSeqId": "orderItemSeqId",
-    "orderPartSeqId": "shipGroupSeqId",
-    "productId": "productId",
-    "quantity": "quantity",
-    "unitAmount": "unitPrice",
-    "unitListPrice": "unitListPrice",
-    "product": {
-      "productId": "productId",
-      "productTypeEnumId": "productTypeId",
-      "productName": "productName"
+  item: {
+    orderId: "orderId",
+    orderItemSeqId: "orderItemSeqId",
+    orderPartSeqId: "shipGroupSeqId",
+    productId: "productId",
+    quantity: "quantity",
+    unitAmount: "unitPrice",
+    unitListPrice: "unitListPrice",
+    product: {
+      productId: "productId",
+      pseudoId: "internalName",
+      productTypeEnumId: "productTypeId",
+      productName: "productName"
     }
   }
 }
@@ -30,6 +31,7 @@ export const orderPartTransformRule = {
     facilityId: "facilityId",
     carrierPartyId: "carrierPartyId",
     shipmentMethodEnumId: "shipmentMethodTypeId",
+    autoCancelDate: "autoCancelDate",
     customer: {
       partyId: "customerPartyId",
       person: {
@@ -63,6 +65,10 @@ export const orderPartTransformRule = {
           geoName: "shipToState"
         }
       }
+    },
+    status: {
+      statusId: "orderItemStatusId",
+      description: "orderItemStatusDesc"
     }
   },
   // as we are receiving the full name in the customerPartyName, used operate to split it into
@@ -98,7 +104,11 @@ export const orderDetailTranformRule = {
       enumId: "salesChannelEnumId",
       description: "salesChannelDesc"
     },
-    externalId: "orderIdentifications"
+    externalId: "orderIdentifications",
+    status: {
+      statusId: "orderStatusId",
+      description: "orderStatusDesc"
+    }
   },
   operate: [{
     run: function (orderIdentifications: Array<string>) {
