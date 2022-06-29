@@ -1,5 +1,5 @@
 import { getOrderDetails, updateOrderStatus } from './src/order'
-import { events } from './types'
+import { events } from './src/types'
 
 export {
   getOrderDetails,
