@@ -12,15 +12,16 @@ let token = ''
 let instanceUrl = ''
 let cacheMaxAge = 0
 
-export function updateToken(key: string) {
+
+function updateToken(key: string) {
   token = key
 }
 
-export function updateInstanceUrl(url: string) {
+function updateInstanceUrl(url: string) {
   instanceUrl = url
 }
 
-export function init(key: string, url: string, cacheAge: number) {
+function init(key: string, url: string, cacheAge: number) {
   token = key
   instanceUrl = url
   cacheMaxAge = cacheAge
@@ -110,4 +111,4 @@ const client = (config: any) => {
     return axios.request(config);
 }
 
-export { api as default, client, axios };
+export { api as default, client, axios, init, updateToken, updateInstanceUrl };
