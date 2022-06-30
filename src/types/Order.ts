@@ -1,6 +1,26 @@
+
+export interface OrderItem {
+  orderItemGroupId?: string;
+  orderItemId?: string;
+  productId?: string;
+  quantity?: number;
+  price?: number;
+  amount?: number;
+  statusId?: string;
+}
+export interface OrderItemGroup {
+  orderItemGroupId?: string;
+  shippingAddress?: any;
+  billingAddress?: any;
+  shippingMethod?: any;
+  carrier?: any;
+  identifications?: Array<any>;
+  facility?: any;
+}
+
 export interface Order {
-  orderId: String;
-  orderName: String;
+  orderId: string;
+  orderName: string;
   customer: any;
   /** An array containing the items purchased in this order */
   items?: Array<OrderItem>;
@@ -12,22 +32,4 @@ export interface Order {
   statusDesc?: string;
   identifications?: any;
   notes?: Array<any>;
-}
-export interface OrderItem {
-  orderItemGroupId?: String;
-  orderItemId?: String;
-  productId?: String;
-  quantity?: number;
-  price?: number;
-  amount?: number;
-  statusId?: String;
-}
-export interface OrderItemGroup {
-  orderItemGroupId?: String;
-  shippingAddress?: any;
-  billingAddress?: any;
-  shippingMethod?: any;
-  carrier?: any;
-  identifications?: Array<any>;
-  facility?: any;
 }
