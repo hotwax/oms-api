@@ -29,6 +29,7 @@ export const productsTransformRule = {
         "productFeatureId": id,
         "feature": {
           "productFeatureId": id,
+          // TODO: find a way to handle the case of fetching the product feature enum id
           "productFeatureTypeEnumId": val.hierarchy.find((feature: any) => feature.startsWith(`1/${val.features[index].split("/")[0].toUpperCase()}`)).split("/")[1],
           "description": val.features[index].split("/")[1]
         }
