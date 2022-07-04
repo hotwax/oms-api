@@ -8,13 +8,18 @@ export async function fetchProducts(productIds: Array<string>): Promise<Product[
   let response = {} as Product[] | Response
 
   const payload = {
-    "filters": ['productId: (' + productIds.join(' OR ') + ')'],
-    "viewSize": productIds.length
+    "json": {
+      "params": {
+        "rows": productIds.length
+      },
+      "query": "*:*",
+      "filter": `docType: PRODUCT AND productId: (${productIds.join(' OR ')})`
+    }
   }
 
   try {
     const resp = await api({
-      url: "searchProducts",
+      url: "solr-query",
       method: "post",
       data: payload,
       cache: true
@@ -82,4 +87,45 @@ export async function fetchProduct(productId: string): Promise<Product | Respons
   }
 
   return response;
+}
+
+export async function findProductFeatureTypeDetails (ids: Array<string>): Promise<any | Response> {
+  let response = {} as any | Response
+
+  const payload = {
+    'inputFields': {
+      'productFeatureId': ids,
+      'productFeatureId_op': 'in'
+    },
+    'entityName': 'ProductFeatureAndType',
+    'noConditionFind': 'Y',
+    'viewSize': ids.length
+  }
+
+  try {
+    const resp = await api({
+      url: "performFind",
+      method: "post",
+      data: payload
+    }) as any;
+
+    if (resp.status == 200 && !hasError(resp)) {
+      console.log(resp);
+    } else {
+      response = {
+        code: 'error',
+        message: `Unable to fetch product feature type details`,
+        serverResponse: resp
+      }
+    }
+
+  } catch (err) {
+    response = {
+      code: 'error',
+      message: `Something went wrong`,
+      serverResponse: err
+    }
+  }
+
+  return response
 }
