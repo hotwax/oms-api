@@ -6,7 +6,6 @@ export const productsTransformRule = {
     salesIntroductionDate: "introductionDate",
     toAssocs: "variantProductIds",
     contents: [{
-      productContentId: "main",
       productId: "productId",
       contentLocation: "mainImageUrl"
     },{
@@ -15,24 +14,18 @@ export const productsTransformRule = {
       contentLocation: "additionalImageUrls"
     }],
     features: {
-      hierarchy: "featureHierarchy",
-      features: "productFeatures",
-      ids: "productFeatureIds",
+      productFeatureIds: "productFeatureIds",
       productId: "productId"
     },
     categories: "productCategoryNames"
   },
   operate: [{
     run: function(val: any) {
-      return val.ids.map((id: any, index: number) => ({
+      // We are storing the productFeatureIds and then we will use another method to fetch the product
+      // type value and description
+      return val.productFeatureIds?.map((id: any) => ({
         "productId": val.productId,
-        "productFeatureId": id,
-        "feature": {
-          "productFeatureId": id,
-          // TODO: find a way to handle the case of fetching the product feature enum id
-          "productFeatureTypeEnumId": val.hierarchy.find((feature: any) => feature.startsWith(`1/${val.features[index].split("/")[0].toUpperCase()}`)).split("/")[1],
-          "description": val.features[index].split("/")[1]
-        }
+        "productFeatureId": id
       }))
     },
     on: "features"

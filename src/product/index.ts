@@ -68,8 +68,6 @@ export async function fetchProduct(productId: string): Promise<Product | Respons
 
       const productsTransform: any =  new (DataTransform as any)({ ...resp.data.response.docs[0] }, productsTransformRule)
       const product: Product = productsTransform.transform()
-
-      console.log('product', product)
       return product
     } else {
       response = {
@@ -109,8 +107,9 @@ export async function findProductFeatureTypeDetails (ids: Array<string>): Promis
       data: payload
     }) as any;
 
-    if (resp.status == 200 && !hasError(resp)) {
-      console.log(resp);
+    if (resp.status == 200 && !hasError(resp) && resp.data?.docs?.length > 0) {
+      // TODO: add tranformation rule and return the transformed result
+      response = resp.data.docs;
     } else {
       response = {
         code: 'error',
