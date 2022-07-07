@@ -17,7 +17,12 @@ export const productsTransformRule = {
       productFeatureIds: "productFeatureIds",
       productId: "productId"
     },
-    categories: "productCategoryNames"
+    categories: "productCategoryNames",
+    identifications: [{
+      productId: "productId",
+      productIdTypeEnumId: "PidtSku",
+      idValue: "sku"
+    }]
   },
   operate: [{
     run: function(val: any) {

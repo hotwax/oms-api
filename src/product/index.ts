@@ -4,17 +4,39 @@ import { hasError } from "../util";
 import { DataTransform } from 'node-json-transform'
 import { productsTransformRule } from "../mappings/product";
 
-export async function fetchProducts(productIds: Array<string>): Promise<Product[] | Response> {
+export async function fetchProducts(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
 
   const payload = {
     "json": {
       "params": {
-        "rows": productIds.length
+        "rows": params.viewSize,
+        "start": params.viewIndex
       },
       "query": "*:*",
-      "filter": `docType: PRODUCT AND productId: (${productIds.join(' OR ')})`
-    }
+      "filter": `docType: PRODUCT`
+    } as any
+  }
+
+  // checking that if the params has filters, and then adding the filter values in the payload filter
+  // for each key present in the params filters
+  if (params.filters) {
+    Object.keys(params.filters).map((key: any) => {
+
+      if ((params.filters[key]).constructor === Array) {
+        // TODO: need to check how to handle the condition when we want to do AND on values
+        payload.json.filter += ` AND ${key}: (${params.filters[key].join(' OR ')})`
+      } else {
+        payload.json.filter += ` AND ${key}: ${params.filters[key]}`
+      }
+    })
+  }
+
+  if (params.queryString) {
+    // TODO: need to check how to handle the case when we want to make exact search match
+    payload.json.query = `(*${params.queryString}*)`
+    payload.json.params['qf'] = "productId productName internalName"
+    payload.json.params['defType'] = "edismax"
   }
 
   try {
@@ -29,7 +51,10 @@ export async function fetchProducts(productIds: Array<string>): Promise<Product[
 
       const productsTransform: any =  new (DataTransform as any)(resp.data.response.docs, productsTransformRule)
       const product: Array<Product> = productsTransform.transform()
-      return product
+      return {
+        products: product,
+        totalProductsCount: resp.data?.response?.numFound
+      }
     } else {
       response = {
         code: 'error',
