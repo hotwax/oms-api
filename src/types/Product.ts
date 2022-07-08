@@ -190,4 +190,8 @@ export interface Product {
       tiersPerPallet?: number;
     };
   }>;
+  images?: {
+    [x: string]: string;
+  };
+  sku?: string
 }
