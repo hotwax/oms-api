@@ -193,5 +193,5 @@ export interface Product {
   images?: {
     [x: string]: string;
   };
-  sku?: string
+  sku?: string;
 }
