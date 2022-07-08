@@ -13,6 +13,12 @@ export const events = {
   'DISMISS_LOADER': 'dismissLoader'
 }
 
+export const enumTypes = {
+  'productSku': 'PidtSku',
+  'mainImageUrl': 'PcntImageUrlOriginal',
+  'additionalImageUrls': 'PcntImageUrlAlternate'
+} as any
+
 export interface Response {
   code: string;
   message: string;

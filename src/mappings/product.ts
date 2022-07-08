@@ -1,3 +1,5 @@
+import { enumTypes } from "../types"
+
 export const productsTransformRule = {
   item: {
     productId: "productId",
@@ -5,32 +7,26 @@ export const productsTransformRule = {
     productName: "productName",
     salesIntroductionDate: "introductionDate",
     toAssocs: "variantProductIds",
-    contents: [{
-      productId: "productId",
-      contentLocation: "mainImageUrl"
-    },{
-      productContentId: "",
-      productId: "productId",
-      contentLocation: "additionalImageUrls"
-    }],
+    contents: {
+      mainImageUrl: "mainImageUrl",
+      additionalImageUrls: "additionalImageUrls"
+    },
     features: {
-      productFeatureIds: "productFeatureIds",
-      productId: "productId"
+      productFeatures: "productFeatures"
     },
     categories: "productCategoryNames",
-    identifications: [{
-      productId: "productId",
-      productIdTypeEnumId: "PidtSku",
-      idValue: "sku"
-    }]
+    identifications: {
+      productSku: "sku"
+    }
   },
   operate: [{
     run: function(val: any) {
-      // We are storing the productFeatureIds and then we will use another method to fetch the product
-      // type value and description
-      return val.productFeatureIds?.map((id: any) => ({
-        "productId": val.productId,
-        "productFeatureId": id
+      // Used productFeatures that contains values in the format(featureId/featureValue)
+      return val.productFeatures?.map((feature: any) => ({
+        "feature": {
+          "productFeatureTypeEnumId": feature.split('/')[0],
+          "description": feature.split('/')[1]
+        }
       }))
     },
     on: "features"
@@ -48,6 +44,26 @@ export const productsTransformRule = {
       }
     },
     on: "categories"
+  }, {
+    run: function(identifications: any) {
+      if (Object.keys(identifications).length) {
+        return Object.keys(identifications).map((identificationKey: string) => ({
+          productIdTypeEnumId: enumTypes[identificationKey],
+          idValue: identifications[identificationKey]
+        }))
+      }
+    },
+    on: "identifications"
+  }, {
+    run: function(contents: any) {
+      if (Object.keys(contents).length) {
+        return Object.keys(contents).map((contentKey: string) => ({
+          productContentTypeEnumId: enumTypes[contentKey],
+          contentLocation: contents[contentKey]
+        }))
+      }
+    },
+    on: "contents"
   }],
   defaults: {
     "productContentId": "mainImage"
