@@ -1,5 +1,3 @@
-import { enumTypes } from "../types"
-
 export const productsTransformRule = {
   item: {
     productId: "productId",
@@ -7,6 +5,10 @@ export const productsTransformRule = {
     productName: "productName",
     salesIntroductionDate: "introductionDate",
     toAssocs: "variantProductIds",
+    assocs: {
+      "parentProductName": "parentProductName",
+      "groupId": "groupId"
+    },
     images: {
       mainImageUrl: "mainImageUrl",
       additionalImageUrls: "additionalImageUrls"
@@ -42,5 +44,17 @@ export const productsTransformRule = {
       }
     },
     on: "categories"
+  }, {
+    run: function(assocs: any) {
+      if (assocs) {
+        return {
+          "toProductId": assocs.groupId,
+          "toProduct": {
+            "productName": assocs.parentProductName
+          }
+        }
+      }
+    },
+    on: "assocs"
   }]
 }
