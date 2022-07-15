@@ -1,3 +1,5 @@
+import { enumTypes } from "../types"
+
 export const productTransformRule = {
   item: {
     productId: "productId",
@@ -22,12 +24,23 @@ export const productTransformRule = {
   operate: [{
     run: function(features: any) {
       // Used productFeatures that contains values in the format(featureId/featureValue)
-      return features.productFeatures?.map((feature: any) => ({
+      const productFeatures = features.productFeatures?.map((feature: any) => ({
         "feature": {
           "productFeatureTypeEnumId": feature.split('/')[0],
           "description": feature.split('/')[1]
         }
       }))
+
+      if (features.brandName) {
+        productFeatures.push({
+          "feature": {
+            "productFeatureTypeEnumId": enumTypes['brandType'],
+            "description": features.brandName
+          }
+        })
+      }
+
+      return productFeatures
     },
     on: "features"
   }, {

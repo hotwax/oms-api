@@ -14,7 +14,7 @@ export const events = {
 }
 
 export const enumTypes = {
-  'productSku': 'PidtSku',
+  'brandType': 'PftBrand',
   'mainImageUrl': 'PcntImageUrlOriginal',
   'additionalImageUrls': 'PcntImageUrlAlternate'
 } as any
