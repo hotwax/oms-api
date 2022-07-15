@@ -20,9 +20,9 @@ export const productTransformRule = {
     sku: "sku"
   },
   operate: [{
-    run: function(val: any) {
+    run: function(features: any) {
       // Used productFeatures that contains values in the format(featureId/featureValue)
-      return val.productFeatures?.map((feature: any) => ({
+      return features.productFeatures?.map((feature: any) => ({
         "feature": {
           "productFeatureTypeEnumId": feature.split('/')[0],
           "description": feature.split('/')[1]
@@ -31,9 +31,9 @@ export const productTransformRule = {
     },
     on: "features"
   }, {
-    run: function(val: Array<string>) {
-      if (val) {
-        return val.map(id => ({"toProductId": id}))
+    run: function(productsIds: Array<string>) {
+      if (productsIds) {
+        return productsIds.map(id => ({"toProductId": id}))
       }
     },
     on: "toAssocs"
