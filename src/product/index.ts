@@ -2,7 +2,7 @@ import api from "../../api";
 import { Product, Response } from "../types";
 import { hasError } from "../util";
 import { DataTransform } from 'node-json-transform'
-import { productsTransformRule } from "../mappings/product";
+import { productTransformRule } from "../mappings/product";
 
 export async function fetchProducts(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
@@ -51,17 +51,16 @@ export async function fetchProducts(params: any): Promise<any | Response> {
 
     if (resp.status == 200 && !hasError(resp) && resp.data?.response?.numFound > 0) {
 
-      const productsTransform: any =  new (DataTransform as any)(resp.data.response.docs, productsTransformRule)
+      const productsTransform: any =  new (DataTransform as any)(resp.data.response.docs, productTransformRule)
       const product: Array<Product> = productsTransform.transform()
       return {
         products: product,
         totalProductsCount: resp.data?.response?.numFound
       }
     } else {
-      response = {
-        code: 'error',
-        message: `Unable to fetch product details`,
-        serverResponse: resp
+      return {
+        products: {},
+        totalProductsCount: 0
       }
     }
   } catch (err) {
