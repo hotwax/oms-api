@@ -6,11 +6,12 @@
     "outDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
-    "typeRoots": ["types"]
+    "typeRoots": ["types"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
-  "paths": {
-    "@/*": [
-      "src/*"
-    ]
-  }
 }
