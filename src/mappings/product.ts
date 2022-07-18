@@ -6,8 +6,8 @@ export const productTransformRule = {
     pseudoId: "internalName",
     productName: "productName",
     salesIntroductionDate: "introductionDate",
-    toAssocs: "variantProductIds",
-    assocs: {
+    assocs: "variantProductIds",
+    toAssocs: {
       "parentProductName": "parentProductName",
       "groupId": "groupId"
     },
@@ -16,7 +16,8 @@ export const productTransformRule = {
       additionalImageUrls: "additionalImageUrls"
     },
     features: {
-      productFeatures: "productFeatures"
+      productFeatures: "productFeatures",
+      brandName: "brandName"
     },
     categories: "productCategoryNames",
     sku: "sku"
@@ -49,7 +50,7 @@ export const productTransformRule = {
         return productsIds.map(id => ({"toProductId": id}))
       }
     },
-    on: "toAssocs"
+    on: "assocs"
   }, {
     run: function(categories: Array<string>) {
       if (categories) {
@@ -68,6 +69,6 @@ export const productTransformRule = {
         }
       }
     },
-    on: "assocs"
+    on: "toAssocs"
   }]
 }
