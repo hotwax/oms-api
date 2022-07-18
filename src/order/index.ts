@@ -1,4 +1,4 @@
-import api from '../../api'
+import api from '../api'
 import { Order, OrderItem, Response } from '../types'
 import { hasError } from '../util'
 

@@ -1,4 +1,4 @@
-import api from "../../api";
+import api from "../api";
 import { Product, Response } from "../types";
 import { hasError } from "../util";
 import { DataTransform } from 'node-json-transform'
