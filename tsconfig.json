@@ -4,11 +4,14 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./lib",
-    "strict": true
-  },
-  "paths": {
-    "@/*": [
-      "src/*"
-    ]
+    "strict": true,
+    "esModuleInterop": true,
+    "typeRoots": ["types"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
 }

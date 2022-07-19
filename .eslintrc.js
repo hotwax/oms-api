@@ -15,5 +15,7 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        // disabled this rule to allow usage of a variable that is not defined before using it
+        "no-use-before-define": "off"
     }
 }
