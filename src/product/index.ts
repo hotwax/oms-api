@@ -53,20 +53,21 @@ export async function fetchProducts(params: any): Promise<any | Response> {
 
       const productsTransform: any =  new (DataTransform as any)(resp.data.response.docs, productTransformRule)
       const product: Array<Product> = productsTransform.transform()
+
       return {
         products: product,
-        totalProductsCount: resp.data?.response?.numFound
+        total: resp.data?.response?.numFound
       }
     } else {
       return {
         products: {},
-        totalProductsCount: 0
+        total: 0
       }
     }
   } catch (err) {
     response = {
       code: 'error',
-      message: `Something went wrong`,
+      message: 'Something went wrong',
       serverResponse: err
     }
   }

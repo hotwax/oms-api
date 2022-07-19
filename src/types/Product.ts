@@ -194,4 +194,9 @@ export interface Product {
     [x: string]: string;
   };
   sku?: string;
+  parent?: {
+    [x: string]: string;
+  };
+  variants?: Array<string>;
+  brandName?: string;
 }
