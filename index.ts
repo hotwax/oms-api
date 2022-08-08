@@ -1,8 +1,8 @@
-import { getOrderDetails, updateOrderStatus } from './src/order'
-import { events } from './src/types'
-import { fetchProducts } from './src/product'
-import { init, updateToken, updateInstanceUrl } from './src/api'
-import { isError } from './src/util'
+import { getOrderDetails, updateOrderStatus } from '@/order'
+import { events } from '@/types'
+import { fetchProducts } from '@/product'
+import { init, updateToken, updateInstanceUrl } from '@/api'
+import { isError } from '@/util'
 
 export {
   getOrderDetails,

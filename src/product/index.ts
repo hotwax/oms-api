@@ -1,8 +1,8 @@
-import api from "../api";
-import { Product, Response } from "../types";
-import { hasError } from "../util";
+import api from "@/api";
+import { Product, Response } from "@/types";
+import { hasError } from "@/util";
 import { DataTransform } from 'node-json-transform'
-import { productTransformRule } from "../mappings/product";
+import { productTransformRule } from "@/mappings/product";
 
 export async function fetchProducts(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
