@@ -1,4 +1,4 @@
-export const productTransformRule = {
+const productTransformRule = {
   item: {
     productId: "productId",
     pseudoId: "internalName",
@@ -30,3 +30,5 @@ export const productTransformRule = {
     on: "features"
   }]
 }
+
+export { productTransformRule }

@@ -4,7 +4,7 @@ import { hasError } from "@/util";
 import { DataTransform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
 
-export async function fetchProducts(params: any): Promise<any | Response> {
+async function fetchProducts(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
 
   const payload = {
@@ -74,3 +74,5 @@ export async function fetchProducts(params: any): Promise<any | Response> {
 
   return response;
 }
+
+export { fetchProducts }

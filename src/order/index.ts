@@ -2,7 +2,7 @@ import api from '@/api'
 import { Order, OrderItem, Response } from '@/types'
 import { hasError } from '@/util'
 
-export async function getOrderDetails (orderId: string): Promise<Order | Response> {
+async function getOrderDetails (orderId: string): Promise<Order | Response> {
   const payload = {
     "json": {
       "params": {
@@ -65,7 +65,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
   return response;
 }
 
-export async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
+async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
 
   let response = {} as Response
 
@@ -100,3 +100,5 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
 
   return response
 }
+
+export { getOrderDetails, updateOrderStatus }
