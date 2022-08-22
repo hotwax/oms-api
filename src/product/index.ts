@@ -14,7 +14,7 @@ async function fetchProducts(params: any): Promise<any | Response> {
         "start": params.viewIndex
       },
       "query": "*:*",
-      "filter": `docType: PRODUCT`
+      "filter": "docType: PRODUCT"
     } as any
   }
 
