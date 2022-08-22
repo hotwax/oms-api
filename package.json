@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc --noEmit false --emitDeclarationOnly",
-    "build": "babel src --out-dir lib --extensions '.js,.ts,.tsx,.jsx'"
+    "build": "babel src --out-dir lib --extensions '.js,.ts,.tsx,.jsx' && npm run tsc"
   },
   "author": "HotWax Commerce",
   "license": "Apache-2.0",
