@@ -18,13 +18,22 @@ export const productTransformRule = {
     sku: "sku"
   },
   operate: [{
-    run: function(productFeatures: any) {
+    run: function(features: any) {
       // Used productFeatures that contains values in the format(featureId/featureValue)
-      return productFeatures?.map((feature: any) => ({
-        "feature": {
-          "productFeatureTypeEnumId": feature.split('/')[0],
-          "description": feature.split('/')[1]
+      const productFeatures = features?.reduce((acc: any, feature: any) => {
+        const key = feature.split('/')[0]
+        const value = feature.split('/')[1]
+        if (acc[key]) {
+          acc[key].push(value)
+        } else {
+          acc[key] = [value]
         }
+        return acc;
+      }, {})
+
+      return Object.keys(productFeatures).map((key: string) => ({
+        "desc": key,
+        "value": productFeatures[key]
       }))
     },
     on: "features"
