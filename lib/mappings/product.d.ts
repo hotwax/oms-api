@@ -18,7 +18,10 @@ declare const productTransformRule: {
         sku: string;
     };
     operate: {
-        run: (productFeatures: any) => any;
+        run: (features: any) => {
+            desc: string;
+            value: any;
+        }[];
         on: string;
     }[];
 };
