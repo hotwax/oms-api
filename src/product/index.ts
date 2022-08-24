@@ -24,12 +24,13 @@ export async function fetchProducts(params: any): Promise<any | Response> {
   // for each key present in the params filters
   if (params.filters) {
     Object.keys(params.filters).map((key: any) => {
+      const filterValue = params.filters[key].value;
+      const filterOperator = params.filters[key].op;
 
-      if (Array.isArray(params.filters[key])) {
-        // TODO: need to check how to handle the condition when we want to do AND on values
-        payload.json.filter += ` AND ${key}: (${params.filters[key].join(' OR ')})`
+      if (Array.isArray(filterValue)) {
+        payload.json.filter += ` AND ${key}: (${filterValue.join(filterOperator ? ' '+ filterOperator +' ' : ' OR ')})`
       } else {
-        payload.json.filter += ` AND ${key}: ${params.filters[key]}`
+        payload.json.filter += ` AND ${key}: ${filterValue}`
       }
     })
   }
