@@ -21,7 +21,7 @@ declare const productTransformRule: {
         run: (features: any) => {
             desc: string;
             value: any;
-        }[];
+        }[] | undefined;
         on: string;
     }[];
 };
