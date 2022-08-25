@@ -1,5 +1,3 @@
-# oms-api
-
 # Contribution Guideline
 
 1. Fork the repository and clone it locally from the `main` branch. Before starting your work make sure it's up to date with current `main` branch.
@@ -13,18 +11,3 @@
 9. Congrats! Your PR should now be merged in!
 
 If you can't handle some parts of the issue then please ask for help in the comment. If you have any problems during the implementation of some complex issue, feel free to implement just a part of it.
-
-## Report a bug or request a feature
-
-Always define the type of issue:
-* Bug report
-* Feature request
-
-While writing issues, please be as specific as possible. All requests regarding support with implementation or application setup should be sent to.
-
-# Join the community on Discord
-If you have any questions or ideas feel free to join our <a href="https://discord.gg/SwpJnpdyg3" target="_blank">Discord channel</a>
-    
-# The license
-
-Oms-api is completely free and released under the Apache v2.0 License. Check <a href="https://github.com/hotwax/oms-api/blob/main/LICENSE" target="_blank">LICENSE</a> for more details.
