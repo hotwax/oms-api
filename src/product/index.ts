@@ -25,10 +25,10 @@ export async function fetchProducts(params: any): Promise<any | Response> {
   if (params.filters) {
     Object.keys(params.filters).map((key: any) => {
       const filterValue = params.filters[key].value;
-      const filterOperator = params.filters[key].op;
 
       if (Array.isArray(filterValue)) {
-        payload.json.filter += ` AND ${key}: (${filterValue.join(filterOperator ? ' '+ filterOperator +' ' : ' OR ')})`
+        const filterOperator = params.filters[key].op ? params.filters[key].op : ' OR ' ;
+        payload.json.filter += ` AND ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
       } else {
         payload.json.filter += ` AND ${key}: ${filterValue}`
       }
