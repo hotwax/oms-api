@@ -1,5 +1,69 @@
 # oms-api
 
+# Prerequisite
+Ionic CLI - If you don't have the ionic CLI installed refer [official documentation](https://ionicframework.com/docs/intro/cli) for the installation instructions.
+
+
+# Build Notes (Users)
+
+1. Download the app from [release](https://github.com/hotwax/oms-api/releases) page and extract it.
+2. Go to the app directory.
+3. Run following command to download dependencies  
+    `npm i
+4. Create a `.env` file by taking reference from the `.env.example`.
+5. To run the app in browser use the command: `ionic serve`
+
+
+# Build Notes (Contributors)
+
+1. Open a Terminal window
+2. Clone app using the command: `git clone https://github.com/hotwax/oms-api.git <repository-name>`
+3. Go to the <repository-name> directory using command: `cd <repository-name>`
+4. Run following command to download dependencies
+    `npm i`
+5. Create a `.env` file by taking reference from the `.env.example`.
+6. To run the app in browser use the command: `ionic serve`
+
+# Firebase Hosting
+
+We are using firebase hosting for the Oms-api deployment
+Here are the steps to deploy app on firebase hosting
+
+## Prerequisite
+
+- [Firebase Cli](https://firebase.google.com/docs/cli) should be installed
+- Firebase project should be created
+- You should have access to firebase project
+
+## Dev deployment
+
+- Update the DEV instance url at .env.production file
+
+- Build the application using following command
+  `ionic build`
+
+- Login into firebase
+  `firebase login`
+
+- Run following command to deploy to firebase hosting
+  `firebase deploy --only hosting:<hosting url>`
+
+## How to build application in different environment or modes(staging, production, qa, etc)?
+
+As there is a bug in Ionic cli due to which we cannot pass flag variables for commands (See [#4669](https://github.com/ionic-team/ionic-cli/issues/4642)). To build application in different modes we need to use vue-cli-service to build and then use the built app using capacitor copy command further.
+
+Follow following instructions:
+
+1. Manually build the application using vue-cli-service:
+   npx vue-cli-service build --mode=sandbox
+
+2. Copy web assets to the native project without building the app:
+   ionic capacitor copy ios --no-build
+
+3. Open the Android Studio / XCode project:
+   ionic capacitor open android  
+   ionic capacitor open ios
+
 # Contribution Guideline
 
 1. Fork the repository and clone it locally from the `main` branch. Before starting your work make sure it's up to date with current `main` branch.

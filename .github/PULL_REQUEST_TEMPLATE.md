@@ -14,4 +14,4 @@ Closes #
 ### Contribution and Currently Important Rules Acceptance
 <!-- Please get familiar with following info -->
 
-- [ ] I read and followed [contribution rules](https://github.com/hotwax/oms-api/blob/master/CONTRIBUTING.md)
+- [ ] I read and followed [contribution rules](https://github.com/hotwax/oms-api/blob/main/CONTRIBUTING.md)
