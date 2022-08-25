@@ -8,7 +8,6 @@
     `npm i`
 5. Build the package using `npm run build`
 
-
 # Build Notes (Contributors)
 
 1. Open a Terminal window
