@@ -6,6 +6,7 @@
     "outDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
+    "emitDeclarationOnly": true,
     "typeRoots": ["types"],
     "baseUrl": ".",
     "paths": {
@@ -14,4 +15,5 @@
       ]
     }
   },
+  "exclude": ["node_modules", "**/__tests__/*", "lib"]
 }

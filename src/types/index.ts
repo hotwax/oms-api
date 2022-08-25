@@ -7,13 +7,13 @@ import { Product } from './Product';
 import { Status } from './Status';
 import { Uom } from './Uom';
 
-export const events = {
+const events = {
   'UNAUTHORIZED': 'unauthorized',
   'QUEUE_TASK': 'queueTask',
   'DISMISS_LOADER': 'dismissLoader'
 }
 
-export interface Response {
+interface Response {
   code: string;
   message: string;
   messageList?: Array<string>;
@@ -30,5 +30,7 @@ export {
   Party,
   Product,
   Status,
-  Uom
+  Uom,
+  Response,
+  events
 }

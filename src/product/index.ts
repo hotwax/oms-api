@@ -1,10 +1,10 @@
-import api from "../api";
-import { Product, Response } from "../types";
-import { hasError } from "../util";
+import api from "@/api";
+import { Product, Response } from "@/types";
+import { hasError } from "@/util";
 import { DataTransform } from 'node-json-transform'
-import { productTransformRule } from "../mappings/product";
+import { productTransformRule } from "@/mappings/product";
 
-export async function fetchProducts(params: any): Promise<any | Response> {
+async function fetchProducts(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
 
   const payload = {
@@ -14,7 +14,7 @@ export async function fetchProducts(params: any): Promise<any | Response> {
         "start": params.viewIndex
       },
       "query": "*:*",
-      "filter": `docType: PRODUCT`
+      "filter": "docType: PRODUCT"
     } as any
   }
 
@@ -75,3 +75,5 @@ export async function fetchProducts(params: any): Promise<any | Response> {
 
   return response;
 }
+
+export { fetchProducts }

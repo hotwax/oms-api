@@ -4,7 +4,7 @@ import {
   StatusCodes
 } from 'http-status-codes';
 import { setupCache } from 'axios-cache-adapter'
-import { events } from '../types';
+import { events } from '@/types';
 
 const emitter = mitt();
 
