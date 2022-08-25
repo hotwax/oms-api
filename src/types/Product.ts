@@ -165,30 +165,9 @@ export interface Product {
     };
   }>;
   features?: Array<{
-    productId?: string;
     productFeatureId?: string;
-    fromDate?: string;
-    thruDate?: string;
-    applTypeEnumId?: string;
-    sequenceNum?: number;
-    amount?: number;
-    recurringAmount?: number;
-    featureProductId?: string;
-    feature?: {
-      productFeatureId?: string;
-      productFeatureTypeEnumId?: string;
-      description?: string;
-      numberSpecified?: number;
-      numberUomId?: string;
-      defaultAmount?: number;
-      defaultSequenceNum?: number;
-      abbrev?: string;
-      idCode?: string;
-      ownerPartyId?: string;
-      numberPerPallet?: number;
-      perPalletTier?: number;
-      tiersPerPallet?: number;
-    };
+    desc?: string;
+    value?: string;
   }>;
   images?: {
     [x: string]: string;
