@@ -1,5 +1,7 @@
 # oms-api
 
+The OMS API package comes with prebuilt methods that helps communicate with HotWax Commerce OMS using Rest API
+
 # Build Notes (Users)
 
 1. Download the package from [release](https://github.com/hotwax/oms-api/releases) page and extract it.
