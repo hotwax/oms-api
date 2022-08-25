@@ -10,7 +10,7 @@
 
 # Build Notes (Contributors)
 
-1. Open a Terminal window
+1. Open a Terminal window.
 2. Clone package using the command: `git clone https://github.com/hotwax/oms-api.git <repository-name>`
 3. Go to the <repository-name> directory using command: `cd <repository-name>`
 5. Run following command to download dependencies
