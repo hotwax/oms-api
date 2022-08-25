@@ -1,5 +1,5 @@
-import api from '../../api'
-import { Order, OrderItem, Response } from '../../types'
+import api from '../api'
+import { Order, OrderItem, Response } from '../types'
 import { hasError } from '../util'
 
 export async function getOrderDetails (orderId: string): Promise<Order | Response> {
