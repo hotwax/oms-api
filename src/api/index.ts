@@ -83,8 +83,7 @@ const api = async (customConfig: any) => {
         data: customConfig.data,
         params: customConfig.params
     }
-    const baseURL = instanceUrl;
-    if (baseURL) config.baseURL = `https://${baseURL}.hotwax.io/api/`;
+    if (instanceUrl) config.baseURL = instanceUrl.startsWith('http') ? instanceUrl : `https://${instanceUrl}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
 
