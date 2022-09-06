@@ -6,6 +6,7 @@ import { Party } from './Party';
 import { Product } from './Product';
 import { Status } from './Status';
 import { Uom } from './Uom';
+import { User } from './User';
 
 const events = {
   'UNAUTHORIZED': 'unauthorized',
@@ -31,6 +32,7 @@ export {
   Product,
   Status,
   Uom,
+  User,
   Response,
   events
 }
