@@ -7,7 +7,7 @@ import { DataTransform } from 'node-json-transform';
 async function getProfile(): Promise<User | Response> {
   let response = {} as User | Response;
   try {
-    const resp = api({
+    const resp = await api({
       url: "user-profile", 
       method: "get",
     }) as any;
