@@ -7,4 +7,10 @@ export interface User {
   externalUserId?: string;
   emailAddress?: string;
   partyId?: string;
+  facilities?: Array<{
+    facilityId?: string;
+    facilityName?: string;
+    roleTypeId?: string;
+    roleTypeDescription?: string;
+  }>
 }
