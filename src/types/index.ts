@@ -6,6 +6,7 @@ import { Party } from './Party';
 import { Product } from './Product';
 import { Status } from './Status';
 import { Uom } from './Uom';
+import { Stock } from './Stock';
 
 const events = {
   'UNAUTHORIZED': 'unauthorized',
@@ -23,14 +24,15 @@ interface Response {
 export {
   ContactMech,
   Enumeration,
+  events,
   Geo,
   Order,
   OrderItem,
   OrderItemGroup,
   Party,
   Product,
-  Status,
-  Uom,
   Response,
-  events
+  Status,
+  Stock,
+  Uom
 }
