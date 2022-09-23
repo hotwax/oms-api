@@ -24,7 +24,7 @@ async function fetchProductsStock(productIds: Array<string>, facilityId?: string
   // support to get stock for a specific facility
   if (facilityId) {
     query.filters["facilityId"] = facilityId
-    query.filters.fieldsToSelect = ["productId", "atp"]
+    query.fieldsToSelect = ["productId", "atp"]
   }
 
   try {
@@ -35,7 +35,7 @@ async function fetchProductsStock(productIds: Array<string>, facilityId?: string
     }) as any;
 
     if (resp.status === 200 && !hasError(resp) && resp.data.count > 0) {
-      const stockTransform: any =  new (DataTransform as any)(resp.data.response.docs, stockTransformRule)
+      const stockTransform: any =  new (DataTransform as any)(resp.data.docs, stockTransformRule)
       const productsStock: Array<Stock> = stockTransform.transform()
 
       response = productsStock
