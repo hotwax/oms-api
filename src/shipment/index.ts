@@ -26,9 +26,9 @@ async function fetchShipments(payload: any): Promise <Shipment[] | Response> {
   } as any
 
   if(payload.queryString){
-    payload.inputFields["shipmentId"] = payload.queryString;
-    payload.inputFields["shipmentId_op"] = "contains";
-    payload.inputFields["shipmentId_ic"] = "Y";
+    query.inputFields["shipmentId"] = payload.queryString;
+    query.inputFields["shipmentId_op"] = "contains";
+    query.inputFields["shipmentId_ic"] = "Y";
   }
 
   try {
