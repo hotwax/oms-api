@@ -16,18 +16,11 @@ async function fetchShipments(query: any): Promise <Shipment[] | Response> {
     }) as any
 
     if (resp.status === 200 && resp.data.docs?.length > 0 && !hasError(resp)) {
-      // const statusIds = [...new Set(shipments.map((shipment: any) => shipment.statusId))]
-      // const shipmentIds = shipments.map((shipment: any) => shipment.shipmentId)
-      // const statuses = await this.dispatch('util/fetchStatus', statusIds);
-      // shipments.map(async (shipment: any) => {
-      //   shipment.statusDesc = statuses[shipment.statusId]
-      // });
+
       const shipmentTransform: any =  new (DataTransform as any)(resp.data.docs, shipmentTransformRule)
       const shipments: Array<Shipment> = shipmentTransform.transform()
       response = shipments;
     } else {
-      // if(!payload.viewIndex) commit(types.SHIPMENT_LIST_UPDATED, { shipments: [] })
-      // showToast(translate("Shipments not found"));
       response = [];
     }
   } catch(err) {
