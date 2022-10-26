@@ -4,8 +4,32 @@ import { Response, Shipment } from "@/types";
 import { shipmentTransformRule } from "@/mappings/shipment";
 import { DataTransform } from "node-json-transform";
 
-async function fetchShipments(query: any): Promise <Shipment[] | Response> {
+async function fetchShipments(payload: any): Promise <Shipment[] | Response> {
   let response = {} as Shipment[] | Response
+
+  const query = {
+    "inputFields": {
+      "destinationFacilityId": payload.facilityId,
+      "statusId": "PURCH_SHIP_SHIPPED",
+      "shipmentTypeId_fld0_value": "INCOMING_SHIPMENT",
+      "shipmentTypeId_fld0_op": "equals",
+      "shipmentTypeId_fld0_grp": "1",
+      "parentTypeId_fld0_value": "INCOMING_SHIPMENT",
+      "parentTypeId_fld0_op": "equals",
+      "parentTypeId_fld0_grp": "2",
+    },
+    "entityName": "ShipmentAndTypeAndItemCount",
+    "fieldList" : [ "shipmentId","primaryShipGroupSeqId","partyIdFrom","partyIdTo","estimatedArrivalDate","destinationFacilityId","statusId", "shipmentItemCount" ],
+    "noConditionFind": "Y",
+    "viewSize": payload.viewSize,
+    "viewIndex": payload.viewIndex,
+  } as any
+
+  if(payload.queryString){
+    payload.inputFields["shipmentId"] = payload.queryString;
+    payload.inputFields["shipmentId_op"] = "contains";
+    payload.inputFields["shipmentId_ic"] = "Y";
+  }
 
   try {
     const resp = await api({
