@@ -57,5 +57,7 @@ export interface Shipment {
     weight: Number,
     weightUomId: String,
     gatewayPackageId: String,
-  }>
+  }>,
+  shipmentItemCount: Number, // Item count in shipment
+  destinationFacilityId: String // Destionation facility Id for shipment
 }
