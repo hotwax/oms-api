@@ -6,4 +6,14 @@ function isError(resp: any): boolean {
   return resp.code === 'error'
 }
 
-export { hasError, isError }
+function getIdentification(identifications: any, id: string): string {
+  let externalId = ''
+  if (identifications) {
+    const externalIdentification = identifications.find((identification: any) => identification.startsWith(id))
+    const externalIdentificationSplit = externalIdentification ? externalIdentification.split('/') : [];
+    externalId = externalIdentificationSplit[1] ? externalIdentificationSplit[1] : '';
+  }
+  return externalId;
+}
+
+export { getIdentification, hasError, isError }
