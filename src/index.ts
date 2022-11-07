@@ -1,5 +1,5 @@
 import { getOrderDetails, updateOrderStatus } from '@/order'
-import { events, Product, Response, Stock } from '@/types'
+import { events, Product, Response, Stock, Order, OrderItem, OrderPart } from '@/types'
 import { fetchProducts } from '@/product'
 import { init, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
@@ -17,5 +17,8 @@ export {
   events,
   Product,
   Response,
-  Stock
+  Stock,
+  Order,
+  OrderItem,
+  OrderPart
 }

@@ -1,7 +1,7 @@
 import { ContactMech } from './ContactMech';
 import { Enumeration } from './Enumeration';
 import { Geo } from './Geo';
-import { Order, OrderItem, OrderItemGroup } from './Order';
+import { Order, OrderItem, OrderPart } from './Order';
 import { Party } from './Party';
 import { Product } from './Product';
 import { Status } from './Status';
@@ -28,7 +28,7 @@ export {
   Geo,
   Order,
   OrderItem,
-  OrderItemGroup,
+  OrderPart,
   Party,
   Product,
   Response,
