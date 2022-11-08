@@ -2,7 +2,7 @@ import api from "@/api";
 import { userProfileTransformRule } from "@/mappings/user";
 import { Response, User } from "@/types";
 import { hasError } from "@/util";
-import { DataTransform } from 'node-json-transform';
+import { transform } from 'node-json-transform';
 
 async function getProfile(): Promise<User | Response> {
   let response = {} as User | Response;
@@ -13,8 +13,7 @@ async function getProfile(): Promise<User | Response> {
     }) as any;
 
     if (resp.status === 200 && !hasError(resp)) {
-      const userTransformResp: any =  new (DataTransform as any)(resp.data, userProfileTransformRule)
-      const user: User = userTransformResp.transform()
+      const user: User = transform(resp.data, userProfileTransformRule)
 
       response = user;
     } else {

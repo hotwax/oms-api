@@ -1,5 +1,5 @@
 import { getOrderDetails, updateOrderStatus } from '@/order'
-import { events, Product, Response, Order, OrderItem, OrderPart, User} from '@/types'
+import { events, Product, Response, Order, OrderItem, OrderPart, User } from '@/types'
 import { fetchProducts } from '@/product'
 import { init, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
