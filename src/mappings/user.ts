@@ -1,7 +1,7 @@
 const userProfileTransformRule = {
   item: {
     userId: "userLoginId",
-    username: "partyName",
+    username: "userLoginId",
     userFullName: "partyName",
     emailAddress: "email",
     partyId: "partyId",
