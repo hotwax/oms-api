@@ -20,7 +20,7 @@ function updateInstanceUrl(url: string) {
   instanceUrl = url
 }
 
-function clearData() {
+function resetConfig() {
   token = ''
   instanceUrl = ''
   cacheMaxAge = 0
@@ -115,4 +115,4 @@ const client = (config: any) => {
     return axios.request(config);
 }
 
-export { api as default, client, axios, init, updateToken, updateInstanceUrl, clearData };
+export { api as default, client, axios, init, updateToken, updateInstanceUrl, resetConfig };
