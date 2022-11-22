@@ -1,3 +1,5 @@
+import { primaryIdentification, secondaryIdentification } from "@/product"
+
 const productTransformRule = {
   item: {
     productId: "productId",
@@ -15,7 +17,12 @@ const productTransformRule = {
     },
     features: "productFeatures",
     brandName: "brandName",
-    sku: "sku"
+    sku: "sku",
+    identifications: {
+      productId: "productId",
+      primaryIdentification: "",
+      secondaryIdentification: ""
+    }
   },
   operate: [{
     run: function(features: any) {
@@ -39,6 +46,18 @@ const productTransformRule = {
       }
     },
     on: "features"
+  }, {
+    run: function(val: any, context: any) {
+      const product = context.find((product: any) => product.productId == val.productId)
+      return [{
+        'productIdTypeEnumId': 'PRIMARY_IDNT',
+        'idValue': product[primaryIdentification]
+      }, {
+        'productIdTypeEnumId': 'SECONDARY_IDNT',
+        'idValue': product[secondaryIdentification]
+      }]
+    },
+    on: "identifications"
   }]
 }
 

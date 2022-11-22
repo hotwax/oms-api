@@ -4,6 +4,14 @@ import { hasError } from "@/util";
 import { transform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
 
+let primaryIdentification = 'productId';
+let secondaryIdentification: 'productName';
+
+function updateProductConfiguration(payload: any) {
+  primaryIdentification = payload[primaryIdentification];
+  secondaryIdentification = payload[secondaryIdentification];
+}
+
 async function fetchProducts(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
 
@@ -52,7 +60,9 @@ async function fetchProducts(params: any): Promise<any | Response> {
 
     if (resp.status == 200 && !hasError(resp) && resp.data?.response?.numFound > 0) {
 
-      const product: Array<Product> = transform(resp.data.response.docs, productTransformRule)
+      const product: Array<Product> = transform(resp.data.response.docs, productTransformRule, resp.data.response.docs)
+
+      console.log('product', product);
 
       return {
         products: product,
@@ -75,4 +85,4 @@ async function fetchProducts(params: any): Promise<any | Response> {
   return response;
 }
 
-export { fetchProducts }
+export { fetchProducts, updateProductConfiguration, primaryIdentification, secondaryIdentification }
