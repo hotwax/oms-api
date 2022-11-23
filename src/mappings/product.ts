@@ -1,4 +1,4 @@
-import { primaryIdentification, secondaryIdentification } from "@/product"
+import { primaryId, secondaryId } from "@/product"
 
 const productTransformRule = {
   item: {
@@ -46,13 +46,13 @@ const productTransformRule = {
   }, {
     run: function(val: any, context: any) {
       const product = context.find((product: any) => product.productId == val)
-      return product[primaryIdentification]
+      return product[primaryId]
     },
     on: "primaryId"
   }, {
     run: function(val: any, context: any) {
       const product = context.find((product: any) => product.productId == val)
-      return product[secondaryIdentification]
+      return product[secondaryId]
     },
     on: "secondaryId"
   }]
