@@ -178,4 +178,6 @@ export interface Product {
   };
   variants?: Array<string>;
   brandName?: string;
+  primaryId?: string;
+  secondaryId?: string;
 }
