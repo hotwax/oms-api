@@ -1,6 +1,7 @@
 import axios from 'axios';
 declare function updateToken(key: string): void;
 declare function updateInstanceUrl(url: string): void;
+declare function resetConfig(): void;
 declare function init(key: string, url: string, cacheAge: number): void;
 /**
  * Generic method to call APIs
@@ -25,4 +26,4 @@ declare const api: (customConfig: any) => Promise<import("axios").AxiosResponse<
  * @return {Promise} Response from API as returned by Axios
  */
 declare const client: (config: any) => Promise<import("axios").AxiosResponse<any>>;
-export { api as default, client, axios, init, updateToken, updateInstanceUrl };
+export { api as default, client, axios, init, updateToken, updateInstanceUrl, resetConfig };
