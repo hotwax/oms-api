@@ -1,7 +1,7 @@
 import api from '@/api'
 import { Order, OrderItem, OrderPart, Response } from '@/types'
 import { hasError } from '@/util'
-import { DataTransform } from 'node-json-transform'
+import { transform } from 'node-json-transform'
 import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '@/mappings/order'
 
 export async function getOrderDetails (orderId: string): Promise<Order | Response> {
@@ -35,15 +35,12 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
         const group = shipGroups.find((group: any) => group.orderPartSeqId === orderItem.shipGroupSeqId)
 
         // transforming to order item schema
-        const orderItemTransform: any =  new (DataTransform as any)(orderItem, orderItemTransformRule);
-        const item: OrderItem = orderItemTransform.transform()
+        const item: OrderItem = transform(orderItem, orderItemTransformRule)
         if (group) {
           group.items.push(item)
         } else {
           // transforming to order part schema
-          const orderPartTransform: any =  new (DataTransform as any)(orderItem, orderPartTransformRule);
-
-          const part: OrderPart = orderPartTransform.transform()
+          const part: OrderPart = transform(orderItem, orderPartTransformRule)
           part["items"] = [item] as OrderItem[]
           shipGroups.push(part)
         }
@@ -52,9 +49,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       }, [])
 
       // transforming to order header schema
-      const dataTransform: any =  new (DataTransform as any)(orderDetails, orderDetailTranformRule);
-
-      const order: Order = dataTransform.transform()
+      const order: Order = transform(orderDetails, orderDetailTranformRule)
 
       order.parts = orderShipGroup as OrderPart[]
 

@@ -7,6 +7,7 @@ import { Product } from './Product';
 import { Status } from './Status';
 import { Uom } from './Uom';
 import { Stock } from './Stock';
+import { User } from './User';
 
 const events = {
   'UNAUTHORIZED': 'unauthorized',
@@ -34,5 +35,6 @@ export {
   Response,
   Status,
   Stock,
-  Uom
+  Uom,
+  User
 }
