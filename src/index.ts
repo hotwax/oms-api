@@ -1,8 +1,7 @@
-import { getOrderDetails, updateOrderStatus } from '@/order'
-import { events, Product, Response, Order, OrderItem, OrderPart } from '@/types'
-import { fetchProducts, fetchProductsAsGroups } from '@/product'
+import { events, Product, Response, Order, OrderItem, OrderPart, User } from '@/types'
 import { init, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
+import { fetchProducts, fetchProductsAsGroups, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
 
 export {
   getOrderDetails,
@@ -13,10 +12,12 @@ export {
   isError,
   updateToken,
   updateInstanceUrl,
+  getProfile,
   events,
   Product,
   Response,
   Order,
   OrderItem,
-  OrderPart
+  OrderPart,
+  User
 }
