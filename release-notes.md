@@ -1,3 +1,11 @@
+# Release 1.0.1
+
+## What's Changed
+* Improved: structure for oms api to define declare specific actions in side modules(#3212d2z) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/28
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.0.0...v1.0.1
+
 # Release 1.0.0
 
 ## What's Changed
