@@ -1,12 +1,13 @@
 import { ContactMech } from './ContactMech';
 import { Enumeration } from './Enumeration';
 import { Geo } from './Geo';
-import { Order, OrderItem, OrderItemGroup } from './Order';
+import { Order, OrderItem, OrderPart } from './Order';
 import { Party } from './Party';
 import { Product } from './Product';
 import { Status } from './Status';
 import { Uom } from './Uom';
 import { Shipment } from './Shipment';
+import { User } from './User';
 
 const events = {
   'UNAUTHORIZED': 'unauthorized',
@@ -27,12 +28,13 @@ export {
   Geo,
   Order,
   OrderItem,
-  OrderItemGroup,
+  OrderPart,
   Party,
   Product,
   Shipment,
   Status,
   Uom,
+  User,
   Response,
   events
 }

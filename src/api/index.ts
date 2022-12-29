@@ -20,6 +20,12 @@ function updateInstanceUrl(url: string) {
   instanceUrl = url
 }
 
+function resetConfig() {
+  token = ''
+  instanceUrl = ''
+  cacheMaxAge = 0
+}
+
 function init(key: string, url: string, cacheAge: number) {
   token = key
   instanceUrl = url
@@ -109,4 +115,4 @@ const client = (config: any) => {
     return axios.request(config);
 }
 
-export { api as default, client, axios, init, updateToken, updateInstanceUrl };
+export { api as default, client, axios, init, updateToken, updateInstanceUrl, resetConfig };

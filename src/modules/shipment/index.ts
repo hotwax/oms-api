@@ -2,7 +2,7 @@ import api from "@/api";
 import { hasError } from "@/util";
 import { Response, Shipment } from "@/types";
 import { shipmentTransformRule } from "@/mappings/shipment";
-import { DataTransform } from "node-json-transform";
+import { transform } from "node-json-transform";
 
 async function fetchShipments(payload: any): Promise <Shipment[] | Response> {
   let response = {} as Shipment[] | Response
@@ -41,8 +41,7 @@ async function fetchShipments(payload: any): Promise <Shipment[] | Response> {
 
     if (resp.status === 200 && resp.data.docs?.length > 0 && !hasError(resp)) {
 
-      const shipmentTransform: any =  new (DataTransform as any)(resp.data.docs, shipmentTransformRule)
-      const shipments: Array<Shipment> = shipmentTransform.transform()
+      const shipments: Array<Shipment> = transform(resp.data.docs, shipmentTransformRule)
       response = shipments;
     } else {
       response = [];

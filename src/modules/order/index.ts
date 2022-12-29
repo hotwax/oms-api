@@ -1,8 +1,10 @@
 import api from '@/api'
-import { Order, OrderItem, Response } from '@/types'
+import { Order, OrderItem, OrderPart, Response } from '@/types'
 import { hasError } from '@/util'
+import { transform } from 'node-json-transform'
+import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '@/mappings/order'
 
-async function getOrderDetails (orderId: string): Promise<Order | Response> {
+export async function getOrderDetails (orderId: string): Promise<Order | Response> {
   const payload = {
     "json": {
       "params": {
@@ -28,23 +30,29 @@ async function getOrderDetails (orderId: string): Promise<Order | Response> {
     if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.orderId?.groups?.length > 0) {
       const group = resp.data.grouped.orderId.groups[0]
       const orderDetails = group.doclist.docs[0]
-      const order: Order = {
-        orderId: orderDetails.orderId,
-        orderName: orderDetails.orderName,
-        customer: {
-          id: orderDetails.customerPartyId,
-          name: orderDetails.customerPartyName,
-          email: orderDetails.customerEmailId
-        },
-        items: group.doclist.docs.map((item: any) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          statusId: item.orderItemStatusId
-        })) as OrderItem[],
-        statusId: orderDetails.orderStatusId,
-        statusDesc: orderDetails.orderStatusDesc,
-        identifications: orderDetails.orderIdentifications,
-      }
+
+      const orderShipGroup: OrderPart[] = group.doclist.docs.reduce((shipGroups: any, orderItem: any) => {
+        const group = shipGroups.find((group: any) => group.orderPartSeqId === orderItem.shipGroupSeqId)
+
+        // transforming to order item schema
+        const item: OrderItem = transform(orderItem, orderItemTransformRule)
+        if (group) {
+          group.items.push(item)
+        } else {
+          // transforming to order part schema
+          const part: OrderPart = transform(orderItem, orderPartTransformRule)
+          part["items"] = [item] as OrderItem[]
+          shipGroups.push(part)
+        }
+
+        return shipGroups
+      }, [])
+
+      // transforming to order header schema
+      const order: Order = transform(orderDetails, orderDetailTranformRule)
+
+      order.parts = orderShipGroup as OrderPart[]
+
       response = order
     } else {
       response = {
@@ -65,7 +73,7 @@ async function getOrderDetails (orderId: string): Promise<Order | Response> {
   return response;
 }
 
-async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
+export async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
 
   let response = {} as Response
 
@@ -100,5 +108,3 @@ async function updateOrderStatus (payload: {orderId: string, statusId: string, s
 
   return response
 }
-
-export { getOrderDetails, updateOrderStatus }
