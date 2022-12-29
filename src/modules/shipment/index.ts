@@ -19,13 +19,13 @@ async function fetchShipments(payload: any): Promise <Shipment[] | Response> {
       "parentTypeId_fld0_grp": "2",
     },
     "entityName": "ShipmentAndTypeAndItemCount",
-    "fieldList" : [ "shipmentId","primaryShipGroupSeqId","partyIdFrom","partyIdTo","estimatedArrivalDate","destinationFacilityId","statusId", "shipmentItemCount" ],
+    "fieldList" : ["shipmentId", "primaryShipGroupSeqId", "partyIdFrom", "partyIdTo", "estimatedArrivalDate", "destinationFacilityId", "statusId", "shipmentItemCount"],
     "noConditionFind": "Y",
     "viewSize": payload.viewSize,
     "viewIndex": payload.viewIndex,
   } as any
 
-  if(payload.queryString){
+  if(payload.queryString) {
     query.inputFields["shipmentId"] = payload.queryString;
     query.inputFields["shipmentId_op"] = "contains";
     query.inputFields["shipmentId_ic"] = "Y";
@@ -40,7 +40,6 @@ async function fetchShipments(payload: any): Promise <Shipment[] | Response> {
     }) as any
 
     if (resp.status === 200 && resp.data.docs?.length > 0 && !hasError(resp)) {
-
       const shipments: Array<Shipment> = transform(resp.data.docs, shipmentTransformRule)
       response = shipments;
     } else {
