@@ -1,3 +1,11 @@
+# Release 1.0.2
+
+## What's Changed
+* Fixed: issue in using resetConfig by exporting it from the package(#85zrh2rvp) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/32
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.0.1...v1.0.2
+
 # Release 1.0.1
 
 ## What's Changed
