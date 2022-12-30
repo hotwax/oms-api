@@ -1,5 +1,5 @@
 import { events, Product, Response, Order, OrderItem, OrderPart, User } from '@/types'
-import { init, updateToken, updateInstanceUrl } from '@/api'
+import { init, resetConfig, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
 import { fetchProducts, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
 
@@ -9,6 +9,7 @@ export {
   fetchProducts,
   init,
   isError,
+  resetConfig,
   updateToken,
   updateInstanceUrl,
   getProfile,
