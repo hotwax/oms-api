@@ -1,6 +1,6 @@
 import api from "@/api";
 import { Product, Response } from "@/types";
-import { hasError } from "@/util";
+import { hasError, isError } from "@/util";
 import { transform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
 
@@ -159,4 +159,17 @@ async function fetchProductsAsGroups(params: any): Promise<any | Response> {
   return response;
 }
 
-export { fetchProducts, fetchProductsAsGroups }
+async function fetchParentProductGroup(params: any): Promise<any | Response> {
+
+  const payload = {
+    ...params,
+    "groupField": "groupId",
+    "groupLimit": 10000,
+    "ngroups": true
+  }
+
+  const resp: Product[] | Response = await fetchProductsAsGroups(payload);
+  return resp;
+}
+
+export { fetchParentProductGroup, fetchProducts, fetchProductsAsGroups }
