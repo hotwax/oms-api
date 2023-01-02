@@ -75,7 +75,7 @@ async function fetchProducts(params: any): Promise<any | Response> {
   return response;
 }
 
-async function fetchProductsAsGroups(params: any): Promise<any | Response> {
+async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
   let response = {} as Product[] | Response
 
   const payload = {
@@ -168,8 +168,8 @@ async function fetchProductsGroupedByParent(params: any): Promise<Product[] | Re
     "ngroups": true
   }
 
-  const resp: Product[] | Response = await fetchProductsAsGroups(payload);
+  const resp: Product[] | Response = await fetchProductsGroupedBy(payload);
   return resp;
 }
 
-export { fetchProducts, fetchProductsAsGroups, fetchProductsGroupedByParent }
+export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent }
