@@ -1,12 +1,14 @@
 import { events, Product, Response, Order, OrderItem, OrderPart, User } from '@/types'
 import { init, resetConfig, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
-import { fetchProducts, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
+import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
 
 export {
   getOrderDetails,
   updateOrderStatus,
   fetchProducts,
+  fetchProductsGroupedBy,
+  fetchProductsGroupedByParent,
   init,
   isError,
   resetConfig,
