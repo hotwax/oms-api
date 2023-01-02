@@ -1,7 +1,7 @@
 import api from "@/api";
 import { hasError } from "@/util";
 import { Stock, Response } from "@/types"
-import { DataTransform } from "node-json-transform";
+import { transform } from "node-json-transform";
 import { stockTransformRule } from "@/mappings/stock";
 
 async function fetchProductsStock(productIds: Array<string>, facilityId?: string): Promise<Array<Stock> | Response> {
@@ -35,8 +35,7 @@ async function fetchProductsStock(productIds: Array<string>, facilityId?: string
     }) as any;
 
     if (resp.status === 200 && !hasError(resp) && resp.data.count > 0) {
-      const stockTransform: any =  new (DataTransform as any)(resp.data.docs, stockTransformRule)
-      const productsStock: Array<Stock> = stockTransform.transform()
+      const productsStock: Array<Stock> = transform(resp.data.docs, stockTransformRule)
 
       response = productsStock
     } else {
