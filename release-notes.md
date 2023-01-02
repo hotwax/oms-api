@@ -1,3 +1,28 @@
+# Release 1.1.0
+
+
+## What's Changed
+* Implemented: method to fetch product information as groups and transform the response(#2z5ebhx) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/19
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.0.2...v1.1.0
+
+# Release 1.0.2
+
+## What's Changed
+* Fixed: issue in using resetConfig by exporting it from the package(#85zrh2rvp) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/32
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.0.1...v1.0.2
+
+# Release 1.0.1
+
+## What's Changed
+* Improved: structure for oms api to define declare specific actions in side modules(#3212d2z) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/28
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.0.0...v1.0.1
+
 # Release 1.0.0
 
 ## What's Changed
