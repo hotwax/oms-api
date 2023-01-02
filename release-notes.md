@@ -1,3 +1,12 @@
+# Release 1.1.0
+
+
+## What's Changed
+* Implemented: method to fetch product information as groups and transform the response(#2z5ebhx) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/19
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.0.2...v1.1.0
+
 # Release 1.0.2
 
 ## What's Changed
