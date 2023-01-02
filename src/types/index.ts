@@ -6,6 +6,7 @@ import { Party } from './Party';
 import { Product } from './Product';
 import { Status } from './Status';
 import { Uom } from './Uom';
+import { Shipment } from './Shipment';
 import { User } from './User';
 
 const events = {
@@ -30,6 +31,7 @@ export {
   OrderPart,
   Party,
   Product,
+  Shipment,
   Status,
   Uom,
   User,
