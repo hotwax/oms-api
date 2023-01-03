@@ -14,6 +14,7 @@ const productTransformRule = {
       additionalImageUrls: "additionalImageUrls"
     },
     features: "productFeatures",
+    identifications: "goodIdentifications",
     brandName: "brandName",
     sku: "sku"
   },
@@ -39,6 +40,25 @@ const productTransformRule = {
       }
     },
     on: "features"
+  }, {
+    run: function(identifications: Array<string>) {
+      // used goodIdentifications that contains values in the format(id/value OR id/child-id/value)
+      if (identifications.length) {
+        return identifications.map((identification: string) => {
+          // using lastIndexOf `/` as some of the identifiers are in the format `ABC/abc/123` and thus to handle check for `ABC/abc`
+          const index = identification.lastIndexOf('/')
+          const key = identification.slice(0, index);
+          const value = identification.slice(index + 1)
+          return {
+            productIdTypeEnumId: key,
+            idValue: value
+          }
+        })
+      }
+
+      return []
+    },
+    on: "identifications"
   }]
 }
 
