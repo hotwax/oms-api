@@ -43,7 +43,7 @@ const productTransformRule = {
   }, {
     run: function(identifications: Array<string>) {
       // used goodIdentifications that contains values in the format(id/value OR id/child-id/value)
-      if (identifications.length) {
+      if (identifications?.length) {
         return identifications.map((identification: string) => {
           // using lastIndexOf `/` as some of the identifiers are in the format `ABC/abc/123` and thus to handle check for `ABC/abc`
           const index = identification.lastIndexOf('/')
