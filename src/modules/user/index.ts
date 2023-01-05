@@ -5,7 +5,7 @@ import { hasError } from "@/util";
 import { transform } from 'node-json-transform';
 
 async function getProfile(): Promise<User | Response> {
-  let response = {} as User | Response;
+  let response: Promise<User | Response>;
   try {
     const resp = await api({
       url: "user-profile", 
@@ -15,20 +15,20 @@ async function getProfile(): Promise<User | Response> {
     if (resp.status === 200 && !hasError(resp)) {
       const user: User = transform(resp.data, userProfileTransformRule)
 
-      response = user;
+      response = Promise.resolve(user);
     } else {
-      response = {
+      response = Promise.reject({
         code: 'error',
         message: 'Something went wrong',
         serverResponse: 'Failed to fetch user profile information'
-      }
+      })
     }
   } catch(err) {
-    response = {
+    response = Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
-    }
+    })
   }
 
   return response;
