@@ -1,4 +1,4 @@
-import { events, Product, Response, Order, OrderItem, OrderPart, User } from '@/types'
+import { events, Product, Response, Order, OrderItem, OrderPart, OPERATOR, User } from '@/types'
 import { init, resetConfig, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
@@ -21,5 +21,6 @@ export {
   Order,
   OrderItem,
   OrderPart,
+  OPERATOR,
   User
 }
