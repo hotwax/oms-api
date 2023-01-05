@@ -18,7 +18,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
     }
   }
 
-  let response = {} as Order | Response
+  let response: Promise<Order | Response>
 
   try {
     const resp = await api({
@@ -53,21 +53,20 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
 
       order.parts = orderShipGroup as OrderPart[]
 
-      response = order
+      response = Promise.resolve(order)
     } else {
-      response = {
+      response = Promise.reject({
         code: 'error',
         message: `Unable to fetch order details for orderId: ${orderId}`,
         serverResponse: resp
-      }
+      })
     }
   } catch (err) {
-    console.error(err)
-    response = {
+    response = Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
-    }
+    })
   }
 
   return response;
@@ -75,7 +74,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
 
 export async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
 
-  let response = {} as Response
+  let response: Promise<Response>
 
   try {
     const resp = await api({
@@ -85,25 +84,24 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
     })
 
     if (resp?.status == 200 && !hasError(resp)) {
-      response = {
+      response = Promise.resolve({
         code: 'success',
         message: 'Order status updated',
         serverResponse: resp.data
-      };
+      })
     } else {
-      response = {
+      response = Promise.reject({
         code: 'error',
         message: 'Unable to update order status',
         serverResponse: resp
-      }
+      })
     }
   } catch (err) {
-    console.error(err)
-    response = {
+    response = Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
-    }
+    })
   }
 
   return response
