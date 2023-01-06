@@ -1,5 +1,5 @@
 import api from '@/api'
-import { Order, OrderItem, OrderPart, Response } from '@/types'
+import { OPERATOR, Order, OrderItem, OrderPart, Response } from '@/types'
 import { hasError } from '@/util'
 import { transform } from 'node-json-transform'
 import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '@/mappings/order'
@@ -11,10 +11,10 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
         "group": true,
         "group.field": "orderId",
         "group.limit": 10000,
-        "q.op": "AND"
+        "q.op": OPERATOR.AND
       } as any,
       "query": "*:*",
-      "filter": `docType: ORDER AND orderTypeId: SALES_ORDER AND orderId: ${orderId}`
+      "filter": `docType: ORDER ${OPERATOR.AND} orderTypeId: SALES_ORDER ${OPERATOR.AND} orderId: ${orderId}`
     }
   }
 

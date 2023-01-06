@@ -14,6 +14,24 @@ const events = {
   'DISMISS_LOADER': 'dismissLoader'
 }
 
+enum OPERATOR {
+  AND = 'AND',
+  BETWEEN = 'between',
+  CONTAINS = 'contains',
+  EQUALS = 'equals',
+  GREATER_THAN = 'greaterThan',
+  GREATER_THAN_EQUAL_TO = 'greaterThanEqualTo',
+  IN = 'in',
+  LESS_THAN = 'lessThan',
+  LESS_THAN_EQUAL_TO = 'lessThanEqualTo',
+  LIKE = 'like',
+  NOT = 'not',
+  NOT_EMPTY = 'not-empty',
+  NOT_EQUAL = 'notEqual',
+  NOT_LIKE = 'notLike',
+  OR = 'OR',
+}
+
 interface Response {
   code: string;
   message: string;
@@ -28,6 +46,7 @@ export {
   Order,
   OrderItem,
   OrderPart,
+  OPERATOR,
   Party,
   Product,
   Status,

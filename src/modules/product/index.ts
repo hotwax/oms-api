@@ -1,5 +1,5 @@
 import api from "@/api";
-import { Product, Response } from "@/types";
+import { OPERATOR, Product, Response } from "@/types";
 import { hasError, isError } from "@/util";
 import { transform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
@@ -27,10 +27,10 @@ async function fetchProducts(params: any): Promise<any | Response> {
       const filterValue = params.filters[key].value;
 
       if (Array.isArray(filterValue)) {
-        const filterOperator = params.filters[key].op ? params.filters[key].op : ' OR ' ;
-        payload.json.filter += ` AND ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
+        const filterOperator = params.filters[key].op ? params.filters[key].op : OPERATOR.OR ;
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
       } else {
-        payload.json.filter += ` AND ${key}: ${filterValue}`
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: ${filterValue}`
       }
     })
   }
@@ -87,7 +87,7 @@ async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
         "group.ngroups": params.ngroups ? params.ngroups : true,
         "rows": params.viewSize,
         "start": params.viewIndex,
-        "q.op": "AND"
+        "q.op": OPERATOR.AND
       },
       "query": "*:*",
       "filter": "docType: PRODUCT"
@@ -103,10 +103,10 @@ async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
       const filterValue = params.filters[key].value;
 
       if (Array.isArray(filterValue)) {
-        const filterOperator = params.filters[key].op ? params.filters[key].op : ' OR ' ;
-        payload.json.filter += ` AND ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
+        const filterOperator = params.filters[key].op ? params.filters[key].op : OPERATOR.OR ;
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
       } else {
-        payload.json.filter += ` AND ${key}: ${filterValue}`
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: ${filterValue}`
       }
     })
   }
