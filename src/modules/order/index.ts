@@ -18,7 +18,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
     }
   }
 
-  let response: Promise<Order | Response>
+  let response: Promise<Order>
 
   try {
     const resp = await api({

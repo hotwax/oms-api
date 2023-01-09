@@ -5,7 +5,7 @@ import { hasError } from "@/util";
 import { transform } from 'node-json-transform';
 
 async function getProfile(): Promise<User | Response> {
-  let response: Promise<User | Response>;
+  let response: Promise<User>;
   try {
     const resp = await api({
       url: "user-profile", 
