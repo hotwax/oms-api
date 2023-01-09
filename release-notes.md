@@ -1,3 +1,13 @@
+# Release 1.2.0
+
+## What's Changed
+* Implemented: support to return product identifications(#85zrh5n0c) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/37
+* Implemented: enumeration for operators(#85zrhfydn) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/44
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.1.0...v1.2.0
+
+
 # Release 1.1.0
 
 
