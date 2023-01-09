@@ -17,14 +17,14 @@ async function getProfile(): Promise<User | Response> {
 
       response = Promise.resolve(user);
     } else {
-      response = Promise.reject({
+      return Promise.reject({
         code: 'error',
         message: 'Something went wrong',
         serverResponse: 'Failed to fetch user profile information'
       })
     }
   } catch(err) {
-    response = Promise.reject({
+    return Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err

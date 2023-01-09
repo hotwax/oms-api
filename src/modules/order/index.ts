@@ -55,14 +55,14 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
 
       response = Promise.resolve(order)
     } else {
-      response = Promise.reject({
+      return Promise.reject({
         code: 'error',
         message: `Unable to fetch order details for orderId: ${orderId}`,
         serverResponse: resp
       })
     }
   } catch (err) {
-    response = Promise.reject({
+    return Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
@@ -90,14 +90,14 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
         serverResponse: resp.data
       })
     } else {
-      response = Promise.reject({
+      return Promise.reject({
         code: 'error',
         message: 'Unable to update order status',
         serverResponse: resp
       })
     }
   } catch (err) {
-    response = Promise.reject({
+    return Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
