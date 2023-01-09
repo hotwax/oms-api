@@ -41,23 +41,8 @@ interface Response {
 
 interface SuccessResponse<Type> {
   list: Type[];
-  count: {
-    [x: string]: number;
-  }
-}
-
-interface ResponseCount {
-  total?: number;
-  matches?: number;
-  ngroups?: number;
-}
-
-interface ProductResponse extends ResponseCount{
-  products: Product[]
-}
-
-interface OrderResponse extends ResponseCount{
-  orders: Order[]
+  total: number;
+  groups?: number;
 }
 
 export {

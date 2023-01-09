@@ -54,18 +54,14 @@ async function fetchProducts(params: any): Promise<SuccessResponse<Product> | Re
 
       const products: Array<Product> = transform(resp.data.response.docs, productTransformRule)
 
-      return {
+      response = {
         list: products,
-        count: {
-          total: resp.data?.response?.numFound
-        }
+        total: resp.data?.response?.numFound
       }
     } else {
-      return {
+      response = {
         list: [],
-        count: {
-          total: 0
-        }
+        total: 0
       }
     }
   } catch (err) {
