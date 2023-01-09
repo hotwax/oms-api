@@ -46,6 +46,20 @@ interface SuccessResponse<Type> {
   }
 }
 
+interface ResponseCount {
+  total?: number;
+  matches?: number;
+  ngroups?: number;
+}
+
+interface ProductResponse extends ResponseCount{
+  products: Product[]
+}
+
+interface OrderResponse extends ResponseCount{
+  orders: Order[]
+}
+
 export {
   ContactMech,
   Enumeration,
