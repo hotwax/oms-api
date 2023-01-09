@@ -1,11 +1,11 @@
 import api from "@/api";
-import { OPERATOR, Product, Response } from "@/types";
-import { hasError, isError } from "@/util";
+import { OPERATOR, Product, Response, SuccessResponse } from "@/types";
+import { hasError } from "@/util";
 import { transform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
 
-async function fetchProducts(params: any): Promise<any | Response> {
-  let response = {} as Product[] | Response
+async function fetchProducts(params: any): Promise<SuccessResponse<Product> | Response> {
+  let response: SuccessResponse<Product> | Response
 
   const payload = {
     "json": {
@@ -52,15 +52,15 @@ async function fetchProducts(params: any): Promise<any | Response> {
 
     if (resp.status == 200 && !hasError(resp) && resp.data?.response?.numFound > 0) {
 
-      const product: Array<Product> = transform(resp.data.response.docs, productTransformRule)
+      const products: Array<Product> = transform(resp.data.response.docs, productTransformRule)
 
       return {
-        products: product,
+        list: products,
         total: resp.data?.response?.numFound
       }
     } else {
       return {
-        products: {},
+        list: [],
         total: 0
       }
     }

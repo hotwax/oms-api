@@ -39,6 +39,11 @@ interface Response {
   serverResponse?: any;
 }
 
+interface SuccessResponse<Type> {
+  list: Type[];
+  total: number;
+}
+
 export {
   ContactMech,
   Enumeration,
@@ -53,5 +58,6 @@ export {
   Uom,
   User,
   Response,
+  SuccessResponse,
   events
 }
