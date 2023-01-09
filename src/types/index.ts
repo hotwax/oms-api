@@ -41,7 +41,9 @@ interface Response {
 
 interface SuccessResponse<Type> {
   list: Type[];
-  total: number;
+  count: {
+    [x: string]: number;
+  }
 }
 
 export {

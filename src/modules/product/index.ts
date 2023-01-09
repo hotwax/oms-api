@@ -56,12 +56,16 @@ async function fetchProducts(params: any): Promise<SuccessResponse<Product> | Re
 
       return {
         list: products,
-        total: resp.data?.response?.numFound
+        count: {
+          total: resp.data?.response?.numFound
+        }
       }
     } else {
       return {
         list: [],
-        total: 0
+        count: {
+          total: 0
+        }
       }
     }
   } catch (err) {
