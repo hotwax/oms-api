@@ -18,8 +18,6 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
     }
   }
 
-  let response: Promise<Order>
-
   try {
     const resp = await api({
       url: 'solr-query',
@@ -53,7 +51,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
 
       order.parts = orderShipGroup as OrderPart[]
 
-      response = Promise.resolve(order)
+      return Promise.resolve(order)
     } else {
       return Promise.reject({
         code: 'error',
@@ -68,13 +66,9 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       serverResponse: err
     })
   }
-
-  return response;
 }
 
 export async function updateOrderStatus (payload: {orderId: string, statusId: string, setItemStatus: string}): Promise<Response> {
-
-  let response: Promise<Response>
 
   try {
     const resp = await api({
@@ -84,7 +78,7 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
     })
 
     if (resp?.status == 200 && !hasError(resp)) {
-      response = Promise.resolve({
+      return Promise.resolve({
         code: 'success',
         message: 'Order status updated',
         serverResponse: resp.data
@@ -103,6 +97,4 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
       serverResponse: err
     })
   }
-
-  return response
 }

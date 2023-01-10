@@ -162,8 +162,7 @@ async function fetchProductsGroupedByParent(params: any): Promise<Product[] | Re
     "ngroups": true
   }
 
-  const resp: Product[] | Response = await fetchProductsGroupedBy(payload);
-  return resp;
+  return await fetchProductsGroupedBy(payload);
 }
 
 export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent }

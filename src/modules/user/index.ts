@@ -5,7 +5,6 @@ import { hasError } from "@/util";
 import { transform } from 'node-json-transform';
 
 async function getProfile(): Promise<User | Response> {
-  let response: Promise<User>;
   try {
     const resp = await api({
       url: "user-profile", 
@@ -15,7 +14,7 @@ async function getProfile(): Promise<User | Response> {
     if (resp.status === 200 && !hasError(resp)) {
       const user: User = transform(resp.data, userProfileTransformRule)
 
-      response = Promise.resolve(user);
+      return Promise.resolve(user);
     } else {
       return Promise.reject({
         code: 'error',
@@ -30,8 +29,6 @@ async function getProfile(): Promise<User | Response> {
       serverResponse: err
     })
   }
-
-  return response;
 }
 
 export { getProfile }
