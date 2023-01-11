@@ -4,7 +4,7 @@ import { Stock, Response } from "@/types"
 import { transform } from "node-json-transform";
 import { stockTransformRule } from "@/mappings/stock";
 
-async function fetchProductsStock(productIds: Array<string>, facilityId?: string): Promise<Array<Stock> | Response> {
+async function fetchProductsStockAsPerFacility(productIds: Array<string>, facilityId?: string): Promise<Array<Stock> | Response> {
   let response: Array<Stock> | Response
 
   // There is a limitation at API level to handle only 100 records
@@ -56,4 +56,4 @@ async function fetchProductsStock(productIds: Array<string>, facilityId?: string
   return response;
 }
 
-export { fetchProductsStock }
+export { fetchProductsStockAsPerFacility }

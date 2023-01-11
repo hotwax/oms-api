@@ -1,7 +1,7 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from '@/types'
 import { init, resetConfig, updateToken, updateInstanceUrl } from '@/api'
 import { isError } from '@/util'
-import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
+import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStockAsPerFacility, getOrderDetails, getProfile, updateOrderStatus } from '@/modules'
 
 export {
   getOrderDetails,
@@ -14,7 +14,7 @@ export {
   resetConfig,
   updateToken,
   updateInstanceUrl,
-  fetchProductsStock,
+  fetchProductsStockAsPerFacility,
   getProfile,
   events,
   Product,
