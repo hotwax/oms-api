@@ -5,7 +5,6 @@ import { transform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
 
 async function fetchProducts(params: any): Promise<any | Response> {
-  let response = {} as Product[] | Response
 
   const payload = {
     "json": {
@@ -65,18 +64,15 @@ async function fetchProducts(params: any): Promise<any | Response> {
       }
     }
   } catch (err) {
-    response = {
+    return Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
-    }
+    })
   }
-
-  return response;
 }
 
 async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
-  let response = {} as Product[] | Response
 
   const payload = {
     "json": {
@@ -149,14 +145,12 @@ async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
       }
     }
   } catch (err) {
-    response = {
+    return Promise.reject({
       code: 'error',
       message: 'Something went wrong',
       serverResponse: err
-    }
+    })
   }
-
-  return response;
 }
 
 async function fetchProductsGroupedByParent(params: any): Promise<Product[] | Response> {
@@ -168,8 +162,7 @@ async function fetchProductsGroupedByParent(params: any): Promise<Product[] | Re
     "ngroups": true
   }
 
-  const resp: Product[] | Response = await fetchProductsGroupedBy(payload);
-  return resp;
+  return await fetchProductsGroupedBy(payload);
 }
 
 export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent }
