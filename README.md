@@ -19,6 +19,38 @@ The OMS API package comes with prebuilt methods that helps communicate with HotW
     `npm i`
 4. Build the package using `npm run build`
 
+# Usage
+
+1. Install OMS API package in the application using npm
+```js
+npm i @hotwax/oms-api
+```
+
+2. Define `init` method on app load that will be used to set the initial configuration for the package.
+    > **Note:** In case of vue project, you can define it inside mounted hook in `App.vue` file
+```js
+import { init } from '@hotwax/oms-api'
+...
+...
+init(token, instanceURL, cacheAge)
+```
+
+2. Add following method calls to clear the token and instance url when app unmounts. Also, you can use the same method whenever user logout from the app.
+    > **Note:** In case of vue project, you can define it inside unmounted hook in `App.vue` file
+```js
+import { resetConfig } from '@hotwax/oms-api'
+...
+...
+resetConfig()
+```
+
+3. Update the token or instance URL whenever needed by using the following methods:
+  - `updateToken`: For updating the token value
+  - `updateInstanceUrl`: For updating the instanceURL / backendURL.
+
+4. Now you can use any method from the package by directly importing it from `@hotwax/oms-api`
+
+
 # Contribution Guideline
 
 1. Fork the repository and clone it locally from the `main` branch. Before starting your work make sure it's up to date with current `main` branch.
