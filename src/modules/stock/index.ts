@@ -1,10 +1,10 @@
 import api from "@/api";
 import { hasError } from "@/util";
-import { Stock, Response } from "@/types"
+import { Stock, Response, OPERATOR } from "@/types"
 import { transform } from "node-json-transform";
 import { stockTransformRule } from "@/mappings/stock";
 
-async function fetchProductsStockAsPerFacility(productIds: Array<string>, facilityId?: string): Promise<Array<Stock> | Response> {
+async function fetchProductsStockAtFacility(productIds: Array<string>, facilityId?: string): Promise<Array<Stock> | Response> {
   // There is a limitation at API level to handle only 100 records
   // but as we will always fetch data for the fetched records which will be as per the viewSize
   // assuming that the value will never be 100 to show
@@ -13,16 +13,16 @@ async function fetchProductsStockAsPerFacility(productIds: Array<string>, facili
   const query = {
     "filters": {
       "productId": productIds,
-      "productId_op": "in"
+      "productId_op": OPERATOR.IN
     },
-    "viewSize": productIds.length,
+    "viewSize": productIds.length * 10, // TODO: find a better way to find viewSize, currently assuming that a single product can be at most available on 10 facilities
     "fieldsToSelect": ["productId", "atp", "facilityId"]
   } as any
 
   // support to get stock for a specific facility
   if (facilityId) {
     query.filters["facilityId"] = facilityId
-    query.fieldsToSelect = ["productId", "atp"]
+    query.viewSize = productIds.length // kept viewSize equal to productsIds length as we only want stock at a single facility and at max we can find all the products
   }
 
   try {
@@ -52,4 +52,4 @@ async function fetchProductsStockAsPerFacility(productIds: Array<string>, facili
   }
 }
 
-export { fetchProductsStockAsPerFacility }
+export { fetchProductsStockAtFacility }
