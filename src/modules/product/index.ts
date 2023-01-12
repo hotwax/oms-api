@@ -1,10 +1,10 @@
 import api from "@/api";
-import { OPERATOR, Product, Response, SuccessResponse } from "@/types";
+import { OPERATOR, Product, Response, ListResponse } from "@/types";
 import { hasError } from "@/util";
 import { transform } from 'node-json-transform'
 import { productTransformRule } from "@/mappings/product";
 
-async function fetchProducts(params: any): Promise<any | Response> {
+async function fetchProducts(params: any): Promise<ListResponse<Product> | Response> {
 
   const payload = {
     "json": {
@@ -53,15 +53,15 @@ async function fetchProducts(params: any): Promise<any | Response> {
 
       const products: Array<Product> = transform(resp.data.response.docs, productTransformRule)
 
-      response = {
+      return Promise.resolve({
         list: products,
         total: resp.data?.response?.numFound
-      }
+      })
     } else {
-      response = {
+      return Promise.resolve({
         list: [],
         total: 0
-      }
+      })
     }
   } catch (err) {
     return Promise.reject({
@@ -72,7 +72,7 @@ async function fetchProducts(params: any): Promise<any | Response> {
   }
 }
 
-async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
+async function fetchProductsGroupedBy(params: any): Promise<ListResponse<Product> | Response> {
 
   const payload = {
     "json": {
@@ -132,17 +132,17 @@ async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
         }
       })
 
-      return {
-        products,
-        matches: resp.data?.grouped?.groupId.matches,
-        ngroups: resp.data?.grouped?.groupId.ngroups
-      }
+      return Promise.resolve({
+        list: products,
+        total: resp.data?.grouped?.groupId.matches,
+        groups: resp.data?.grouped?.groupId.ngroups
+      })
     } else {
-      return {
-        products: {},
-        matches: 0,
-        ngroups: 0
-      }
+      return Promise.resolve({
+        list: [],
+        total: 0,
+        groups: 0
+      })
     }
   } catch (err) {
     return Promise.reject({
@@ -153,7 +153,7 @@ async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
   }
 }
 
-async function fetchProductsGroupedByParent(params: any): Promise<Product[] | Response> {
+async function fetchProductsGroupedByParent(params: any): Promise<ListResponse<Product> | Response> {
 
   const payload = {
     ...params,

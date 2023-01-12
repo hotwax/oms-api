@@ -40,7 +40,7 @@ interface Response {
   serverResponse?: any;
 }
 
-interface SuccessResponse<T> {
+interface ListResponse<T> {
   list: Array<T>;
   total?: number;
   groups?: number;
@@ -51,6 +51,7 @@ export {
   Enumeration,
   events,
   Geo,
+  ListResponse,
   Order,
   OrderItem,
   OrderPart,
@@ -61,6 +62,5 @@ export {
   Status,
   Stock,
   Uom,
-  SuccessResponse,
   User
 }
