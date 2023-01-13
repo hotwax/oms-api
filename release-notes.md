@@ -1,3 +1,13 @@
+# Release 1.3.0
+
+## What's Changed
+* Added: usage instructions in oms package(#85zrhxfvk) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/49
+* Improved: oms-api to return rejected and resolved promise in case of errors and success resp(#85zrhd0zv) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/43
+* Implemented: stock schema design, action to fetch stock for multiple products and defined tranformation rule for stock response(#2v1pmpv) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/13
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.2.0...v1.3.0
+
 # Release 1.2.0
 
 ## What's Changed
