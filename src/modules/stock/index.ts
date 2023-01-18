@@ -4,25 +4,37 @@ import { Stock, Response, OPERATOR } from "@/types"
 import { transform } from "node-json-transform";
 import { stockTransformRule } from "@/mappings/stock";
 
-async function fetchProductsStockAtFacility(productIds: Array<string>, facilityId?: string): Promise<Array<Stock> | Response> {
+// TODO: define params types
+/*
+Finds the inventory for multiple/single product at multiple/single/0 (zero) facility
+When facilityId is not being passed then stock for all the facilities will be fetched separately
+*/
+async function fetchProductsStockAtFacility(params: any): Promise<Array<Stock> | Response> {
   // There is a limitation at API level to handle only 100 records
   // but as we will always fetch data for the fetched records which will be as per the viewSize
   // assuming that the value will never be 100 to show
 
-  // When facility is not being passed stock for all the facilities will be fetched
   const query = {
-    "filters": {
-      "productId": productIds,
-      "productId_op": OPERATOR.IN
-    },
-    "viewSize": productIds.length * 10, // TODO: find a better way to find viewSize, currently assuming that a single product can be at most available on 10 facilities
+    "viewSize": 1, // initializing viewSize as 1, because at least we need one record in case of success
     "fieldsToSelect": ["productId", "atp", "facilityId"]
   } as any
 
-  // support to get stock for a specific facility
-  if (facilityId) {
-    query.filters["facilityId"] = facilityId
-    query.viewSize = productIds.length // kept viewSize equal to productsIds length as we only want stock at a single facility and at max we can find all the products
+  Object.keys(params).map((key) => {
+
+    const paramValue = params[key].value;
+    query.filters[key] = paramValue
+
+    if(Array.isArray(paramValue)) {
+      // calculating the viewSize by multiplying the length of params value with the current view Size
+      query.viewSize *= paramValue.length
+      query.filters[`${key}_op`] = OPERATOR.IN
+    }
+  })
+
+  // When not having facilityId in filters, then multiplying the viewSize by 10, assuming that the inventory
+  // for a product will be at most available on 10 facilities
+  if(!query.filters.facilityId) {
+    query.viewSize *= 10
   }
 
   try {
