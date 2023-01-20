@@ -1,3 +1,11 @@
+# Release 1.4.0
+
+## What's Changed
+* Implemented: support to fetch stock on all facilities for products(#85zrjdbhn) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/52
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.3.0...v1.4.0
+
 # Release 1.3.0
 
 ## What's Changed
