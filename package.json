@@ -31,7 +31,8 @@
     "axios-cache-adapter": "^2.7.3",
     "http-status-codes": "^2.2.0",
     "mitt": "^3.0.0",
-    "node-json-transform": "^1.1.2"
+    "node-json-transform": "^1.1.2",
+    "qs": "^6.11.0"
   },
   "repository": {
     "type": "git",
