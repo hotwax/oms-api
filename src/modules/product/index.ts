@@ -44,8 +44,8 @@ async function fetchProducts(params: any): Promise<any | Response> {
   try {
     const resp = await api({
       url: "solr-query",
-      method: "post",
-      data: payload,
+      method: "get",
+      params: payload,
       cache: true
     }) as any;
 
@@ -117,8 +117,8 @@ async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
   try {
     const resp = await api({
       url: "solr-query",
-      method: "post",
-      data: payload,
+      method: "get",
+      params: payload,
       cache: true
     }) as any;
 
