@@ -21,8 +21,8 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
   try {
     const resp = await api({
       url: 'solr-query',
-      method: 'post',
-      data: payload
+      method: 'get',
+      params: payload
     })
 
     if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.orderId?.groups?.length > 0) {

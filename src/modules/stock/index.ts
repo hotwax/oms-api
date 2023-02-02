@@ -28,8 +28,8 @@ async function fetchProductsStockAtFacility(productIds: Array<string>, facilityI
   try {
     const resp = await api({
       url: "checkInventory",
-      method: "post",
-      data: query
+      method: "get",
+      params: query
     }) as any;
 
     if (resp.status === 200 && !hasError(resp) && resp.data.count > 0) {
@@ -72,8 +72,8 @@ async function fetchProductsStock(productIds: Array<string>): Promise<Array<Stoc
   try {
     const resp = await api({
       url: "checkInventory",
-      method: "post",
-      data: query
+      method: "get",
+      params: query
     }) as any;
 
     if (resp.status === 200 && !hasError(resp) && resp.data.count > 0) {
