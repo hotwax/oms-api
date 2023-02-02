@@ -40,11 +40,18 @@ interface Response {
   serverResponse?: any;
 }
 
+interface ListResponse<T> {
+  list: Array<T>;
+  total?: number;
+  groups?: number;
+}
+
 export {
   ContactMech,
   Enumeration,
   events,
   Geo,
+  ListResponse,
   Order,
   OrderItem,
   OrderPart,
