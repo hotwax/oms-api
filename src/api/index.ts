@@ -7,6 +7,41 @@ import { setupCache } from 'axios-cache-adapter'
 import { events } from '@/types';
 import qs from "qs"
 
+// `paramsSerializer` is an optional function in charge of serializing `params`
+// (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)
+//   paramsSerializer: function (params) {
+//     return Qs.stringify(params, {arrayFormat: 'brackets'})
+//   },
+// This implemmentation is done to ensure array and object is passed correctly in OMS 1.0
+const paramsSerializer = (p: any) => {
+  // When objects are stringified, by default they use bracket notation:
+  // qs.stringify({ a: { b: { c: 'd', e: 'f' } } });
+  // 'a[b][c]=d&a[b][e]=f'
+  //We may override this to use dot notation by setting the allowDots option to true:
+  // qs.stringify({ a: { b: { c: 'd', e: 'f' } } }, { allowDots: true });
+  // 'a.b.c=d&a.b.e=f'
+  // OMS 1.0 supports objects passed as strings
+  const params = Object.keys(p).reduce((params: any, key: string) => {
+      let value = p[key];
+      if ( typeof value === 'object' && !Array.isArray(value) && value !== null) {
+          value = JSON.stringify(value)
+      }
+      params[key] = value;
+      return params;
+  }, {})
+  // arrayFormat option is used to specify the format of the output array:
+  //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'indices' })
+  // 'a[0]=b&a[1]=c'
+  //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'brackets' })
+  // 'a[]=b&a[]=c'
+  //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'repeat' })
+  // 'a=b&a=c'
+  //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'comma' })
+  // 'a=b,c'
+  // Currently OMS 1.0 supports values as repeat
+  return qs.stringify(params, {arrayFormat: 'repeat'});
+}
+
 const emitter = mitt();
 
 let token = ''
@@ -89,40 +124,7 @@ const api = async (customConfig: any) => {
         method: customConfig.method,
         data: customConfig.data,
         params: customConfig.params,
-        // `paramsSerializer` is an optional function in charge of serializing `params`
-        // (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)
-        //   paramsSerializer: function (params) {
-        //     return Qs.stringify(params, {arrayFormat: 'brackets'})
-        //   },
-        // This implemmentation is done to ensure array and object is passed correctly in OMS 1.0
-        paramsSerializer: (p: any) => {
-          // When objects are stringified, by default they use bracket notation:
-          // qs.stringify({ a: { b: { c: 'd', e: 'f' } } });
-          // 'a[b][c]=d&a[b][e]=f'
-          //We may override this to use dot notation by setting the allowDots option to true:
-          // qs.stringify({ a: { b: { c: 'd', e: 'f' } } }, { allowDots: true });
-          // 'a.b.c=d&a.b.e=f'
-          // OMS 1.0 supports objects passed as strings
-          const params = Object.keys(p).reduce((params: any, key: string) => {
-              let value = p[key];
-              if ( typeof value === 'object' && !Array.isArray(value) && value !== null) {
-                  value = JSON.stringify(value)
-              }
-              params[key] = value;
-              return params;
-          }, {})
-          // arrayFormat option is used to specify the format of the output array:
-          //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'indices' })
-          // 'a[0]=b&a[1]=c'
-          //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'brackets' })
-          // 'a[]=b&a[]=c'
-          //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'repeat' })
-          // 'a=b&a=c'
-          //qs.stringify({ a: ['b', 'c'] }, { arrayFormat: 'comma' })
-          // 'a=b,c'
-          // Currently OMS 1.0 supports values as repeat
-          return qs.stringify(params, {arrayFormat: 'repeat'});
-      }
+        paramsSerializer
     }
     if (instanceUrl) config.baseURL = instanceUrl.startsWith('http') ? instanceUrl : `https://${instanceUrl}.hotwax.io/api/`;
 
@@ -147,7 +149,7 @@ const api = async (customConfig: any) => {
  * @return {Promise} Response from API as returned by Axios
  */
 const client = (config: any) => {
-    return axios.request(config);
+    return axios.request({ paramsSerializer, ...config });
 }
 
 export { api as default, client, axios, init, updateToken, updateInstanceUrl, resetConfig };
