@@ -1,3 +1,11 @@
+# Release 1.5.1
+
+## What's Changed
+* Improved: code to expose the api and client method from oms api by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/59
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.5.0...v1.5.1
+
 # Release 1.5.0
 
 ## What's Changed
