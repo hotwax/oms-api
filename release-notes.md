@@ -1,3 +1,11 @@
+# Release 1.5.0
+
+## What's Changed
+* Implemented: support for using qs library paramsSerializer in api and client method(#85zrkt79g) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/56 and https://github.com/hotwax/oms-api/pull/57
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.4.0...v1.5.0
+
 # Release 1.4.0
 
 ## What's Changed
