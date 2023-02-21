@@ -4,6 +4,7 @@ import {
 } from 'http-status-codes';
 import { setupCache } from 'axios-cache-adapter'
 import qs from "qs"
+import merge from 'deepmerge'
 
 const requestInterceptor = async (config: any) => {
   if (apiConfig.token) {
@@ -108,10 +109,7 @@ function init(key: string, url: string, cacheAge: number) {
 }
 
 function initialise(customConfig: any) {
-  apiConfig = {
-    ...apiConfig,
-    ...customConfig
-  }
+  apiConfig = merge(apiConfig, customConfig)
   axios.interceptors.request.use(apiConfig.interceptor.request);
   axios.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
 }
