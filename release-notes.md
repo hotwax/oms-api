@@ -1,3 +1,12 @@
+# Release 1.6.0
+
+## What's Changed
+* Implemented: support to make events and interceptors configurable (#61) by @adityasharma7 in https://github.com/hotwax/oms-api/pull/62
+
+## New Contributors
+* @adityasharma7 made their first contribution in https://github.com/hotwax/oms-api/pull/62
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.5.1...v1.6.0
 # Release 1.5.1
 
 ## What's Changed
