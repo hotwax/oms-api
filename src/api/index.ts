@@ -1,11 +1,58 @@
 import axios from 'axios';
-import mitt from 'mitt'
 import {
   StatusCodes
 } from 'http-status-codes';
 import { setupCache } from 'axios-cache-adapter'
-import { events } from '@/types';
 import qs from "qs"
+
+const requestInterceptor = async (config: any) => {
+  if (apiConfig.token) {
+      config.headers.Authorization =  'Bearer ' + apiConfig.token;
+      config.headers['Content-Type'] = 'application/json';
+  }
+  return config;
+}
+
+const responseSuccessInterceptor = (response: any) => {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // Do something with response data
+  if (apiConfig.events.responseSuccess) apiConfig.events.responseSuccess(response);
+  return response;
+}
+
+const responseErrorInterceptor = (error: any) => {
+  if (apiConfig.events.responseError) apiConfig.events.responseError(error);
+  if (error.response) {
+      // TODO Handle case for failed queue request
+      const { status } = error.response;
+      if (status == StatusCodes.UNAUTHORIZED) {
+        if (apiConfig.events.unauthorised) apiConfig.events.unauthorised(error);
+      }
+  }
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  // Do something with response error
+  return Promise.reject(error);
+}
+
+const defaultConfig = {
+  token: '',
+  instanceUrl: '',
+  cacheMaxAge: 0,
+  events: {
+    unauthorised: undefined,
+    responseSuccess: undefined,
+    responseError: undefined,
+    queueTask: undefined
+  } as any,
+  interceptor: {
+    request: requestInterceptor,
+    response: {
+      success: responseSuccessInterceptor,
+      error: responseErrorInterceptor
+    }
+  }
+}
+let apiConfig = { ...defaultConfig }
 
 // `paramsSerializer` is an optional function in charge of serializing `params`
 // (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)
@@ -42,64 +89,39 @@ const paramsSerializer = (p: any) => {
   return qs.stringify(params, {arrayFormat: 'repeat'});
 }
 
-const emitter = mitt();
-
-let token = ''
-let instanceUrl = ''
-let cacheMaxAge = 0
-
 function updateToken(key: string) {
-  token = key
+  apiConfig.token = key
 }
 
 function updateInstanceUrl(url: string) {
-  instanceUrl = url
+  apiConfig.instanceUrl = url
 }
 
 function resetConfig() {
-  token = ''
-  instanceUrl = ''
-  cacheMaxAge = 0
+  apiConfig = { ...defaultConfig }
 }
 
 function init(key: string, url: string, cacheAge: number) {
-  token = key
-  instanceUrl = url
-  cacheMaxAge = cacheAge
+  apiConfig.token = key
+  apiConfig.instanceUrl = url
+  apiConfig.cacheMaxAge = cacheAge
 }
 
-axios.interceptors.request.use(async (config: any) => {
-    if (token) {
-        config.headers.Authorization =  'Bearer ' + token;
-        config.headers['Content-Type'] = 'application/json';
-    }
-    return config;
-});
+function initialise(customConfig: any) {
+  apiConfig = {
+    ...apiConfig,
+    ...customConfig
+  }
+  axios.interceptors.request.use(apiConfig.interceptor.request);
+  axios.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
+}
 
-axios.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response;
-  }, function (error) {
-    // TODO Handle it in a better way
-    // Currently when the app gets offline, the time between adding a loader and removing it is fractional due to which loader dismiss is called before loader present
-    // which cause loader to run indefinitely
-    // Following gives dismiss loader a delay of 100 microseconds to get both the actions in sync
-    setTimeout(() => emitter.emit(events.DISMISS_LOADER), 100);
-    if (error.response) {
-        // TODO Handle case for failed queue request
-        const { status } = error.response;
-        if (status == StatusCodes.UNAUTHORIZED) {
-          emitter.emit(events.UNAUTHORIZED)
-        }
-    }
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-  });
+axios.interceptors.request.use(apiConfig.interceptor.request);
+
+axios.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
 
 const axiosCache = setupCache({
-  maxAge: cacheMaxAge * 1000
+  maxAge: apiConfig.cacheMaxAge * 1000
 })
 
 /**
@@ -126,17 +148,19 @@ const api = async (customConfig: any) => {
         params: customConfig.params,
         paramsSerializer
     }
-    if (instanceUrl) config.baseURL = instanceUrl.startsWith('http') ? instanceUrl : `https://${instanceUrl}.hotwax.io/api/`;
+    if (apiConfig.instanceUrl) config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl : `https://${apiConfig.instanceUrl}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
 
     if (customConfig.queue) {
         if (!config.headers) config.headers = { ...axios.defaults.headers.common, ...config.headers };
 
-        emitter.emit(events.QUEUE_TASK, {
+        if (config.events.queueTask) {
+          config.events.queueTask ({
             callbackEvent: customConfig.callbackEvent,
             payload: config
-        });
+          })
+        }
     } else {
         return axios(config);
     }
@@ -152,4 +176,4 @@ const client = (config: any) => {
     return axios.request({ paramsSerializer, ...config });
 }
 
-export { api as default, client, axios, init, updateToken, updateInstanceUrl, resetConfig };
+export { api as default, initialise, client, axios, init, updateToken, updateInstanceUrl, resetConfig };
