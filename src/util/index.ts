@@ -1,9 +1,9 @@
-function hasError(resp: any) {
+function hasError(response: any) {
   return typeof response.data != "object" || !!response.data._ERROR_MESSAGE_ || !!response.data._ERROR_MESSAGE_LIST_ || !!response.data.error;
 }
 
-function isError(resp: any): boolean {
-  return resp.code === 'error'
+function isError(response: any): boolean {
+  return response.code === 'error'
 }
 
 function getIdentification(identifications: any, id: string): string {
