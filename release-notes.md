@@ -1,3 +1,11 @@
+# Release 1.7.0
+
+## What's Changed
+* Implemented: support to honor responseType when passed in payload and exported the hasError method from package(#85zrxg7vd) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/65
+
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.6.0...v1.7.0
+
 # Release 1.6.0
 
 ## What's Changed
