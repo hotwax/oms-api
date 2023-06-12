@@ -60,7 +60,7 @@ async function setProductIdentificationPref(eComStoreId: string, productIdentifi
     console.error(err)
   }
 
-  // when selecting none as ecom store, not updating the pref as it's not possible to save pref with empty productStoreId
+  // when fromDate is not found then reject the call with a message
   if(!fromDate) {
     return Promise.reject('fromDate information is missing');
   }
