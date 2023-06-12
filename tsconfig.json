@@ -7,7 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "emitDeclarationOnly": true,
-    "typeRoots": ["types"],
+    "typeRoots": ["./src/types"],
     "baseUrl": ".",
     "paths": {
       "@/*": [

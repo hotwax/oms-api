@@ -1,8 +1,8 @@
-import api from "@/api";
-import { OPERATOR, Product, Response } from "@/types";
-import { hasError, isError } from "@/util";
+import api from "../../api";
+import { OPERATOR, Product, Response } from "../../types";
+import { hasError, isError } from "../../util";
 import { transform } from 'node-json-transform'
-import { productTransformRule } from "@/mappings/product";
+import { productTransformRule } from "../../mappings/product";
 
 async function fetchProducts(params: any): Promise<any | Response> {
 
