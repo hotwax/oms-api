@@ -42,18 +42,18 @@ async function setProductIdentificationPref(eComStoreId: string, productIdentifi
     },
     "filterByDate": 'Y',
     "entityName": "ProductStoreSetting",
-    "fieldList": ["fromDate"],
+    "fieldList": ["fromDate", "productStoreId"],
     "viewSize": 1
   }
 
   try {
     const resp = await api({
       url: "performFind",
-      method: "post",
-      data: payload,
+      method: "get",
+      params: payload,
       cache: true
     }) as any;
-    if(resp.status == 200 && resp.data.count > 0) {
+    if(!hasError(resp)) {
       fromDate = resp.data.docs[0].fromDate
     }
   } catch(err) {
@@ -61,8 +61,8 @@ async function setProductIdentificationPref(eComStoreId: string, productIdentifi
   }
 
   // when selecting none as ecom store, not updating the pref as it's not possible to save pref with empty productStoreId
-  if(!eComStoreId || !fromDate) {
-    return Promise.reject('eComStoreId or fromDate information is missing');
+  if(!fromDate) {
+    return Promise.reject('fromDate information is missing');
   }
 
   const params = {
@@ -79,7 +79,7 @@ async function setProductIdentificationPref(eComStoreId: string, productIdentifi
       data: params
     }) as any;
 
-    if(resp.status == 200) {
+    if(!hasError(resp)) {
       return Promise.resolve(productIdentificationPref)
     } else {
       return Promise.reject(resp)
@@ -124,11 +124,6 @@ async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
     'secondaryId': ''
   }
 
-  // when selecting none as ecom store, not fetching the pref as it returns all the entries with the pref id
-  if(!eComStoreId) {
-    return productIdentifications;
-  }
-
   const payload = {
     "inputFields": {
       "productStoreId": eComStoreId,
@@ -143,16 +138,16 @@ async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
   try {
     const resp = await api({
       url: "performFind",
-      method: "post",
-      data: payload,
+      method: "get",
+      params: payload,
       cache: true
     }) as any;
 
-    if(resp.status == 200 && resp.data.count > 0) {
+    if(!hasError(resp) && resp.data.docs[0].settingValue) {
       const respValue = JSON.parse(resp.data.docs[0].settingValue)
       productIdentifications['primaryId'] = respValue['primaryId']
       productIdentifications['secondaryId'] = respValue['secondaryId']
-    } else if(resp.status == 200 && resp.data.error) {
+    } else if(resp.data.error === "No record found") {  // TODO: remove this check once we have the data always available by default
       await createProductIdentificationPref(eComStoreId)
     }
   } catch(err) {
