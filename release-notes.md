@@ -1,3 +1,10 @@
+# Release 1.8.0
+
+## What's Changed
+* Implemented: support to get and set the product identifications(#85zt68k1k) by @ymaheshwari1 in https://github.com/hotwax/oms-api/pull/67
+
+**Full Changelog**: https://github.com/hotwax/oms-api/compare/v1.7.0...v1.8.0
+
 # Release 1.7.0
 
 ## What's Changed
