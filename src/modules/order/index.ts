@@ -1,8 +1,8 @@
-import api from '@/api'
-import { OPERATOR, Order, OrderItem, OrderPart, Response } from '@/types'
-import { hasError } from '@/util'
+import api from '../../api'
+import { OPERATOR, Order, OrderItem, OrderPart, Response } from '../../types'
+import { hasError } from '../../util'
 import { transform } from 'node-json-transform'
-import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '@/mappings/order'
+import { orderDetailTranformRule, orderItemTransformRule, orderPartTransformRule } from '../../mappings/order'
 
 export async function getOrderDetails (orderId: string): Promise<Order | Response> {
   const payload = {
