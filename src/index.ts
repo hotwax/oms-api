@@ -1,5 +1,5 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
-import api, { client, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
+import api, { client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { hasError, isError } from './util'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, setProductIdentificationPref, updateOrderStatus } from './modules'
 
@@ -11,6 +11,7 @@ export {
   fetchProducts,
   fetchProductsGroupedBy,
   fetchProductsGroupedByParent,
+  getConfig,
   hasError,
   init,
   initialise,
