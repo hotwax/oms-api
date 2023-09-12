@@ -112,7 +112,7 @@ function init(key: string, url: string, cacheAge: number) {
 }
 
 function initialise(customConfig: any) {
-  appConfig = JSON.parse(JSON.stringify(customConfig));
+  appConfig = customConfig;
   apiConfig = merge(apiConfig, customConfig)
   axios.interceptors.request.use(apiConfig.interceptor.request);
   axios.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
