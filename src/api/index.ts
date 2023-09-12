@@ -14,6 +14,9 @@ const requestInterceptor = async (config: any) => {
   return config;
 }
 
+// configuration passed from the app
+let appConfig = {};
+
 const responseSuccessInterceptor = (response: any) => {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
@@ -109,9 +112,14 @@ function init(key: string, url: string, cacheAge: number) {
 }
 
 function initialise(customConfig: any) {
+  appConfig = customConfig;
   apiConfig = merge(apiConfig, customConfig)
   axios.interceptors.request.use(apiConfig.interceptor.request);
   axios.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
+}
+
+function getConfig() {
+  return appConfig;
 }
 
 axios.interceptors.request.use(apiConfig.interceptor.request);
@@ -178,4 +186,4 @@ const client = (config: any) => {
     return axios.request({ paramsSerializer, ...config });
 }
 
-export { api as default, initialise, client, axios, init, updateToken, updateInstanceUrl, resetConfig };
+export { api as default, initialise, client, axios, getConfig, init, updateToken, updateInstanceUrl, resetConfig };

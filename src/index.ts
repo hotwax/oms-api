@@ -1,7 +1,7 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
-import api, { client, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
+import api, { client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { hasError, isError } from './util'
-import { getNotificationEnumIds, getNotificationUserPrefTypeIds, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, removeClientRegistrationToken, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus } from './modules'
+import { getNotificationEnumIds, getNotificationUserPrefTypeIds, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus } from './modules'
 
 export {
   api,
@@ -13,6 +13,8 @@ export {
   fetchProductsGroupedByParent,
   getNotificationEnumIds,
   getNotificationUserPrefTypeIds,
+  getConfig,
+  logout,
   hasError,
   init,
   initialise,
