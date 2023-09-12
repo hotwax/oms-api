@@ -157,8 +157,26 @@ async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
   return productIdentifications
 }
 
+async function logout(): Promise<any> {
+  try {
+    const resp: any = await api({
+      url: "logout",
+      method: "get"
+    });
+
+    if(resp.status != 200) {
+      throw resp.data;
+    }
+
+    return Promise.resolve(resp.data)
+  } catch(err) {
+    return Promise.reject(err)
+  }
+}
+
 export {
   getProductIdentificationPref,
   getProfile,
+  logout,
   setProductIdentificationPref
 }
