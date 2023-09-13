@@ -1,4 +1,4 @@
-import api from "../../api";
+import api, { client } from "../../api";
 import { userProfileTransformRule } from "../../mappings/user";
 import { Response, User } from "../../types";
 import { hasError } from "../../util";
@@ -157,6 +157,7 @@ async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
   return productIdentifications
 }
 
+
 async function logout(): Promise<any> {
   try {
     const resp: any = await api({
@@ -174,9 +175,62 @@ async function logout(): Promise<any> {
   }
 }
 
+async function getUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: string, isAdminUser = false): Promise<any> {
+  
+  try {
+    const params = {
+      "inputFields": {} as any,
+      "filterByDate": 'Y',
+      "fromDateName": "FGMFromDate",
+      "thruDateName": "FGMThruDate",
+      "entityName": "FacilityGroupAndParty",
+      "fieldList": ["facilityId", "facilityName", "sequenceNum"],
+      "orderBy": "sequenceNum ASC | facilityName ASC",
+      "viewSize": 200,
+      "distinct": "Y",
+      "noConditionFind" : "Y",
+    }
+
+    if (facilityGroupId) {
+      params.inputFields["facilityGroupId"] = facilityGroupId;
+    }
+    if (!isAdminUser) {
+      params.inputFields["partyId"] = partyId;
+    }
+    let resp = {} as any;
+    resp = await client({
+      url: "performFind",
+      method: "get",
+      baseURL,
+      params,
+      headers: {
+        Authorization:  'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (resp.status === 200 && !hasError(resp)) {
+      return Promise.resolve(resp.data.docs);
+    } else {
+      return Promise.reject({
+        code: 'error',
+        message: 'Something went wrong',
+        serverResponse: 'Failed to fetch user facilities'
+      })
+    }
+  } catch(error: any) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
+
+  }
+}
+
 export {
   getProductIdentificationPref,
   getProfile,
   logout,
-  setProductIdentificationPref
+  setProductIdentificationPref,
+  getUserFacilities
 }
