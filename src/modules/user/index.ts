@@ -175,24 +175,30 @@ async function logout(): Promise<any> {
   }
 }
 
-async function getUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: string, isAdminUser = false): Promise<any> {
+async function getUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false): Promise<any> {
   
   try {
     const params = {
       "inputFields": {} as any,
-      "filterByDate": 'Y',
-      "fromDateName": "FGMFromDate",
-      "thruDateName": "FGMThruDate",
-      "entityName": "FacilityGroupAndParty",
-      "fieldList": ["facilityId", "facilityName", "sequenceNum"],
-      "orderBy": "sequenceNum ASC | facilityName ASC",
+      "filterByDate": "Y",
       "viewSize": 200,
       "distinct": "Y",
       "noConditionFind" : "Y",
-    }
-
+    } as any
+    
     if (facilityGroupId) {
+      params.entityName = "FacilityGroupAndParty";
+      params.fieldList = ["facilityId", "facilityName", "sequenceNum"];
+      params.fromDateName = "FGMFromDate";
+      params.thruDateName = "FGMThruDate";
+      params.orderBy = "sequenceNum ASC | facilityName ASC";
       params.inputFields["facilityGroupId"] = facilityGroupId;
+    } else {
+      params.entityName = "FacilityAndParty";
+      params.fieldList = ["facilityId", "facilityName"];
+      params.inputFields["facilityParentTypeId"] = "VIRTUAL_FACILITY";
+      params.inputFields["facilityParentTypeId_op"] = "notEqual";
+      params.orderBy = "facilityName ASC";
     }
     if (!isAdminUser) {
       params.inputFields["partyId"] = partyId;
