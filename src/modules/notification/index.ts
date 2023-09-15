@@ -19,12 +19,11 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
     }) as any
 
     if (!hasError(resp)) {
-      return Promise.resolve(resp.data.docs)
+      return Promise.resolve(resp.data)
     } else {
-      return Promise.reject(resp.data)
+      throw resp.data;
     }
   } catch (err) {
-    console.error(err)
     return Promise.reject(err)
   }
 }
@@ -47,12 +46,11 @@ async function getNotificationUserPrefTypeIds(applicationId: string): Promise<an
     }) as any
 
     if (!hasError(resp)) {
-      return Promise.resolve(resp.data.docs)
+      return Promise.resolve(resp.data)
     } else {
-      return Promise.reject(resp)
+      throw resp.data;
     }
   } catch (err) {
-    console.error(err)
     return Promise.reject(err)
   }
 }
@@ -74,10 +72,9 @@ async function storeClientRegistrationToken(registrationToken: string, deviceId:
     if (!hasError(resp)) {
       return Promise.resolve(resp.data)
     } else {
-      return Promise.reject(resp)
+      throw resp.data;
     }
   } catch (err) {
-    console.error(err)
     return Promise.reject(err)
   }
 }
@@ -99,10 +96,9 @@ async function removeClientRegistrationToken(deviceId: string, applicationId: st
     if (!hasError(resp)) {
       return Promise.resolve(resp.data)
     } else {
-      return Promise.reject(resp)
+      throw resp.data;
     }
   } catch (err) {
-    console.error(err)
     return Promise.reject(err)
   }
 }
@@ -121,12 +117,11 @@ async function subscribeTopic(topicName: string, applicationId: string): Promise
     }) as any
 
     if (!hasError(resp)) {
-      return Promise.resolve(resp)
+      return Promise.resolve(resp.data)
     } else {
-      return Promise.reject(resp)
+      throw resp.data;
     }
   } catch (err) {
-    console.error(err)
     return Promise.reject(err)
   }
 }
@@ -145,12 +140,11 @@ async function unsubscribeTopic(topicName: string, applicationId: string): Promi
     }) as any
 
     if (!hasError(resp)) {
-      return Promise.resolve(resp)
+      return Promise.resolve(resp.data)
     } else {
-      return Promise.reject(resp)
+      throw resp.data;
     }
   } catch (err) {
-    console.error(err)
     return Promise.reject(err)
   }
 }
