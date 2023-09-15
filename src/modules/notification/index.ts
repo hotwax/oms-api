@@ -7,6 +7,8 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
       enumTypeId
     },
     "entityName": "Enumeration",
+    "fieldList": ["description", "enumId", "enumTypeId", "enumName"],
+    "viewSize": 20
   }
 
   try {
@@ -19,10 +21,11 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
     if (!hasError(resp)) {
       return Promise.resolve(resp.data.docs)
     } else {
-      return Promise.reject(resp)
+      return Promise.reject(resp.data)
     }
   } catch (err) {
     console.error(err)
+    return Promise.reject(err)
   }
 }
 
@@ -32,6 +35,8 @@ async function getNotificationUserPrefTypeIds(applicationId: string): Promise<an
       "userPrefGroupTypeId": applicationId
     },
     "entityName": "UserPreference",
+    "fieldList": ["userPrefTypeId", "userPrefGroupTypeId"],
+    "viewSize": 20
   }
 
   try {
@@ -43,15 +48,12 @@ async function getNotificationUserPrefTypeIds(applicationId: string): Promise<an
 
     if (!hasError(resp)) {
       return Promise.resolve(resp.data.docs)
-    } else if (resp.data.error === 'No record found') {
-      // the API fails if no record is found, hence externally
-      // handling the case
-      return Promise.resolve([])
     } else {
       return Promise.reject(resp)
     }
   } catch (err) {
     console.error(err)
+    return Promise.reject(err)
   }
 }
 
@@ -76,6 +78,7 @@ async function storeClientRegistrationToken(registrationToken: string, deviceId:
     }
   } catch (err) {
     console.error(err)
+    return Promise.reject(err)
   }
 }
 
@@ -100,6 +103,7 @@ async function removeClientRegistrationToken(deviceId: string, applicationId: st
     }
   } catch (err) {
     console.error(err)
+    return Promise.reject(err)
   }
 }
 
@@ -123,6 +127,7 @@ async function subscribeTopic(topicName: string, applicationId: string): Promise
     }
   } catch (err) {
     console.error(err)
+    return Promise.reject(err)
   }
 }
 
@@ -146,6 +151,7 @@ async function unsubscribeTopic(topicName: string, applicationId: string): Promi
     }
   } catch (err) {
     console.error(err)
+    return Promise.reject(err)
   }
 }
 
