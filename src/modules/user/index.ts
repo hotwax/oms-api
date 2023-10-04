@@ -233,10 +233,51 @@ async function getUserFacilities(token: any, baseURL: string, partyId: string, f
   }
 }
 
+async function setUserPreference(payload: any): Promise<any> {
+  try {
+    const resp: any = await api({
+      url: "service/setUserPreference",
+      method: "post",
+      data: payload
+    });
+
+    if (!hasError(resp)) {
+      return Promise.resolve(resp.data)
+    } else {
+      throw resp.data
+    }
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+async function getUserPreference(token: any, baseURL: string, userPrefTypeId: string): Promise<any> {
+  try {
+    const resp = await client({
+      url: "service/getUserPreference",
+      method: "post",
+      data: { userPrefTypeId },
+      baseURL,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (hasError(resp)) {
+      return Promise.reject(resp.data);
+    }
+    return Promise.resolve(resp.data.userPrefValue ? JSON.parse(resp.data.userPrefValue) : {});
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
 export {
+  getUserFacilities,
+  getUserPreference,
   getProductIdentificationPref,
   getProfile,
   logout,
   setProductIdentificationPref,
-  getUserFacilities
+  setUserPreference
 }

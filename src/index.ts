@@ -1,7 +1,7 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
 import api, { client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { hasError, isError } from './util'
-import { getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus } from './modules'
+import { getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus,   getUserPreference, setUserPreference } from './modules'
 
 export {
   api,
@@ -40,5 +40,7 @@ export {
   storeClientRegistrationToken,
   subscribeTopic,
   unsubscribeTopic,
-  User
+  User,
+  getUserPreference,
+  setUserPreference,
 }
