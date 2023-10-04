@@ -246,7 +246,7 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
       }
     });
     if (hasError(resp)) {
-      return Promise.reject(resp.data);
+      throw resp.data
     }
     return Promise.resolve(resp.data.userPrefValue ? JSON.parse(resp.data.userPrefValue) : {});
   } catch (err) {
