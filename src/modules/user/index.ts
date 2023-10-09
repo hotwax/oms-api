@@ -272,6 +272,24 @@ async function setUserPreference(payload: any): Promise<any> {
   }
 }
 
+const setUserLocale = async (payload: any): Promise<any> => {
+  try {
+    const resp: any = await api({
+      url: "setUserLocale",
+      method: "post",
+      data: payload
+    })
+
+    if (!hasError(resp)) {
+      return Promise.resolve(resp.data)
+    } else {
+      throw resp.data
+    }
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export {
   getUserFacilities,
   getUserPreference,
@@ -279,5 +297,6 @@ export {
   getProfile,
   logout,
   setProductIdentificationPref,
-  setUserPreference
+  setUserPreference,
+  setUserLocale
 }
