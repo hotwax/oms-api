@@ -1,6 +1,6 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
-import { getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference } from '../modules/user'
+import { getEComStores, getPreferredStore, getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference } from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 
@@ -24,5 +24,7 @@ export {
   getUserFacilities,
   updateOrderStatus,
   getUserPreference,
-  setUserPreference
+  setUserPreference,
+  getEComStores,
+  getPreferredStore
 }
