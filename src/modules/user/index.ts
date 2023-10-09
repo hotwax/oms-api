@@ -272,7 +272,64 @@ async function setUserPreference(payload: any): Promise<any> {
   }
 }
 
+async function getPreferredStore(token: any, baseURL: string, userPrefTypeId: string): Promise<any> {
+  try {
+    const resp = await client({
+      url: "service/getUserPreference",
+      method: "post",
+      data: { userPrefTypeId },
+      baseURL,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (hasError(resp)) {
+      return Promise.reject(resp.data)
+    }
+    return Promise.resolve(resp.data.userPrefValue ? resp.data.userPrefValue : '');
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+async function getEComStores (facilityId: string, token: any, baseURL: string): Promise<Response> {
+
+  const params = {
+    "inputFields": {
+      "storeName_op": "not-empty",
+      "facilityId": facilityId
+    },
+    "fieldList": ["productStoreId", "storeName"],
+    "entityName": "ProductStoreFacilityDetail",
+    "distinct": "Y",
+    "noConditionFind": "Y",
+    "filterByDate": 'Y',
+  }
+
+  try {
+    const resp = await client({
+      url: "performFind",
+      method: "get",
+      baseURL,
+      params,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (hasError(resp) || resp.data.docs.length === 0) {
+      return Promise.reject(resp.data)
+    }
+    return Promise.resolve(resp.data.docs);
+  } catch (error: any) {
+    return Promise.reject(error)
+  }
+}
+
 export {
+  getEComStores,
+  getPreferredStore,
   getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,
