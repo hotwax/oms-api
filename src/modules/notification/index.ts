@@ -28,10 +28,11 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
   }
 }
 
-async function getNotificationUserPrefTypeIds(applicationId: string): Promise<any> {
+async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId: string): Promise<any> {
   const payload = {
     "inputFields": {
-      "userPrefGroupTypeId": applicationId
+      "userPrefGroupTypeId": applicationId,
+      userLoginId
     },
     "entityName": "UserPreference",
     "fieldList": ["userPrefTypeId", "userPrefGroupTypeId"],
