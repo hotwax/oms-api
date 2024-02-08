@@ -19,7 +19,7 @@ async function getProfile(): Promise<User | Response> {
       return Promise.reject({
         code: 'error',
         message: 'Failed to fetch user profile information',
-        serverResponse: 'Something went wrong'
+        serverResponse: resp.data
       })
     }
   } catch(err) {
@@ -220,7 +220,7 @@ async function getUserFacilities(token: any, baseURL: string, partyId: string, f
       return Promise.reject({
         code: 'error',
         message: 'Failed to fetch user facilities',
-        serverResponse: 'Something went wrong'
+        serverResponse: resp.data
       })
     }
   } catch(error: any) {

@@ -23,7 +23,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       url: 'solr-query',
       method: 'get',
       params: payload
-    })
+    }) as any
 
     if (resp?.status == 200 && !hasError(resp) && resp.data?.grouped?.orderId?.groups?.length > 0) {
       const group = resp.data.grouped.orderId.groups[0]
@@ -56,7 +56,7 @@ export async function getOrderDetails (orderId: string): Promise<Order | Respons
       return Promise.reject({
         code: 'error',
         message: `Unable to fetch order details for orderId: ${orderId}`,
-        serverResponse: resp
+        serverResponse: resp.data
       })
     }
   } catch (err) {
@@ -75,7 +75,7 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
       url: '/service/changeOrderStatus',
       method: 'post',
       data: payload
-    })
+    }) as any
 
     if (resp?.status == 200 && !hasError(resp)) {
       return Promise.resolve({
@@ -87,7 +87,7 @@ export async function updateOrderStatus (payload: {orderId: string, statusId: st
       return Promise.reject({
         code: 'error',
         message: 'Unable to update order status',
-        serverResponse: resp
+        serverResponse: resp.data
       })
     }
   } catch (err) {

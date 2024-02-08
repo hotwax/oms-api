@@ -40,7 +40,7 @@ async function fetchProductsStockAtFacility(productIds: Array<string>, facilityI
       return Promise.reject({
         code: "error",
         message: "Unable to find the stock for products",
-        serverResponse: ""
+        serverResponse: resp.data
       })
     }
   } catch(err) {
@@ -84,7 +84,7 @@ async function fetchProductsStock(productIds: Array<string>): Promise<Array<Stoc
       return Promise.reject({
         code: "error",
         message: "Unable to find the stock for products",
-        serverResponse: ""
+        serverResponse: resp.data
       })
     }
   } catch(err) {
