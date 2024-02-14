@@ -18,8 +18,8 @@ async function getProfile(): Promise<User | Response> {
     } else {
       return Promise.reject({
         code: 'error',
-        message: 'Something went wrong',
-        serverResponse: 'Failed to fetch user profile information'
+        message: 'Failed to fetch user profile information',
+        serverResponse: resp.data
       })
     }
   } catch(err) {
@@ -82,10 +82,18 @@ async function setProductIdentificationPref(eComStoreId: string, productIdentifi
     if(!hasError(resp)) {
       return Promise.resolve(productIdentificationPref)
     } else {
-      return Promise.reject(resp)
+      return Promise.reject({
+        code: 'error',
+        message: 'Failed to set product identification pref',
+        serverResponse: resp.data
+      })
     }
   } catch(err) {
-   return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -171,7 +179,11 @@ async function logout(): Promise<any> {
 
     return Promise.resolve(resp.data)
   } catch(err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -219,8 +231,8 @@ async function getUserFacilities(token: any, baseURL: string, partyId: string, f
     } else {
       return Promise.reject({
         code: 'error',
-        message: 'Something went wrong',
-        serverResponse: 'Failed to fetch user facilities'
+        message: 'Failed to fetch user facilities',
+        serverResponse: resp.data
       })
     }
   } catch(error: any) {
@@ -250,7 +262,11 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
     }
     return Promise.resolve(resp.data.userPrefValue ? JSON.parse(resp.data.userPrefValue) : {});
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -268,7 +284,11 @@ async function setUserPreference(payload: any): Promise<any> {
       throw resp.data
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -286,7 +306,11 @@ const setUserLocale = async (payload: any): Promise<any> => {
       throw resp.data
     }
   } catch (error) {
-    return Promise.reject(error)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
   }
 }
 

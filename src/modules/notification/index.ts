@@ -24,7 +24,11 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
       throw resp.data;
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -52,7 +56,11 @@ async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId
       throw resp.data;
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -76,7 +84,11 @@ async function storeClientRegistrationToken(registrationToken: string, deviceId:
       throw resp.data;
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -100,7 +112,11 @@ async function removeClientRegistrationToken(deviceId: string, applicationId: st
       throw resp.data;
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -123,7 +139,11 @@ async function subscribeTopic(topicName: string, applicationId: string): Promise
       throw resp.data;
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -146,7 +166,11 @@ async function unsubscribeTopic(topicName: string, applicationId: string): Promi
       throw resp.data;
     }
   } catch (err) {
-    return Promise.reject(err)
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
