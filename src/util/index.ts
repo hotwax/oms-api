@@ -18,8 +18,8 @@ function getIdentification(identifications: any, id: string): string {
   return externalId;
 }
 
-function getTelecomCode(code: string) {
+function getTelecomCountryCode(code: string) {
   return telecomCode[code]
 }
 
-export { getTelecomCode, getIdentification, hasError, isError }
+export { getTelecomCountryCode, getIdentification, hasError, isError }
