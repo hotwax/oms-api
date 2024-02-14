@@ -1,3 +1,5 @@
+import { telecomCode } from './telecomCode'
+
 function hasError(response: any) {
   return typeof response.data != "object" || !!response.data._ERROR_MESSAGE_ || !!response.data._ERROR_MESSAGE_LIST_ || !!response.data.error;
 }
@@ -16,4 +18,8 @@ function getIdentification(identifications: any, id: string): string {
   return externalId;
 }
 
-export { getIdentification, hasError, isError }
+function getTelecomCountryCode(code: string) {
+  return telecomCode[code]
+}
+
+export { getTelecomCountryCode, getIdentification, hasError, isError }
