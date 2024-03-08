@@ -158,7 +158,7 @@ const api = async (customConfig: any) => {
     // if passing responseType in payload then only adding it as responseType
     if(customConfig.responseType) config['responseType'] = customConfig.responseType
 
-    if (apiConfig.instanceUrl) config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl : `https://${apiConfig.instanceUrl}.hotwax.io/api/`;
+    if (apiConfig.instanceUrl) config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/api') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/api/` : `https://${apiConfig.instanceUrl}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
 
