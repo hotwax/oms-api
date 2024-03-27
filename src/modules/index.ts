@@ -1,6 +1,6 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
-import { getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference, setUserLocale } from '../modules/user'
+import { getAvailableTimeZones, getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference, setUserLocale, setUserTimeZone } from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 
@@ -10,6 +10,7 @@ export {
   fetchProductsGroupedByParent,
   fetchProductsStock,
   fetchProductsStockAtFacility,
+  getAvailableTimeZones,
   getNotificationEnumIds,
   getNotificationUserPrefTypeIds,
   getOrderDetails,
@@ -25,5 +26,6 @@ export {
   updateOrderStatus,
   getUserPreference,
   setUserPreference,
-  setUserLocale
+  setUserLocale,
+  setUserTimeZone
 }

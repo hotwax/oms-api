@@ -314,7 +314,52 @@ const setUserLocale = async (payload: any): Promise<any> => {
   }
 }
 
+const setUserTimeZone = async (payload: any): Promise<any> => {
+  try {
+    const resp: any = await api({
+      url: "setUserTimeZone",
+      method: "post",
+      data: payload
+    });
+
+    if (!hasError(resp)) {
+      return Promise.resolve(resp.data)
+    } else {
+      throw resp.data
+    }
+  } catch (error) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
+  }
+}
+
+const getAvailableTimeZones = async (): Promise <any>  => {
+  try {
+    const resp: any = await api({
+      url: "getAvailableTimeZones",
+      method: "get",
+      cache: true
+    });
+
+    if (!hasError(resp)) {
+      return Promise.resolve(resp.data)
+    } else {
+      throw resp.data
+    }
+  } catch (error) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
+  }
+}
+
 export {
+  getAvailableTimeZones,
   getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,
@@ -322,5 +367,6 @@ export {
   logout,
   setProductIdentificationPref,
   setUserPreference,
-  setUserLocale
+  setUserLocale,
+  setUserTimeZone
 }

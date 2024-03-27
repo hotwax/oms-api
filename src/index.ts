@@ -1,7 +1,7 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
 import api, { client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { getTelecomCountryCode, hasError, isError } from './util'
-import { getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale } from './modules'
+import { getAvailableTimeZones, getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale, setUserTimeZone } from './modules'
 
 export {
   api,
@@ -11,6 +11,7 @@ export {
   fetchProducts,
   fetchProductsGroupedBy,
   fetchProductsGroupedByParent,
+  getAvailableTimeZones,
   getNotificationEnumIds,
   getNotificationUserPrefTypeIds,
   getConfig,
@@ -44,5 +45,6 @@ export {
   User,
   getUserPreference,
   setUserPreference,
-  setUserLocale
+  setUserLocale,
+  setUserTimeZone
 }
