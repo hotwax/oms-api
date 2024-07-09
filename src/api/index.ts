@@ -183,7 +183,7 @@ const api = async (customConfig: any) => {
  * @return {Promise} Response from API as returned by Axios
  */
 const client = (config: any) => {
-    return axios.request({ paramsSerializer, ...config });
+  return axios.create().request({ paramsSerializer, ...config })
 }
 
 export { api as default, initialise, client, axios, getConfig, init, updateToken, updateInstanceUrl, resetConfig };
