@@ -4,7 +4,7 @@ import { hasError } from "../../util";
 async function askQuery(payload: any): Promise<any> {
   try {
     const resp = await client({
-      url: `${payload.spaceId}/search/ask`, 
+      url: `spaces/${payload.spaceId}/search/ask`,
       method: "post",
       baseURL: payload.baseURL,
       data: {
@@ -33,7 +33,7 @@ async function askQuery(payload: any): Promise<any> {
 async function getGitBookPage(payload: any): Promise<any> {
   try {
     const resp = await client({
-      url: `${payload.spaceId}/content/page/${payload.pageId}`, 
+      url: `spaces/${payload.spaceId}/content/page/${payload.pageId}`,
       method: "get",
       baseURL: payload.baseURL,
       headers: {
@@ -59,7 +59,7 @@ async function getGitBookPage(payload: any): Promise<any> {
 async function searchQuery(payload: any): Promise<any> {
   try {
     const resp = await client({
-      url: `${payload.spaceId}/search`, 
+      url: `spaces/${payload.spaceId}/search`,
       method: "get",
       baseURL: payload.baseURL,
       params: {
