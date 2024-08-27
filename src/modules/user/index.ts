@@ -260,7 +260,7 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
     if (hasError(resp)) {
       throw resp.data
     }
-    return Promise.resolve(resp.data.userPrefValue ? JSON.parse(resp.data.userPrefValue) : {});
+    return Promise.resolve(resp.data.userPrefValue);
   } catch (err) {
     return Promise.reject({
       code: 'error',
@@ -358,14 +358,71 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
+async function setEComStore (payload: any) {
+  await api({
+    url: "service/setUserPreference",
+    method: "post",
+    data: {
+      'userPrefTypeId': payload.userPrefTypeId,
+      'userPrefValue': payload.eComStore
+    }
+  });
+}
+
+async function getEComStores(token: any, baseURL: string, facilityId?: string ): Promise<Response> {
+  const filters = {} as any;
+
+  if(facilityId) {
+    filters["facilityId"] = facilityId
+  }
+
+  const params = {
+    "inputFields": {
+      "storeName_op": "not-empty",
+      ...filters
+    },
+    "fieldList": ["productStoreId", "storeName"],
+    "entityName": "ProductStoreFacilityDetail",
+    "distinct": "Y",
+    "noConditionFind": "Y",
+    "filterByDate": 'Y',
+  };
+
+  try {
+    const resp = await client({
+      url: "performFind",
+      method: "get",
+      baseURL,
+      params,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (resp.status === 200 && !hasError(resp)) {
+      return Promise.resolve(resp.data.docs);
+    } else {
+      throw resp.data
+    }
+  } catch(error) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
+  }
+}
+
 export {
   getAvailableTimeZones,
+  getEComStores,
   getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,
   getProfile,
   logout,
   setProductIdentificationPref,
+  setEComStore,
   setUserPreference,
   setUserLocale,
   setUserTimeZone
