@@ -372,7 +372,7 @@ async function setEComStore (payload: any) {
 async function getEComStores(token: any, baseURL: string, facilityId?: string ): Promise<Response> {
   const filters = {} as any;
 
-  if(facilityId) {
+  if(facilityId && facilityId !== '') {
     filters["facilityId"] = facilityId
   }
 
