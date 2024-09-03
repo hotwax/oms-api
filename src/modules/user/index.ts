@@ -1,7 +1,7 @@
 import api, { client } from "../../api";
 import { userProfileTransformRule } from "../../mappings/user";
 import { Response, User } from "../../types";
-import { hasError } from "../../util";
+import { hasError, jsonParse } from "../../util";
 import { transform } from 'node-json-transform';
 
 async function getProfile(): Promise<User | Response> {
@@ -260,7 +260,7 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
     if (hasError(resp)) {
       throw resp.data
     }
-    return Promise.resolve(resp.data.userPrefValue);
+    return Promise.resolve(jsonParse(resp.data.userPrefValue));
   } catch (err) {
     return Promise.reject({
       code: 'error',
@@ -358,21 +358,10 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
-async function setEComStore (payload: any) {
-  await api({
-    url: "service/setUserPreference",
-    method: "post",
-    data: {
-      'userPrefTypeId': payload.userPrefTypeId,
-      'userPrefValue': payload.eComStore
-    }
-  });
-}
-
 async function getEComStores(token: any, baseURL: string, facilityId?: string ): Promise<Response> {
   const filters = {} as any;
 
-  if(facilityId && facilityId !== '') {
+  if(facilityId) {
     filters["facilityId"] = facilityId
   }
 
@@ -422,7 +411,6 @@ export {
   getProfile,
   logout,
   setProductIdentificationPref,
-  setEComStore,
   setUserPreference,
   setUserLocale,
   setUserTimeZone
