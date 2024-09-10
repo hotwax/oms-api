@@ -370,6 +370,7 @@ async function getEComStores(token: any, baseURL: string, facilityId?: string ):
       "storeName_op": "not-empty",
       ...filters
     },
+    "viewSize": 100,
     "fieldList": ["productStoreId", "storeName"],
     "entityName": "ProductStoreFacilityDetail",
     "distinct": "Y",
