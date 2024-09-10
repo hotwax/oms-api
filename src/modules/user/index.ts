@@ -358,7 +358,7 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
-async function getEComStores(token: any, baseURL: string, facilityId?: string ): Promise<Response> {
+async function getEComStores(token: any, baseURL: string, vSize = 100, facilityId?: string): Promise<Response> {
   const filters = {} as any;
 
   if(facilityId) {
@@ -370,7 +370,7 @@ async function getEComStores(token: any, baseURL: string, facilityId?: string ):
       "storeName_op": "not-empty",
       ...filters
     },
-    "viewSize": 100,
+    "viewSize": vSize,
     "fieldList": ["productStoreId", "storeName"],
     "entityName": "ProductStoreFacilityDetail",
     "distinct": "Y",
