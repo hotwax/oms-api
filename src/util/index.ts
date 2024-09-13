@@ -22,4 +22,14 @@ function getTelecomCountryCode(code: string) {
   return telecomCode[code]
 }
 
-export { getTelecomCountryCode, getIdentification, hasError, isError }
+function jsonParse(value: any): any {
+  let parsedValue;
+  try {
+    parsedValue = JSON.parse(value);
+  } catch (e) {
+    parsedValue = value;
+  }
+  return parsedValue;
+}
+
+export { getTelecomCountryCode, getIdentification, hasError, isError, jsonParse }
