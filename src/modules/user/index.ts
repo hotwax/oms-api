@@ -358,12 +358,19 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
-async function getEComStores(token: any, baseURL: string, vSize = 100, facilityId?: string): Promise<Response> {
-  const filters = {} as any;
+async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100, facilityId?: string): Promise<Response> {
 
-  if(facilityId) {
-    filters["facilityId"] = facilityId
+  if (!facilityId) {
+    return Promise.reject({
+      code: 'error',
+      message: 'FacilityId is missing',
+      serverResponse: 'FacilityId is missing'
+    });
   }
+
+  const filters = {
+    facilityId: facilityId
+  } as any;
 
   const params = {
     "inputFields": {
@@ -405,7 +412,7 @@ async function getEComStores(token: any, baseURL: string, vSize = 100, facilityI
 
 export {
   getAvailableTimeZones,
-  getEComStores,
+  getEComStoresByFacility,
   getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,
