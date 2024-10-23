@@ -1,7 +1,7 @@
 import api, { client } from "../../api";
 import { userProfileTransformRule } from "../../mappings/user";
 import { Response, User } from "../../types";
-import { hasError } from "../../util";
+import { hasError, jsonParse } from "../../util";
 import { transform } from 'node-json-transform';
 
 async function getProfile(): Promise<User | Response> {
@@ -260,7 +260,7 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
     if (hasError(resp)) {
       throw resp.data
     }
-    return Promise.resolve(resp.data.userPrefValue ? JSON.parse(resp.data.userPrefValue) : {});
+    return Promise.resolve(jsonParse(resp.data.userPrefValue));
   } catch (err) {
     return Promise.reject({
       code: 'error',
@@ -358,8 +358,61 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
+async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100, facilityId?: string): Promise<Response> {
+
+  if (!facilityId) {
+    return Promise.reject({
+      code: 'error',
+      message: 'FacilityId is missing',
+      serverResponse: 'FacilityId is missing'
+    });
+  }
+
+  const filters = {
+    facilityId: facilityId
+  } as any;
+
+  const params = {
+    "inputFields": {
+      "storeName_op": "not-empty",
+      ...filters
+    },
+    "viewSize": vSize,
+    "fieldList": ["productStoreId", "storeName"],
+    "entityName": "ProductStoreFacilityDetail",
+    "distinct": "Y",
+    "noConditionFind": "Y",
+    "filterByDate": 'Y',
+  };
+
+  try {
+    const resp = await client({
+      url: "performFind",
+      method: "get",
+      baseURL,
+      params,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (resp.status === 200 && !hasError(resp)) {
+      return Promise.resolve(resp.data.docs);
+    } else {
+      throw resp.data
+    }
+  } catch(error) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
+  }
+}
+
 export {
   getAvailableTimeZones,
+  getEComStoresByFacility,
   getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,

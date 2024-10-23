@@ -1,7 +1,7 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
 import api, { client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { getTelecomCountryCode, hasError, isError } from './util'
-import { askQuery, getAvailableTimeZones, getGitBookPage, getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, searchQuery, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale, setUserTimeZone } from './modules'
+import { askQuery, getAvailableTimeZones, getGitBookPage, getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getEComStoresByFacility, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, searchQuery, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale, setUserTimeZone} from './modules'
 
 export {
   api,
@@ -13,6 +13,7 @@ export {
   fetchProductsGroupedBy,
   fetchProductsGroupedByParent,
   getAvailableTimeZones,
+  getEComStoresByFacility,
   getGitBookPage,
   getNotificationEnumIds,
   getNotificationUserPrefTypeIds,
