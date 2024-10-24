@@ -183,9 +183,9 @@ async function fetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_ID_T
     }) as any
 
     if (!hasError(resp)) {
-      return Promise.resolve(resp.data)
+      return Promise.resolve(resp.data.docs)
     } else {
-      throw resp.data.docs;
+      throw resp.data;
     }
   } catch (err) {
     return Promise.reject({
