@@ -1,5 +1,5 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
-import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
+import { fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
 import { getEComStoresByFacility, getAvailableTimeZones, getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference, setUserLocale, setUserTimeZone} from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
@@ -7,6 +7,7 @@ import { askQuery, getGitBookPage, searchQuery } from '../modules/gitbook'
 
 export {
   askQuery,
+  fetchGoodIdentificationTypes,
   fetchProducts,
   fetchProductsGroupedBy,
   fetchProductsGroupedByParent,
