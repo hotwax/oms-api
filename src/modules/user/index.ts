@@ -420,7 +420,7 @@ async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<
   };
 
   try {
-    const resp = await api({
+    const resp = await client({
       url: "performFind",
       method: "get",
       baseURL,
