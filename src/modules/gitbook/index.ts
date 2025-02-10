@@ -8,7 +8,10 @@ async function askQuery(payload: any): Promise<any> {
       method: "post",
       baseURL: payload.baseURL,
       data: {
-        "query": payload.queryString
+        "query": payload.queryString,
+      },
+      params: {
+        "format": "markdown"
       },
       headers: {
         Authorization:  'Bearer ' + payload.token,
