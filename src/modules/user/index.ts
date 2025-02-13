@@ -410,9 +410,44 @@ async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100,
   }
 }
 
+async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<any> {
+  const params = {
+    "viewSize": vSize,
+    "fieldList": ["productStoreId", "storeName"],
+    "entityName": "ProductStore",
+    "distinct": "Y",
+    "noConditionFind": "Y"
+  };
+
+  try {
+    const resp = await client({
+      url: "performFind",
+      method: "get",
+      baseURL,
+      params,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    }) as any;
+    if(!hasError(resp)) {
+      return Promise.resolve(resp.data.docs);
+    } else {
+      throw resp.data
+    }
+  } catch(error) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: error
+    })
+  }
+}
+
 export {
   getAvailableTimeZones,
   getEComStoresByFacility,
+  getEComStores,
   getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,

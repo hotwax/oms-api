@@ -1,6 +1,6 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
 import { fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
-import { getEComStoresByFacility, getAvailableTimeZones, getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference, setUserLocale, setUserTimeZone} from '../modules/user'
+import { getEComStoresByFacility, getEComStores, getAvailableTimeZones, getProductIdentificationPref, getProfile, getUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserPreference, setUserLocale, setUserTimeZone} from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 import { askQuery, getGitBookPage, searchQuery } from '../modules/gitbook'
@@ -15,6 +15,7 @@ export {
   fetchProductsStockAtFacility,
   getAvailableTimeZones,
   getEComStoresByFacility,
+  getEComStores,
   getGitBookPage,
   getNotificationEnumIds,
   getNotificationUserPrefTypeIds,
