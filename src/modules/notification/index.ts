@@ -8,7 +8,7 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
     },
     "entityName": "Enumeration",
     "fieldList": ["description", "enumId", "enumTypeId", "enumName"],
-    "viewSize": 20
+    "viewSize": 200
   }
 
   try {
@@ -32,15 +32,16 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
   }
 }
 
-async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId: string): Promise<any> {
+async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId: string, filterConditions = {}): Promise<any> {
   const payload = {
     "inputFields": {
       "userPrefGroupTypeId": applicationId,
-      userLoginId
+      userLoginId,
+      ...filterConditions
     },
     "entityName": "UserPreference",
     "fieldList": ["userPrefTypeId", "userPrefGroupTypeId"],
-    "viewSize": 20
+    "viewSize": 200
   }
 
   try {
