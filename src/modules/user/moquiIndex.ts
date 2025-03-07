@@ -1,6 +1,6 @@
 import api, { client } from "../../api";
 import { userProfileTransformRule } from "../../mappings/user";
-import { Response, User } from "../../types";
+import { RequestPayload, Response, User } from "../../types";
 import { hasError, jsonParse } from "../../util";
 import { transform } from 'node-json-transform';
 
@@ -166,83 +166,9 @@ async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
 }
 
 
+// TODO: need to add support for logout endpoint in moqui, currently no such endpoint is available
 async function logout(): Promise<any> {
-  try {
-    const resp: any = await api({
-      url: "logout",
-      method: "get"
-    });
-
-    if(resp.status != 200) {
-      throw resp.data;
-    }
-
-    return Promise.resolve(resp.data)
-  } catch(err) {
-    return Promise.reject({
-      code: 'error',
-      message: 'Something went wrong',
-      serverResponse: err
-    })
-  }
-}
-
-async function omsGetUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false, payload?: any): Promise<any> {
-  
-  try {
-    const params = {
-      "inputFields": {} as any,
-      "filterByDate": "Y",
-      "viewSize": 200,
-      "distinct": "Y",
-      "noConditionFind" : "Y",
-    } as any
-    
-    if (facilityGroupId) {
-      params.entityName = "FacilityGroupAndParty";
-      params.fieldList = ["facilityId", "facilityName", "sequenceNum"];
-      params.fromDateName = "FGMFromDate";
-      params.thruDateName = "FGMThruDate";
-      params.orderBy = "sequenceNum ASC | facilityName ASC";
-      params.inputFields["facilityGroupId"] = facilityGroupId;
-    } else {
-      params.entityName = "FacilityAndParty";
-      params.fieldList = ["facilityId", "facilityName"];
-      params.inputFields["facilityParentTypeId"] = "VIRTUAL_FACILITY";
-      params.inputFields["facilityParentTypeId_op"] = "notEqual";
-      params.orderBy = "facilityName ASC";
-    }
-    if (!isAdminUser) {
-      params.inputFields["partyId"] = partyId;
-    }
-    let resp = {} as any;
-    resp = await client({
-      url: "performFind",
-      method: "get",
-      baseURL,
-      params,
-      headers: {
-        Authorization:  'Bearer ' + token,
-        'Content-Type': 'application/json'
-      }
-    });
-    if (resp.status === 200 && !hasError(resp)) {
-      return Promise.resolve(resp.data.docs);
-    } else {
-      return Promise.reject({
-        code: 'error',
-        message: 'Failed to fetch user facilities',
-        serverResponse: resp.data
-      })
-    }
-  } catch(error: any) {
-    return Promise.reject({
-      code: 'error',
-      message: 'Something went wrong',
-      serverResponse: error
-    })
-
-  }
+  return Promise.resolve({})
 }
 
 async function getUserPreference(token: any, baseURL: string, userPrefTypeId: string): Promise<any> {
@@ -315,37 +241,20 @@ const setUserLocale = async (payload: any): Promise<any> => {
 }
 
 const setUserTimeZone = async (payload: any): Promise<any> => {
-  try {
-    const resp: any = await api({
-      url: "setUserTimeZone",
-      method: "post",
-      data: payload
-    });
-
-    if (!hasError(resp)) {
-      return Promise.resolve(resp.data)
-    } else {
-      throw resp.data
-    }
-  } catch (error) {
-    return Promise.reject({
-      code: 'error',
-      message: 'Something went wrong',
-      serverResponse: error
-    })
-  }
+  // TODO: add api support when available, currently we do not have an api to update userTimeZone
+  return Promise.resolve({})
 }
 
-const omsGetAvailableTimeZones = async (): Promise <any>  => {
+const getAvailableTimeZones = async (): Promise <any>  => {
   try {
     const resp: any = await api({
-      url: "getAvailableTimeZones",
+      url: "admin/user/getAvailableTimeZones",
       method: "get",
       cache: true
     });
 
     if (!hasError(resp)) {
-      return Promise.resolve(resp.data)
+      return Promise.resolve(resp.data.timeZones)
     } else {
       throw resp.data
     }
@@ -387,7 +296,7 @@ async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100,
 
   try {
     const resp = await client({
-      url: "performFind",
+      url: `admin/facilities`,
       method: "get",
       baseURL,
       params,
@@ -410,51 +319,215 @@ async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100,
   }
 }
 
-async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<any> {
-  const params = {
-    "viewSize": vSize,
-    "fieldList": ["productStoreId", "storeName"],
-    "entityName": "ProductStore",
-    "distinct": "Y",
-    "noConditionFind": "Y"
-  };
+async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string, token?: string, payload?: any): Promise <any> {
+  let params: RequestPayload = {
+    url: "oms/groupFacilities",
+    method: "GET",
+    params: {
+      facilityGroupId,
+      pageSize: 500,
+      ...payload
+    }
+  }
+
+  let resp = {} as any;
 
   try {
-    const resp = await client({
-      url: "performFind",
-      method: "get",
-      baseURL,
-      params,
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
       }
-    }) as any;
-    if(!hasError(resp)) {
-      return Promise.resolve(resp.data.docs);
+  
+      resp = await client(params);
     } else {
-      throw resp.data
+      resp = await api(params);
     }
-  } catch(error) {
+
+    if(!hasError(resp)) {
+      // Filtering facilities on which thruDate is set, as we are unable to pass thruDate check in the api payload
+      // Considering that the facilities will always have a thruDate of the past.
+      const facilities = resp.data.filter((facility: any) => !facility.thruDate)
+
+      if(!facilities.length) {
+        throw "Failed to fetch facilities for group"
+      }
+
+      return Promise.resolve(facilities)
+    } else {
+      throw "Failed to fetch facilities for group"
+    }
+  } catch(err) {
     return Promise.reject({
-      code: 'error',
-      message: 'Something went wrong',
-      serverResponse: error
+      code: "error",
+      message: "Failed to fetch facilities for group",
+      serverResponse: resp.data
     })
   }
 }
 
-export {
-  omsGetAvailableTimeZones,
-  omsGetUserFacilities,
-  getEComStoresByFacility,
-  getEComStores,
-  getUserPreference,
-  getProductIdentificationPref,
-  getProfile,
-  logout,
-  setProductIdentificationPref,
-  setUserPreference,
-  setUserLocale,
+async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?: string, payload?: any): Promise <Array<any> | Response> {
+  let params: RequestPayload = {
+    url: `inventory-cycle-count/user/${partyId}/facilities`,
+    method: "GET"
+  }
+
+  if(payload) {
+    params["params"] = payload
+  }
+
+  let resp = {} as any;
+
+  try {
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+    if(!hasError(resp)) {
+      // Filtering facilities on which thruDate is set, as we are unable to pass thruDate check in the api payload
+      // Considering that the facilities will always have a thruDate of the past.
+      const facilities = resp.data.filter((facility: any) => !facility.thruDate)
+
+      if(!facilities.length) {
+        throw "Failed to fetch user associated facilities"
+      }
+
+      return Promise.resolve(facilities)
+    } else {
+      throw "Failed to fetch user associated facilities"
+    }
+  } catch(err) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to fetch user associated facilities",
+      serverResponse: resp.data
+    })
+  }
+}
+
+async function fetchFacilities(token?: string, baseURL?: string, partyId?: string, facilityGroupId?: string, isAdminUser?: boolean, payload?: Object): Promise <any> {
+  let facilityIds: Array<string> = [];
+  let filters: any = {};
+
+  // Fetch the facilities associated with party
+  if(partyId) {
+    let resp = {} as any
+    try {
+      resp = await fetchFacilitiesByParty(partyId, baseURL, token)
+
+      if(resp.code === "error") {
+        throw "Failed to fetch user associated facilities"
+      }
+
+      facilityIds = resp.map((facility: any) => facility.facilityId);
+    } catch(err) {
+      return Promise.reject({
+        code: "error",
+        message: "Failed to fetch user associated facilities",
+        serverResponse: resp.data
+      })
+    }
+  }
+
+  if(facilityIds.length) {
+    filters = {
+      facilityId: facilityIds.join(","),
+      facilityId_op: "in",
+      pageSize: facilityIds.length
+    }
+  }
+
+  // Fetch the facilities associated with party
+  if(facilityGroupId) {
+    let resp = {} as any
+    try {
+      resp = await fetchFacilitiesByGroup(facilityGroupId, baseURL, token, filters)
+
+      if(resp.code === "error") {
+        throw "Failed to fetch user associated facilities"
+      }
+
+      facilityIds = resp.map((facility: any) => facility.facilityId);
+    } catch(err) {
+      return Promise.reject({
+        code: "error",
+        message: "Failed to fetch user associated facilities",
+        serverResponse: resp.data
+      })
+    }
+  }
+
+  if(facilityIds.length) {
+    filters = {
+      facilityId: facilityIds.join(","),
+      facilityId_op: "in",
+      pageSize: facilityIds.length
+    }
+  }
+
+  let params: RequestPayload = {
+    url: "oms/facilities",
+    method: "GET",
+    params: {
+      pageSize: 500,
+      ...payload,
+      ...filters
+    }
+  }
+
+  let resp = {} as any;
+  let facilities: Array<any> = []
+
+  try {
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    if(!hasError(resp)) {
+      facilities = resp.data
+    } else {
+      throw "Failed to fetch facilities"
+    }
+  } catch(err) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to fetch facilities",
+      serverResponse: resp.data
+    })
+  }
+
+  return Promise.resolve(facilities)
+}
+
+export default {
+  fetchFacilities,
+  fetchFacilitiesByParty,
+  fetchFacilitiesByGroup,
+  getAvailableTimeZones,
   setUserTimeZone
 }

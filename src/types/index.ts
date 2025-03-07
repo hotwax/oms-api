@@ -40,6 +40,15 @@ interface Response {
   serverResponse?: any;
 }
 
+interface RequestPayload {
+  url: string;
+  method: string;
+  params?: any;
+  baseURL?: string;
+  headers?: any;
+  data?: any;
+}
+
 export {
   ContactMech,
   Enumeration,
@@ -52,6 +61,7 @@ export {
   Party,
   Product,
   Response,
+  RequestPayload,
   Status,
   Stock,
   Uom,
