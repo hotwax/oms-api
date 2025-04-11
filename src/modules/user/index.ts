@@ -187,7 +187,7 @@ async function logout(): Promise<any> {
   }
 }
 
-async function getUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false): Promise<any> {
+async function omsGetUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false, payload?: any): Promise<any> {
   
   try {
     const params = {
@@ -270,7 +270,7 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
   }
 }
 
-async function setUserPreference(payload: any): Promise<any> {
+async function omsSetUserPreference(payload: any): Promise<any> {
   try {
     const resp: any = await api({
       url: "service/setUserPreference",
@@ -336,7 +336,7 @@ const setUserTimeZone = async (payload: any): Promise<any> => {
   }
 }
 
-const getAvailableTimeZones = async (): Promise <any>  => {
+const omsGetAvailableTimeZones = async (): Promise <any>  => {
   try {
     const resp: any = await api({
       url: "getAvailableTimeZones",
@@ -445,16 +445,16 @@ async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<
 }
 
 export {
-  getAvailableTimeZones,
+  omsGetAvailableTimeZones,
+  omsGetUserFacilities,
   getEComStoresByFacility,
   getEComStores,
-  getUserFacilities,
   getUserPreference,
   getProductIdentificationPref,
   getProfile,
   logout,
   setProductIdentificationPref,
-  setUserPreference,
+  omsSetUserPreference,
   setUserLocale,
   setUserTimeZone
 }
