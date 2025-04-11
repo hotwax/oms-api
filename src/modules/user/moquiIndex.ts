@@ -234,10 +234,30 @@ async function fetchFacilities(token?: string, baseURL?: string, partyId?: strin
   return Promise.resolve(facilities)
 }
 
+async function updateUserPreference(userId: string, preferenceKey: string, preferenceValue: string): Promise<any> {
+  console.log('userId', userId, preferenceKey, preferenceValue)
+  try {
+    const resp = await client({
+      url: "admin/user/preferences",
+      method: "PUT",
+      data: {
+        userId,
+        preferenceKey,
+        preferenceValue,
+      },
+    });
+    if(hasError(resp)) throw "Error updating user preference";
+    return Promise.resolve(resp.data)
+  } catch(error: any) {
+    return Promise.reject(error)
+  }
+}
+
 export default {
   fetchFacilities,
   fetchFacilitiesByParty,
   fetchFacilitiesByGroup,
   getAvailableTimeZones,
-  setUserTimeZone
+  setUserTimeZone,
+  updateUserPreference
 }

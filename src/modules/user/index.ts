@@ -270,7 +270,7 @@ async function getUserPreference(token: any, baseURL: string, userPrefTypeId: st
   }
 }
 
-async function setUserPreference(payload: any): Promise<any> {
+async function omsSetUserPreference(payload: any): Promise<any> {
   try {
     const resp: any = await api({
       url: "service/setUserPreference",
@@ -454,7 +454,7 @@ export {
   getProfile,
   logout,
   setProductIdentificationPref,
-  setUserPreference,
+  omsSetUserPreference,
   setUserLocale,
   setUserTimeZone
 }
