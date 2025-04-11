@@ -40,7 +40,7 @@ const responseSuccessInterceptor = (response: any) => {
 const responseErrorInterceptor = (error: any) => {
   if (apiConfig.events.responseError) apiConfig.events.responseError(error);
   // As we have yet added support for logout on unauthorization hence emitting unauth event only in case of ofbiz app
-  if (error.response && apiConfig.systemType === "OFBIZ") {
+  if(error.response && apiConfig.systemType === "OFBIZ") {
       // TODO Handle case for failed queue request
       const { status } = error.response;
       if (status == StatusCodes.UNAUTHORIZED) {
@@ -173,8 +173,8 @@ const api = async (customConfig: any) => {
     // if passing responseType in payload then only adding it as responseType
     if(customConfig.responseType) config['responseType'] = customConfig.responseType
 
-    if (apiConfig.instanceUrl && apiConfig.systemType === "MOQUI") config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/rest/s1') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/rest/s1/` : `https://${apiConfig.instanceUrl}.hotwax.io/rest/s1/`;
-    else if (apiConfig.instanceUrl) config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/api') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/api/` : `https://${apiConfig.instanceUrl}.hotwax.io/api/`;
+    if(apiConfig.instanceUrl && apiConfig.systemType === "MOQUI") config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/rest/s1') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/rest/s1/` : `https://${apiConfig.instanceUrl}.hotwax.io/rest/s1/`;
+    else if(apiConfig.instanceUrl) config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/api') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/api/` : `https://${apiConfig.instanceUrl}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
 
