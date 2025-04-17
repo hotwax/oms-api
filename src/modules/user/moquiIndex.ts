@@ -235,7 +235,6 @@ async function fetchFacilities(token?: string, baseURL?: string, partyId?: strin
 }
 
 async function updateUserPreference(userId: string, preferenceKey: string, preferenceValue: string): Promise<any> {
-  console.log('userId', userId, preferenceKey, preferenceValue)
   try {
     const resp = await client({
       url: "admin/user/preferences",
