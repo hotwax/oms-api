@@ -196,4 +196,4 @@ async function omsFetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_I
   }
 }
 
-export { omsFetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent }
+export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes }

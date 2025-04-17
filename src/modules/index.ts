@@ -1,5 +1,5 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
-import { omsFetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
+import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes } from '../modules/product'
 import { getEComStoresByFacility, getEComStores, omsGetAvailableTimeZones, getProductIdentificationPref, getProfile, omsGetUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserLocale, setUserTimeZone, omsSetUserPreference} from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
