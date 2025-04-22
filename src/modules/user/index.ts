@@ -447,14 +447,14 @@ async function omsGetEComStores(token: any, baseURL: string, vSize = 100): Promi
 }
 
 export {
+  getProfile,
+  logout,
   omsGetAvailableTimeZones,
   omsGetUserFacilities,
   omsGetEComStoresByFacility,
   omsGetEComStores,
-  omsGetUserPreference,
   omsGetProductIdentificationPref,
-  getProfile,
-  logout,
+  omsGetUserPreference,
   omsSetProductIdentificationPref,
   omsSetUserPreference,
   setUserLocale,

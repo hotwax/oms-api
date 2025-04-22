@@ -1,6 +1,6 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes } from '../modules/product'
-import { omsGetAvailableTimeZones, getProfile, omsGetUserFacilities, logout, setUserLocale, setUserTimeZone, omsSetUserPreference, omsGetUserPreference, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref } from '../modules/user'
+import { getProfile, omsGetUserFacilities, logout, omsGetAvailableTimeZones, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref, omsSetUserPreference, omsGetUserPreference, setUserLocale, setUserTimeZone } from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 import { askQuery, getGitBookPage, searchQuery } from '../modules/gitbook'
@@ -26,6 +26,18 @@ async function getUserFacilities() {
   }
 }
 
+const fetchFacilities = async() => {
+  return await moquiIndex.fetchFacilities();
+}
+
+async function fetchFacilitiesByGroup() {
+  return await moquiIndex.fetchFacilitiesByGroup(...(Array.from(arguments) as [string, string, string, any]));
+}
+
+async function fetchFacilitiesByParty() {
+  return await moquiIndex.fetchFacilitiesByParty(...(Array.from(arguments) as [string, string, string, any]));
+}
+
 async function getEComStores() {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
@@ -42,18 +54,6 @@ async function getEComStoresByFacility() {
   } else {
     return await omsGetEComStoresByFacility
   }
-}
-
-const fetchFacilities = async() => {
-  return await moquiIndex.fetchFacilities();
-}
-
-async function fetchFacilitiesByGroup() {
-  return await moquiIndex.fetchFacilitiesByGroup(...(Array.from(arguments) as [string, string, string, any]));
-}
-
-async function fetchFacilitiesByParty() {
-  return await moquiIndex.fetchFacilitiesByParty(...(Array.from(arguments) as [string, string, string, any]));
 }
 
 async function getUserPreference() {
