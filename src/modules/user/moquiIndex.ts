@@ -1,6 +1,6 @@
 import api, { client } from "../../api";
 import { RequestPayload, Response } from "../../types";
-import { hasError } from "../../util";
+import { hasError, jsonParse } from "../../util";
 
 const setUserTimeZone = async (): Promise<any> => {
   // TODO: add api support when available, currently we do not have an api to update userTimeZone
@@ -83,11 +83,11 @@ async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string,
 async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?: string, payload?: any): Promise <Array<any> | Response> {
   let params: RequestPayload = {
     url: `inventory-cycle-count/user/${partyId}/facilities`,
-    method: "GET"
-  }
-
-  if(payload) {
-    params["params"] = payload
+    method: "GET",
+    params: {
+      ...payload,
+      pageSize: 500
+    }
   }
 
   let resp = {} as any;
@@ -234,21 +234,275 @@ async function fetchFacilities(token?: string, baseURL?: string, partyId?: strin
   return Promise.resolve(facilities)
 }
 
-async function updateUserPreference(userId: string, preferenceKey: string, preferenceValue: string): Promise<any> {
+async function getEComStores(token?: string, baseURL?: string, pageSize = 100): Promise <any> {
+  let params: RequestPayload = {
+    url: "oms/productStores",
+    method: "GET",
+    params: {
+      pageSize
+    }
+  }
+
+  let resp = {} as any;
+  let stores: Array<any> = []
+
   try {
-    const resp = await client({
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    if(!hasError(resp)) {
+      stores = resp.data
+    } else {
+      throw resp
+    }
+  } catch(err) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to fetch product stores",
+      serverResponse: resp.data
+    })
+  }
+
+  return Promise.resolve(stores)
+}
+
+async function getEComStoresByFacility(token?: string, baseURL?: string, pageSize = 100, facilityId?: any): Promise <any> {
+  let params: RequestPayload = {
+    url: `oms/facilities/${facilityId}/productStores`,
+    method: "GET",
+    params: {
+      pageSize,
+      facilityId
+    }
+  }
+
+  let resp = {} as any;
+  let stores: Array<any> = []
+
+  try {
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    if(!hasError(resp)) {
+      stores = resp.data
+    } else {
+      throw resp
+    }
+  } catch(err) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to fetch facility associated product stores",
+      serverResponse: resp.data
+    })
+  }
+
+  // Fetching all stores for the store name
+  let productStoresMap = {} as any;
+  try {
+    const productStores = await getEComStores(token, baseURL, 200);
+    productStores.map((store: any) => productStoresMap[store.productStoreId] = store.storeName)
+  } catch(error) {
+    console.error(error);
+  }
+
+  stores.map((store: any) => store.storeName = productStoresMap[store.productStoreId])
+  return Promise.resolve(stores)
+}
+
+async function getUserPreference(token: any, baseURL: string, preferenceKey: string, userId: any): Promise <any> {
+  let params: RequestPayload = {
+    url: "admin/user/preferences",
+    method: "GET",
+    params: {
+      pageSize: 1,
+      userId,
+      preferenceKey
+    }
+  }
+
+  let resp = {} as any;
+  try {
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    if(!hasError(resp)) {
+      return Promise.resolve(jsonParse(resp.data[0]?.preferenceValue))
+    } else {
+      throw resp
+    }
+  } catch(err) {
+    return Promise.reject({
+      code: "error",
+      message: "Something went wrong",
+      serverResponse: resp.data
+    })
+  }
+}
+
+async function updateUserPreference(payload: any): Promise<any> {
+  try {
+    const resp = await api({
       url: "admin/user/preferences",
       method: "PUT",
       data: {
-        userId,
-        preferenceKey,
-        preferenceValue,
+        userId: payload.userId,
+        preferenceKey: payload.userPrefTypeId,
+        preferenceValue: payload.userPrefValue,
       },
     });
     if(hasError(resp)) throw "Error updating user preference";
-    return Promise.resolve(resp.data)
+    return Promise.resolve(resp)
   } catch(error: any) {
     return Promise.reject(error)
+  }
+}
+
+async function getProductIdentificationPref(productStoreId: any): Promise<any> {
+  const productIdentifications = {
+    'primaryId': 'productId',
+    'secondaryId': ''
+  }
+
+  try {
+    const resp = await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "GET",
+      params: {
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF"
+      }
+    });
+
+    if(!hasError(resp) && resp?.data[0]?.settingValue) {
+      const respValue = JSON.parse(resp.data[0].settingValue)
+      productIdentifications['primaryId'] = respValue['primaryId']
+      productIdentifications['secondaryId'] = respValue['secondaryId']
+    } else {
+      await createProductIdentificationPref(productStoreId)
+    }
+  } catch(error: any) {
+    return Promise.reject(error)
+  }
+
+  return productIdentifications;
+}
+
+async function createProductIdentificationPref(productStoreId: string): Promise<any> {
+  const prefValue = {
+    primaryId: 'productId',
+    secondaryId: ''
+  }
+
+  try {
+    await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "POST",
+      data: {
+        fromDate: Date.now(),
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF",
+        settingValue: JSON.stringify(prefValue)
+      }
+    });
+  } catch(err) {
+    console.error(err)
+  }
+
+  // not checking for resp success and fail case as every time we need to update the state with the
+  // default value when creating a pref
+  return prefValue;
+}
+
+
+async function setProductIdentificationPref(productStoreId: string, productIdentificationPref: any): Promise<any> {
+  let resp = {} as any, fromDate;
+
+  try {
+    resp = await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "GET",
+      params: {
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF"
+      }
+    });
+    if(!hasError(resp) && resp.data[0]?.fromDate) {
+      fromDate = resp.data[0].fromDate
+    } else {
+      throw resp
+    }
+  } catch(err) {
+    console.error(err)
+  }
+
+  // when fromDate is not found then reject the call with a message
+  if(!fromDate) {
+    return Promise.reject('fromDate information is missing');
+  }
+
+  try {
+    resp = await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "POST",
+      data: {
+        fromDate,
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF",
+        settingValue: JSON.stringify(productIdentificationPref)
+      }
+    });
+
+    if(!hasError(resp)) {
+      return Promise.resolve(productIdentificationPref)
+    } else {
+      return Promise.reject({
+        code: 'error',
+        message: 'Failed to set product identification pref',
+        serverResponse: resp.data
+      })
+    }
+  } catch(err) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Something went wrong',
+      serverResponse: err
+    })
   }
 }
 
@@ -257,6 +511,11 @@ export default {
   fetchFacilitiesByParty,
   fetchFacilitiesByGroup,
   getAvailableTimeZones,
+  getEComStores,
+  getEComStoresByFacility,
+  getProductIdentificationPref,
+  getUserPreference,
+  setProductIdentificationPref,
   setUserTimeZone,
   updateUserPreference
 }
