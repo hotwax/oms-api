@@ -378,7 +378,7 @@ async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100,
       ...filters
     },
     "viewSize": vSize,
-    "fieldList": ["productStoreId", "storeName"],
+    "fieldList": ["productStoreId", "storeName", "productIdentifierEnumId"],
     "entityName": "ProductStoreFacilityDetail",
     "distinct": "Y",
     "noConditionFind": "Y",
@@ -413,7 +413,7 @@ async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100,
 async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<any> {
   const params = {
     "viewSize": vSize,
-    "fieldList": ["productStoreId", "storeName"],
+    "fieldList": ["productStoreId", "storeName", "productIdentifierEnumId"],
     "entityName": "ProductStore",
     "distinct": "Y",
     "noConditionFind": "Y"
