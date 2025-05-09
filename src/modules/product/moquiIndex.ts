@@ -11,11 +11,7 @@ const fetchGoodIdentificationTypes = async (parentTypeId = "HC_GOOD_ID_TYPE"): P
       }
     });
 
-    if(!hasError(resp)) {
-      return Promise.resolve(resp.data)
-    } else {
-      throw resp.data
-    }
+    return Promise.resolve(resp.data)
   } catch(error) {
     return Promise.reject({
       code: 'error',
