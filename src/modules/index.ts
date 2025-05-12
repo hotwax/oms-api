@@ -1,10 +1,11 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
-import { fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent } from '../modules/product'
-import { getEComStoresByFacility, getEComStores, omsGetAvailableTimeZones, getProductIdentificationPref, getProfile, omsGetUserFacilities, getUserPreference, logout, setProductIdentificationPref, setUserLocale, setUserTimeZone, omsSetUserPreference} from '../modules/user'
+import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes } from '../modules/product'
+import { getProfile, omsGetUserFacilities, logout, omsGetAvailableTimeZones, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref, omsSetUserPreference, omsGetUserPreference, setUserLocale, setUserTimeZone } from '../modules/user'
 import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 import { askQuery, getGitBookPage, searchQuery } from '../modules/gitbook'
 import moquiIndex from './user/moquiIndex'
+import productMoquiIndex from './product/moquiIndex'
 import { getConfig } from '../api'
 
 const getAvailableTimeZones = async () => {
@@ -37,12 +38,66 @@ async function fetchFacilitiesByParty() {
   return await moquiIndex.fetchFacilitiesByParty(...(Array.from(arguments) as [string, string, string, any]));
 }
 
-const setUserPreference = async () => {
+async function getEComStores() {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.updateUserPreference
+    return await moquiIndex.getEComStores(...arguments)
+  } else {
+    return await omsGetEComStores
+  }
+}
+
+async function getEComStoresByFacility() {
+  const apiConfig = getConfig() as any;
+  if(apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.getEComStoresByFacility(...arguments)
+  } else {
+    return await omsGetEComStoresByFacility
+  }
+}
+
+async function getUserPreference() {
+  const apiConfig = getConfig() as any;
+  if(apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.getUserPreference(...(Array.from(arguments) as [any, string, string, any]))
+  } else {
+    return await omsGetUserPreference
+  }
+}
+
+async function getProductIdentificationPref() {
+  const apiConfig = getConfig() as any;
+  if(apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.getProductIdentificationPref(...(Array.from(arguments) as [any]))
+  } else {
+    return await omsGetProductIdentificationPref
+  }
+}
+
+async function setProductIdentificationPref() {
+  const apiConfig = getConfig() as any;
+  if(apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.setProductIdentificationPref(...(Array.from(arguments) as [string, any]))
+  } else {
+    return await omsSetProductIdentificationPref
+  }
+}
+
+const setUserPreference = async (payload: any) => {
+  const apiConfig = getConfig() as any;
+  if(apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.updateUserPreference(payload)
   } else {
     return await omsSetUserPreference
+  }
+}
+
+const fetchGoodIdentificationTypes = async (payload: any) => {
+  const apiConfig = getConfig() as any;
+  if(apiConfig.systemType === "MOQUI") {
+    return await productMoquiIndex.fetchGoodIdentificationTypes(payload)
+  } else {
+    return await omsFetchGoodIdentificationTypes(payload)
   }
 }
 

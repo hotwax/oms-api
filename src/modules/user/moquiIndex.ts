@@ -1,6 +1,6 @@
 import api, { client } from "../../api";
 import { RequestPayload, Response } from "../../types";
-import { hasError } from "../../util";
+import { jsonParse } from "../../util";
 
 const setUserTimeZone = async (): Promise<any> => {
   // TODO: add api support when available, currently we do not have an api to update userTimeZone
@@ -15,15 +15,11 @@ const getAvailableTimeZones = async (): Promise <any>  => {
       cache: true
     });
 
-    if (!hasError(resp)) {
-      return Promise.resolve(resp.data.timeZones)
-    } else {
-      throw resp.data
-    }
-  } catch (error) {
+    return Promise.resolve(resp.data?.timeZones)
+  } catch(error) {
     return Promise.reject({
-      code: 'error',
-      message: 'Something went wrong',
+      code: "error",
+      message: "Failed to fetch available timezones",
       serverResponse: error
     })
   }
@@ -58,24 +54,15 @@ async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string,
       resp = await api(params);
     }
 
-    if(!hasError(resp)) {
-      // Filtering facilities on which thruDate is set, as we are unable to pass thruDate check in the api payload
-      // Considering that the facilities will always have a thruDate of the past.
-      const facilities = resp.data.filter((facility: any) => !facility.thruDate)
-
-      if(!facilities.length) {
-        throw "Failed to fetch facilities for group"
-      }
-
-      return Promise.resolve(facilities)
-    } else {
-      throw "Failed to fetch facilities for group"
-    }
-  } catch(err) {
+    // Filtering facilities on which thruDate is set, as we are unable to pass thruDate check in the api payload
+    // Considering that the facilities will always have a thruDate of the past.
+    const facilities = resp.data.filter((facility: any) => !facility.thruDate)
+    return Promise.resolve(facilities)
+  } catch(error) {
     return Promise.reject({
       code: "error",
       message: "Failed to fetch facilities for group",
-      serverResponse: resp.data
+      serverResponse: error
     })
   }
 }
@@ -83,11 +70,11 @@ async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string,
 async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?: string, payload?: any): Promise <Array<any> | Response> {
   let params: RequestPayload = {
     url: `inventory-cycle-count/user/${partyId}/facilities`,
-    method: "GET"
-  }
-
-  if(payload) {
-    params["params"] = payload
+    method: "GET",
+    params: {
+      ...payload,
+      pageSize: 500
+    }
   }
 
   let resp = {} as any;
@@ -107,24 +94,16 @@ async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?:
     } else {
       resp = await api(params);
     }
-    if(!hasError(resp)) {
-      // Filtering facilities on which thruDate is set, as we are unable to pass thruDate check in the api payload
-      // Considering that the facilities will always have a thruDate of the past.
-      const facilities = resp.data.filter((facility: any) => !facility.thruDate)
 
-      if(!facilities.length) {
-        throw "Failed to fetch user associated facilities"
-      }
-
-      return Promise.resolve(facilities)
-    } else {
-      throw "Failed to fetch user associated facilities"
-    }
-  } catch(err) {
+    // Filtering facilities on which thruDate is set, as we are unable to pass thruDate check in the api payload
+    // Considering that the facilities will always have a thruDate of the past.
+    const facilities = resp.data.filter((facility: any) => !facility.thruDate)
+    return Promise.resolve(facilities)
+  } catch(error) {
     return Promise.reject({
       code: "error",
       message: "Failed to fetch user associated facilities",
-      serverResponse: resp.data
+      serverResponse: error
     })
   }
 }
@@ -132,52 +111,27 @@ async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?:
 async function fetchFacilities(token?: string, baseURL?: string, partyId?: string, facilityGroupId?: string, isAdminUser?: boolean, payload?: Object): Promise <any> {
   let facilityIds: Array<string> = [];
   let filters: any = {};
+  let resp = {} as any
 
   // Fetch the facilities associated with party
   if(partyId) {
-    let resp = {} as any
     try {
       resp = await fetchFacilitiesByParty(partyId, baseURL, token)
 
-      if(resp.code === "error") {
-        throw "Failed to fetch user associated facilities"
-      }
-
       facilityIds = resp.map((facility: any) => facility.facilityId);
-    } catch(err) {
-      return Promise.reject({
-        code: "error",
-        message: "Failed to fetch user associated facilities",
-        serverResponse: resp.data
-      })
+    } catch(error) {
+      return error
     }
   }
 
-  if(facilityIds.length) {
-    filters = {
-      facilityId: facilityIds.join(","),
-      facilityId_op: "in",
-      pageSize: facilityIds.length
-    }
-  }
-
-  // Fetch the facilities associated with party
+  // Fetch the facilities associated with group
   if(facilityGroupId) {
-    let resp = {} as any
     try {
       resp = await fetchFacilitiesByGroup(facilityGroupId, baseURL, token, filters)
 
-      if(resp.code === "error") {
-        throw "Failed to fetch user associated facilities"
-      }
-
       facilityIds = resp.map((facility: any) => facility.facilityId);
-    } catch(err) {
-      return Promise.reject({
-        code: "error",
-        message: "Failed to fetch user associated facilities",
-        serverResponse: resp.data
-      })
+    } catch(error) {
+      return error
     }
   }
 
@@ -199,7 +153,6 @@ async function fetchFacilities(token?: string, baseURL?: string, partyId?: strin
     }
   }
 
-  let resp = {} as any;
   let facilities: Array<any> = []
 
   try {
@@ -218,38 +171,284 @@ async function fetchFacilities(token?: string, baseURL?: string, partyId?: strin
       resp = await api(params);
     }
 
-    if(!hasError(resp)) {
-      facilities = resp.data
-    } else {
-      throw "Failed to fetch facilities"
-    }
-  } catch(err) {
+    facilities = resp.data
+  } catch(error) {
     return Promise.reject({
       code: "error",
       message: "Failed to fetch facilities",
-      serverResponse: resp.data
+      serverResponse: error
     })
   }
 
   return Promise.resolve(facilities)
 }
 
-async function updateUserPreference(userId: string, preferenceKey: string, preferenceValue: string): Promise<any> {
-  console.log('userId', userId, preferenceKey, preferenceValue)
+async function getEComStores(token?: string, baseURL?: string, pageSize = 100): Promise <any> {
+  let params: RequestPayload = {
+    url: "oms/productStores",
+    method: "GET",
+    params: {
+      pageSize
+    }
+  }
+
+  let resp = {} as any;
+  let stores: Array<any> = []
+
   try {
-    const resp = await client({
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    stores = resp.data
+  } catch(error) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to fetch product stores",
+      serverResponse: error
+    })
+  }
+
+  return Promise.resolve(stores)
+}
+
+async function getEComStoresByFacility(token?: string, baseURL?: string, pageSize = 100, facilityId?: any): Promise <any> {
+  let params: RequestPayload = {
+    url: `oms/facilities/${facilityId}/productStores`,
+    method: "GET",
+    params: {
+      pageSize,
+      facilityId
+    }
+  }
+
+  let resp = {} as any;
+  let stores: Array<any> = []
+
+  try {
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    // Filtering stores on which thruDate is set, as we are unable to pass thruDate check in the api payload
+    // Considering that the stores will always have a thruDate of the past.
+    stores = resp.data.filter((store: any) => !store.thruDate)
+  } catch(error) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to fetch facility associated product stores",
+      serverResponse: error
+    })
+  }
+
+  if(!stores.length) return Promise.resolve(stores)
+
+  // Fetching all stores for the store name
+  let productStoresMap = {} as any;
+  try {
+    const productStores = await getEComStores(token, baseURL, 200);
+    productStores.map((store: any) => productStoresMap[store.productStoreId] = store.storeName)
+  } catch(error) {
+    console.error(error);
+  }
+
+  stores.map((store: any) => store.storeName = productStoresMap[store.productStoreId])
+  return Promise.resolve(stores)
+}
+
+async function getUserPreference(token: any, baseURL: string, preferenceKey: string, userId: any): Promise <any> {
+  let params: RequestPayload = {
+    url: "admin/user/preferences",
+    method: "GET",
+    params: {
+      pageSize: 1,
+      userId,
+      preferenceKey
+    }
+  }
+
+  let resp = {} as any;
+  try {
+    if(token && baseURL) {
+      params = {
+        ...params,
+        baseURL,
+        headers: {
+          "api_key": token,
+          "Content-Type": "application/json"
+        }
+      }
+  
+      resp = await client(params);
+    } else {
+      resp = await api(params);
+    }
+
+    return Promise.resolve(resp.data[0]?.preferenceValue ? jsonParse(resp.data[0]?.preferenceValue) : "")
+  } catch(error) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to get user preference",
+      serverResponse: error
+    })
+  }
+}
+
+async function updateUserPreference(payload: any): Promise<any> {
+  try {
+    const resp = await api({
       url: "admin/user/preferences",
       method: "PUT",
       data: {
-        userId,
-        preferenceKey,
-        preferenceValue,
+        userId: payload.userId,
+        preferenceKey: payload.userPrefTypeId,
+        preferenceValue: payload.userPrefValue,
       },
-    });
-    if(hasError(resp)) throw "Error updating user preference";
+    }) as any;
     return Promise.resolve(resp.data)
   } catch(error: any) {
-    return Promise.reject(error)
+    return Promise.reject({
+      code: "error",
+      message: "Failed to update user preference",
+      serverResponse: error
+    })
+  }
+}
+
+async function getProductIdentificationPref(productStoreId: any): Promise<any> {
+  const productIdentifications = {
+    primaryId: "productId",
+    secondaryId: ""
+  }
+
+  try {
+    const resp = await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "GET",
+      params: {
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF"
+      }
+    }) as any;
+
+    // Filtering settings on which thruDate is set, as we are unable to pass thruDate check in the api payload
+    // Considering that the settings will always have a thruDate of the past.
+    const settings = resp.data.filter((setting: any) => !setting.thruDate);
+    if(settings[0]?.settingValue) {
+      const respValue = JSON.parse(settings[0].settingValue)
+      productIdentifications['primaryId'] = respValue['primaryId']
+      productIdentifications['secondaryId'] = respValue['secondaryId']
+    } else {
+      await createProductIdentificationPref(productStoreId)
+    }
+  } catch(error: any) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to get product identification pref",
+      serverResponse: error
+    })
+  }
+
+  return productIdentifications;
+}
+
+async function createProductIdentificationPref(productStoreId: string): Promise<any> {
+  const prefValue = {
+    primaryId: "productId",
+    secondaryId: ""
+  }
+
+  try {
+    await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "POST",
+      data: {
+        fromDate: Date.now(),
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF",
+        settingValue: JSON.stringify(prefValue)
+      }
+    });
+  } catch(err) {
+    console.error(err)
+  }
+
+  // not checking for resp success and fail case as every time we need to update the state with the
+  // default value when creating a pref
+  return prefValue;
+}
+
+
+async function setProductIdentificationPref(productStoreId: string, productIdentificationPref: any): Promise<any> {
+  let resp = {} as any, fromDate;
+
+  try {
+    resp = await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "GET",
+      params: {
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF"
+      }
+    });
+
+    // Filtering settings on which thruDate is set, as we are unable to pass thruDate check in the api payload
+    // Considering that the settings will always have a thruDate of the past.
+    const settings = resp.data?.filter((setting: any) => !setting.thruDate)
+    if(settings[0]?.fromDate) fromDate = settings[0].fromDate
+  } catch(err) {
+    console.error(err)
+  }
+
+  if(!fromDate) {
+    return Promise.reject({
+      code: "error",
+      message: "fromDate information is missing",
+      serverResponse: resp.data
+    })
+  }
+
+  try {
+    resp = await api({
+      url: `oms/productStores/${productStoreId}/settings`,
+      method: "POST",
+      data: {
+        fromDate,
+        productStoreId,
+        settingTypeEnumId: "PRDT_IDEN_PREF",
+        settingValue: JSON.stringify(productIdentificationPref)
+      }
+    });
+
+    return Promise.resolve(productIdentificationPref)
+  } catch(error) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to set product identification pref",
+      serverResponse: error
+    })
   }
 }
 
@@ -258,6 +457,11 @@ export default {
   fetchFacilitiesByParty,
   fetchFacilitiesByGroup,
   getAvailableTimeZones,
+  getEComStores,
+  getEComStoresByFacility,
+  getProductIdentificationPref,
+  getUserPreference,
+  setProductIdentificationPref,
   setUserTimeZone,
   updateUserPreference
 }

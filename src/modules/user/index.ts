@@ -31,7 +31,7 @@ async function getProfile(): Promise<User | Response> {
   }
 }
 
-async function setProductIdentificationPref(eComStoreId: string, productIdentificationPref: any): Promise<any> {
+async function omsSetProductIdentificationPref(eComStoreId: string, productIdentificationPref: any): Promise<any> {
 
   let fromDate;
 
@@ -97,7 +97,7 @@ async function setProductIdentificationPref(eComStoreId: string, productIdentifi
   }
 }
 
-async function createProductIdentificationPref(eComStoreId: string): Promise<any> {
+async function omsCreateProductIdentificationPref(eComStoreId: string): Promise<any> {
   const prefValue = {
     primaryId: 'productId',
     secondaryId: ''
@@ -125,7 +125,7 @@ async function createProductIdentificationPref(eComStoreId: string): Promise<any
   return prefValue;
 }
 
-async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
+async function omsGetProductIdentificationPref(eComStoreId: string): Promise<any> {
 
   const productIdentifications = {
     'primaryId': 'productId',
@@ -156,7 +156,7 @@ async function getProductIdentificationPref(eComStoreId: string): Promise<any> {
       productIdentifications['primaryId'] = respValue['primaryId']
       productIdentifications['secondaryId'] = respValue['secondaryId']
     } else if(resp.data.error === "No record found") {  // TODO: remove this check once we have the data always available by default
-      await createProductIdentificationPref(eComStoreId)
+      await omsCreateProductIdentificationPref(eComStoreId)
     }
   } catch(err) {
     console.error(err)
@@ -188,7 +188,6 @@ async function logout(): Promise<any> {
 }
 
 async function omsGetUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false, payload?: any): Promise<any> {
-  
   try {
     const params = {
       "inputFields": {} as any,
@@ -245,7 +244,7 @@ async function omsGetUserFacilities(token: any, baseURL: string, partyId: string
   }
 }
 
-async function getUserPreference(token: any, baseURL: string, userPrefTypeId: string): Promise<any> {
+async function omsGetUserPreference(token: any, baseURL: string, userPrefTypeId: string): Promise<any> {
   try {
     const resp = await client({
       url: "service/getUserPreference",
@@ -275,7 +274,10 @@ async function omsSetUserPreference(payload: any): Promise<any> {
     const resp: any = await api({
       url: "service/setUserPreference",
       method: "post",
-      data: payload
+      data: {
+        userPrefTypeId: payload.userPrefTypeId,
+        userPrefValue: payload.userPrefValue,
+      }
     });
 
     if (!hasError(resp)) {
@@ -358,7 +360,7 @@ const omsGetAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
-async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100, facilityId?: string): Promise<Response> {
+async function omsGetEComStoresByFacility(token: any, baseURL: string, vSize = 100, facilityId?: string): Promise<Response> {
 
   if (!facilityId) {
     return Promise.reject({
@@ -410,7 +412,7 @@ async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100,
   }
 }
 
-async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<any> {
+async function omsGetEComStores(token: any, baseURL: string, vSize = 100): Promise<any> {
   const params = {
     "viewSize": vSize,
     "fieldList": ["productStoreId", "storeName", "productIdentifierEnumId"],
@@ -445,15 +447,15 @@ async function getEComStores(token: any, baseURL: string, vSize = 100): Promise<
 }
 
 export {
-  omsGetAvailableTimeZones,
-  omsGetUserFacilities,
-  getEComStoresByFacility,
-  getEComStores,
-  getUserPreference,
-  getProductIdentificationPref,
   getProfile,
   logout,
-  setProductIdentificationPref,
+  omsGetAvailableTimeZones,
+  omsGetUserFacilities,
+  omsGetEComStoresByFacility,
+  omsGetEComStores,
+  omsGetProductIdentificationPref,
+  omsGetUserPreference,
+  omsSetProductIdentificationPref,
   omsSetUserPreference,
   setUserLocale,
   setUserTimeZone

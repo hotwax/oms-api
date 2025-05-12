@@ -165,7 +165,7 @@ async function fetchProductsGroupedByParent(params: any): Promise<Product[] | Re
   return await fetchProductsGroupedBy(payload);
 }
 
-async function fetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_ID_TYPE"): Promise<any> {
+async function omsFetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_ID_TYPE"): Promise<any> {
   const payload = {
     "inputFields": {
       "parentTypeId": parentTypeId,
@@ -196,4 +196,4 @@ async function fetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_ID_T
   }
 }
 
-export { fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent }
+export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes }
