@@ -15,7 +15,7 @@ const fetchGoodIdentificationTypes = async (parentTypeId = "HC_GOOD_ID_TYPE"): P
   } catch(error) {
     return Promise.reject({
       code: 'error',
-      message: 'Something went wrong',
+      message: 'Failed to fetch good identification types',
       serverResponse: error
     })
   }
