@@ -33,16 +33,15 @@ async function getProfile(): Promise<User | Response> {
 
 async function omsSetProductIdentificationPref(eComStoreId: string, productIdentificationPref: any): Promise<any> {
 
-  let fromDate;
+  let isSettingExists = false;
 
   const payload = {
     "inputFields": {
       "productStoreId": eComStoreId,
       "settingTypeEnumId": "PRDT_IDEN_PREF"
     },
-    "filterByDate": 'Y',
     "entityName": "ProductStoreSetting",
-    "fieldList": ["fromDate", "productStoreId"],
+    "fieldList": ["productStoreId", "settingTypeEnumId"],
     "viewSize": 1
   }
 
@@ -53,20 +52,19 @@ async function omsSetProductIdentificationPref(eComStoreId: string, productIdent
       params: payload,
       cache: true
     }) as any;
-    if(!hasError(resp)) {
-      fromDate = resp.data.docs[0].fromDate
+    if(!hasError(resp) && resp.data.docs?.length) {
+      isSettingExists = true
     }
   } catch(err) {
     console.error(err)
   }
 
   // when fromDate is not found then reject the call with a message
-  if(!fromDate) {
-    return Promise.reject('fromDate information is missing');
+  if(!isSettingExists) {
+    return Promise.reject('product store setting is missing');
   }
 
   const params = {
-    "fromDate": fromDate,
     "productStoreId": eComStoreId,
     "settingTypeEnumId": "PRDT_IDEN_PREF",
     "settingValue": JSON.stringify(productIdentificationPref)
@@ -104,7 +102,6 @@ async function omsCreateProductIdentificationPref(eComStoreId: string): Promise<
   }
 
   const params = {
-    "fromDate": Date.now(),
     "productStoreId": eComStoreId,
     "settingTypeEnumId": "PRDT_IDEN_PREF",
     "settingValue": JSON.stringify(prefValue)
@@ -137,9 +134,8 @@ async function omsGetProductIdentificationPref(eComStoreId: string): Promise<any
       "productStoreId": eComStoreId,
       "settingTypeEnumId": "PRDT_IDEN_PREF"
     },
-    "filterByDate": 'Y',
     "entityName": "ProductStoreSetting",
-    "fieldList": ["settingValue", "fromDate"],
+    "fieldList": ["settingValue", "settingTypeEnumId"],
     "viewSize": 1
   }
 

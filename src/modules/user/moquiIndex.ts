@@ -108,7 +108,7 @@ async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?:
   }
 }
 
-async function fetchFacilities(token?: string, baseURL?: string, partyId?: string, facilityGroupId?: string, isAdminUser?: boolean, payload?: Object): Promise <any> {
+async function fetchFacilities(token: string, baseURL: string, partyId: string, facilityGroupId: string, isAdminUser: boolean, payload: Object): Promise <any> {
   let facilityIds: Array<string> = [];
   let filters: any = {};
   let resp = {} as any
@@ -353,9 +353,7 @@ async function getProductIdentificationPref(productStoreId: any): Promise<any> {
       }
     }) as any;
 
-    // Filtering settings on which thruDate is set, as we are unable to pass thruDate check in the api payload
-    // Considering that the settings will always have a thruDate of the past.
-    const settings = resp.data.filter((setting: any) => !setting.thruDate);
+    const settings = resp.data
     if(settings[0]?.settingValue) {
       const respValue = JSON.parse(settings[0].settingValue)
       productIdentifications['primaryId'] = respValue['primaryId']
@@ -385,7 +383,6 @@ async function createProductIdentificationPref(productStoreId: string): Promise<
       url: `oms/productStores/${productStoreId}/settings`,
       method: "POST",
       data: {
-        fromDate: Date.now(),
         productStoreId,
         settingTypeEnumId: "PRDT_IDEN_PREF",
         settingValue: JSON.stringify(prefValue)
@@ -402,7 +399,7 @@ async function createProductIdentificationPref(productStoreId: string): Promise<
 
 
 async function setProductIdentificationPref(productStoreId: string, productIdentificationPref: any): Promise<any> {
-  let resp = {} as any, fromDate;
+  let resp = {} as any, isSettingExists = false;
 
   try {
     resp = await api({
@@ -414,18 +411,15 @@ async function setProductIdentificationPref(productStoreId: string, productIdent
       }
     });
 
-    // Filtering settings on which thruDate is set, as we are unable to pass thruDate check in the api payload
-    // Considering that the settings will always have a thruDate of the past.
-    const settings = resp.data?.filter((setting: any) => !setting.thruDate)
-    if(settings[0]?.fromDate) fromDate = settings[0].fromDate
+    if(resp.data[0]?.settingTypeEnumId) isSettingExists = true
   } catch(err) {
     console.error(err)
   }
 
-  if(!fromDate) {
+  if(!isSettingExists) {
     return Promise.reject({
       code: "error",
-      message: "fromDate information is missing",
+      message: "product store setting is missing",
       serverResponse: resp.data
     })
   }
@@ -435,7 +429,6 @@ async function setProductIdentificationPref(productStoreId: string, productIdent
       url: `oms/productStores/${productStoreId}/settings`,
       method: "POST",
       data: {
-        fromDate,
         productStoreId,
         settingTypeEnumId: "PRDT_IDEN_PREF",
         settingValue: JSON.stringify(productIdentificationPref)

@@ -17,69 +17,69 @@ const getAvailableTimeZones = async () => {
   }
 }
 
-async function getUserFacilities() {
+async function getUserFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false, payload = {}) {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.fetchFacilities(...arguments)
+    return await moquiIndex.fetchFacilities(token, baseURL, partyId, facilityGroupId, isAdminUser, payload)
   } else {
-    return await omsGetUserFacilities
+    return await omsGetUserFacilities(token, baseURL, partyId, facilityGroupId, isAdminUser, payload)
   }
 }
 
-const fetchFacilities = async() => {
-  return await moquiIndex.fetchFacilities();
+async function fetchFacilities(token: any, baseURL: string, partyId: string, facilityGroupId: any, isAdminUser = false, payload = {}) {
+  return await moquiIndex.fetchFacilities(token, baseURL, partyId, facilityGroupId, isAdminUser, payload);
 }
 
-async function fetchFacilitiesByGroup() {
-  return await moquiIndex.fetchFacilitiesByGroup(...(Array.from(arguments) as [string, string, string, any]));
+async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string, token?: string, payload?: any) {
+  return await moquiIndex.fetchFacilitiesByGroup(facilityGroupId, baseURL, token, payload);
 }
 
-async function fetchFacilitiesByParty() {
-  return await moquiIndex.fetchFacilitiesByParty(...(Array.from(arguments) as [string, string, string, any]));
+async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?: string, payload?: any) {
+  return await moquiIndex.fetchFacilitiesByParty(partyId, baseURL, token, payload);
 }
 
-async function getEComStores() {
+async function getEComStores(token: any, baseURL: string, vSize = 100) {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.getEComStores(...arguments)
+    return await moquiIndex.getEComStores(token, baseURL, vSize)
   } else {
-    return await omsGetEComStores
+    return await omsGetEComStores(token, baseURL, vSize)
   }
 }
 
-async function getEComStoresByFacility() {
+async function getEComStoresByFacility(token: any, baseURL: string, vSize = 100, facilityId?: string) {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.getEComStoresByFacility(...arguments)
+    return await moquiIndex.getEComStoresByFacility(token, baseURL, vSize, facilityId)
   } else {
-    return await omsGetEComStoresByFacility
+    return await omsGetEComStoresByFacility(token, baseURL, vSize, facilityId)
   }
 }
 
-async function getUserPreference() {
+async function getUserPreference(token: any, baseURL: string, userPrefTypeId: string, userId = "") {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.getUserPreference(...(Array.from(arguments) as [any, string, string, any]))
+    return await moquiIndex.getUserPreference(token, baseURL, userPrefTypeId, userId)
   } else {
-    return await omsGetUserPreference
+    return await omsGetUserPreference(token, baseURL, userPrefTypeId)
   }
 }
 
-async function getProductIdentificationPref() {
+async function getProductIdentificationPref(eComStoreId: string) {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.getProductIdentificationPref(...(Array.from(arguments) as [any]))
+    return await moquiIndex.getProductIdentificationPref(eComStoreId)
   } else {
-    return await omsGetProductIdentificationPref
+    return await omsGetProductIdentificationPref(eComStoreId)
   }
 }
 
-async function setProductIdentificationPref() {
+async function setProductIdentificationPref(eComStoreId: string, productIdentificationPref: any) {
   const apiConfig = getConfig() as any;
   if(apiConfig.systemType === "MOQUI") {
-    return await moquiIndex.setProductIdentificationPref(...(Array.from(arguments) as [string, any]))
+    return await moquiIndex.setProductIdentificationPref(eComStoreId, productIdentificationPref)
   } else {
-    return await omsSetProductIdentificationPref
+    return await omsSetProductIdentificationPref(eComStoreId, productIdentificationPref)
   }
 }
 
@@ -88,7 +88,7 @@ const setUserPreference = async (payload: any) => {
   if(apiConfig.systemType === "MOQUI") {
     return await moquiIndex.updateUserPreference(payload)
   } else {
-    return await omsSetUserPreference
+    return await omsSetUserPreference(payload)
   }
 }
 
