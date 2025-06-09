@@ -195,14 +195,14 @@ async function omsGetUserFacilities(token: any, baseURL: string, partyId: string
     
     if (facilityGroupId) {
       params.entityName = "FacilityGroupAndParty";
-      params.fieldList = ["facilityId", "facilityName", "sequenceNum"];
+      params.fieldList = ["facilityId", "facilityName", "sequenceNum", "facilityTypeId"];
       params.fromDateName = "FGMFromDate";
       params.thruDateName = "FGMThruDate";
       params.orderBy = "sequenceNum ASC | facilityName ASC";
       params.inputFields["facilityGroupId"] = facilityGroupId;
     } else {
       params.entityName = "FacilityAndParty";
-      params.fieldList = ["facilityId", "facilityName"];
+      params.fieldList = ["facilityId", "facilityName", "facilityTypeId"];
       params.inputFields["facilityParentTypeId"] = "VIRTUAL_FACILITY";
       params.inputFields["facilityParentTypeId_op"] = "notEqual";
       params.orderBy = "facilityName ASC";
