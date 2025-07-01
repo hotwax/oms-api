@@ -202,4 +202,17 @@ const client = (config: any) => {
   return axios.create().request({ paramsSerializer, ...config })
 }
 
-export { api as default, initialise, client, axios, getConfig, init, updateToken, updateInstanceUrl, resetConfig };
+/**
+ * Client method to directly pass configuration to axios
+ * This method uses the response interceptors to handle the responses correctly
+ *
+ * @param {any}  config - API configuration
+ * @return {Promise} Response from API as returned by Axios
+ */
+const apiClient = (config: any) => {
+  const axiosClient = axios.create()
+  axiosClient.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
+  return axiosClient.request({ paramsSerializer, ...config })
+}
+
+export { api as default, apiClient, initialise, client, axios, getConfig, init, updateToken, updateInstanceUrl, resetConfig };
