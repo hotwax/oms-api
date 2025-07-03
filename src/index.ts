@@ -1,10 +1,11 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
-import api, { client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
+import api, { apiClient,client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { getTelecomCountryCode, hasError, isError } from './util'
 import { askQuery, getAvailableTimeZones, getGitBookPage, getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getEComStoresByFacility, getEComStores, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, searchQuery, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale, setUserTimeZone} from './modules'
 
 export {
   api,
+  apiClient,
   askQuery,
   client,
   getOrderDetails,
