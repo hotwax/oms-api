@@ -9,7 +9,7 @@ import merge from 'deepmerge'
 const requestInterceptor = async (config: any) => {
   if (apiConfig.token) {
     if(apiConfig.systemType === "MOQUI") {
-      config.headers["api_key"] =  apiConfig.token;
+      config.headers["Authorization"] =  "Bearer "+apiConfig.token;
     } else {
       config.headers.Authorization =  'Bearer ' + apiConfig.token;
     }
