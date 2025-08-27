@@ -1,7 +1,7 @@
 import api from "../../api";
 import { hasError } from "../../util";
 
-async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
+async function omsGetNotificationEnumIds(enumTypeId: string): Promise<any> {
   const payload = {
     "inputFields": {
       enumTypeId
@@ -32,7 +32,7 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
   }
 }
 
-async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId: string, filterConditions = {}): Promise<any> {
+async function omsGetNotificationUserPrefTypeIds(applicationId: string, userLoginId: string, filterConditions = {}): Promise<any> {
   const payload = {
     "inputFields": {
       "userPrefGroupTypeId": applicationId,
@@ -65,7 +65,7 @@ async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId
   }
 }
 
-async function storeClientRegistrationToken(registrationToken: string, deviceId: string, applicationId: string): Promise<any> {
+async function omsStoreClientRegistrationToken(registrationToken: string, deviceId: string, applicationId: string): Promise<any> {
   const payload = {
     registrationToken,
     deviceId,
@@ -93,7 +93,7 @@ async function storeClientRegistrationToken(registrationToken: string, deviceId:
   }
 }
 
-async function removeClientRegistrationToken(deviceId: string, applicationId: string): Promise<any> {
+async function omsRemoveClientRegistrationToken(deviceId: string, applicationId: string): Promise<any> {
   const payload = {
     deviceId,
     applicationId
@@ -121,7 +121,7 @@ async function removeClientRegistrationToken(deviceId: string, applicationId: st
   }
 }
 
-async function subscribeTopic(topicName: string, applicationId: string): Promise<any> {
+async function omsSubscribeTopic(topicName: string, applicationId: string): Promise<any> {
   const payload = {
     topicName,
     applicationId
@@ -148,7 +148,7 @@ async function subscribeTopic(topicName: string, applicationId: string): Promise
   }
 }
 
-async function unsubscribeTopic(topicName: string, applicationId: string): Promise<any> {
+async function omsUnsubscribeTopic(topicName: string, applicationId: string): Promise<any> {
   const payload = {
     topicName,
     applicationId
@@ -176,10 +176,10 @@ async function unsubscribeTopic(topicName: string, applicationId: string): Promi
 }
 
 export {
-  getNotificationEnumIds,
-  getNotificationUserPrefTypeIds,
-  removeClientRegistrationToken,
-  storeClientRegistrationToken,
-  subscribeTopic,
-  unsubscribeTopic
+  omsGetNotificationEnumIds,
+  omsGetNotificationUserPrefTypeIds,
+  omsRemoveClientRegistrationToken,
+  omsStoreClientRegistrationToken,
+  omsSubscribeTopic,
+  omsUnsubscribeTopic
 }

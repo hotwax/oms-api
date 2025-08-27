@@ -1,11 +1,12 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes } from '../modules/product'
 import { getProfile, omsGetUserFacilities, logout, omsGetAvailableTimeZones, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref, omsSetUserPreference, omsGetUserPreference, setUserLocale, setUserTimeZone } from '../modules/user'
-import { getNotificationEnumIds, getNotificationUserPrefTypeIds, removeClientRegistrationToken, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic } from '../modules/notification'
+import { omsGetNotificationEnumIds, omsGetNotificationUserPrefTypeIds, omsRemoveClientRegistrationToken, omsStoreClientRegistrationToken, omsSubscribeTopic, omsUnsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 import { askQuery, getGitBookPage, searchQuery } from '../modules/gitbook'
 import moquiIndex from './user/moquiIndex'
 import productMoquiIndex from './product/moquiIndex'
+import notificationMoquiIndex from './notification/moquiIndex'
 import { getConfig } from '../api'
 
 const getAvailableTimeZones = async () => {
@@ -98,6 +99,65 @@ const fetchGoodIdentificationTypes = async (payload: any) => {
     return await productMoquiIndex.fetchGoodIdentificationTypes(payload)
   } else {
     return await omsFetchGoodIdentificationTypes(payload)
+  }
+}
+
+async function getNotificationEnumIds(enumTypeId: string) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await notificationMoquiIndex.getNotificationEnumIds(enumTypeId);
+  } else {
+    return await omsGetNotificationEnumIds(enumTypeId);
+  }
+}
+
+// getNotificationUserPrefTypeIds
+async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId: string, filterConditions = {}) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await notificationMoquiIndex.getNotificationUserPrefTypeIds(applicationId, userLoginId, filterConditions);
+  } else {
+    return await omsGetNotificationUserPrefTypeIds(applicationId, userLoginId, filterConditions);
+  }
+}
+
+// storeClientRegistrationToken
+async function storeClientRegistrationToken(registrationToken: string, deviceId: string, applicationId: string) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await notificationMoquiIndex.storeClientRegistrationToken(registrationToken, deviceId, applicationId);
+  } else {
+    return await omsStoreClientRegistrationToken(registrationToken, deviceId, applicationId);
+  }
+}
+
+// removeClientRegistrationToken
+async function removeClientRegistrationToken(deviceId: string, applicationId: string) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await notificationMoquiIndex.removeClientRegistrationToken(deviceId, applicationId);
+  } else {
+    return await omsRemoveClientRegistrationToken(deviceId, applicationId);
+  }
+}
+
+// subscribeTopic
+async function subscribeTopic(topicName: string, applicationId: string) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await notificationMoquiIndex.subscribeTopic(topicName, applicationId);
+  } else {
+    return await omsSubscribeTopic(topicName, applicationId);
+  }
+}
+
+// unsubscribeTopic
+async function unsubscribeTopic(topicName: string, applicationId: string) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await notificationMoquiIndex.unsubscribeTopic(topicName, applicationId);
+  } else {
+    return await omsUnsubscribeTopic(topicName, applicationId);
   }
 }
 
