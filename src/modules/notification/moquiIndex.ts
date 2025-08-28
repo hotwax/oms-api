@@ -28,16 +28,16 @@ async function getNotificationEnumIds(enumTypeId: string): Promise<any> {
   }
 }
 
-async function getNotificationUserPrefTypeIds(applicationId: string, userLoginId: string, filterConditions = {}): Promise<any> {
+async function getNotificationUserPrefTypeIds(applicationId: string, userId: string, filterConditions = {}): Promise<any> {
   const params = {
-    applicationId,
-    userLoginId,
+    topicTypeId: applicationId,
+    userId,
     ...filterConditions
   }
 
   try {
     const resp = await api({
-      url: "admin/user/omsPreferences",
+      url: "moqui-firebase/user/notificationtopic",
       method: "get",
       params
     }) as any;
