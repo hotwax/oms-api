@@ -8,7 +8,7 @@ import merge from 'deepmerge'
 
 const requestInterceptor = async (config: any) => {
   if (apiConfig.token) {
-    config.headers["Authorization"] =  "Bearer "+apiConfig.token;
+    config.headers["Authorization"] =  "Bearer " + apiConfig.token;
     config.headers['Content-Type'] = 'application/json';
   }
   return config;

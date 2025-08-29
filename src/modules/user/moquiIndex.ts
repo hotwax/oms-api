@@ -44,7 +44,7 @@ async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string,
         ...params,
         baseURL,
         headers: {
-          "Authorization": "Bearer "+token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       }
@@ -85,7 +85,7 @@ async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?:
         ...params,
         baseURL,
         headers: {
-          "Authorization": "Bearer "+token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       }
@@ -161,7 +161,7 @@ async function fetchFacilities(token: string, baseURL: string, partyId: string, 
         ...params,
         baseURL,
         headers: {
-          "Authorization": "Bearer "+token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       }
@@ -201,7 +201,7 @@ async function getEComStores(token?: string, baseURL?: string, pageSize = 100): 
         ...params,
         baseURL,
         headers: {
-          "Authorization": "Bearer "+token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       }
@@ -242,7 +242,7 @@ async function getEComStoresByFacility(token?: string, baseURL?: string, pageSiz
         ...params,
         baseURL,
         headers: {
-          "Authorization": "Bearer "+token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       }
@@ -296,7 +296,7 @@ async function getUserPreference(token: any, baseURL: string, preferenceKey: str
         ...params,
         baseURL,
         headers: {
-          "Authorization": "Bearer "+token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       }
