@@ -37,7 +37,7 @@ async function getNotificationUserPrefTypeIds(applicationId: string, userId: str
 
   try {
     const resp = await api({
-      url: "moqui-firebase/user/notificationtopic",
+      url: "firebase/user/notificationtopic",
       method: "get",
       params
     }) as any;
@@ -65,7 +65,7 @@ async function storeClientRegistrationToken(registrationToken: string, deviceId:
 
   try {
     const resp = await api({
-      url: "moqui-firebase/token",
+      url: "firebase/token",
       method: "post",
       data: payload
     }) as any;
@@ -92,7 +92,7 @@ async function removeClientRegistrationToken(deviceId: string, applicationId: st
 
   try {
     const resp = await api({
-      url: "moqui-firebase/token",
+      url: "firebase/token",
       method: "delete",
       params
     }) as any;
@@ -119,7 +119,7 @@ async function subscribeTopic(topicName: string, applicationId: string): Promise
 
   try {
     const resp = await api({
-      url: "moqui-firebase/topic",
+      url: "firebase/topic",
       method: "post",
       data: params
     }) as any;
@@ -146,7 +146,7 @@ async function unsubscribeTopic(topicName: string, applicationId: string): Promi
 
   try {
     const resp = await api({
-      url: "moqui-firebase/topic",
+      url: "firebase/topic",
       method: "delete",
       data: params
     }) as any;
