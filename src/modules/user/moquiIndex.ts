@@ -25,6 +25,24 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
+const shopifyAppUserLogin = async (baseURL: string, payload: any): Promise <any> => {
+  try {
+    const resp: any = await client({
+      url: "/rest/s1/app-bridge/login",
+      method: "post",
+      baseURL,
+      data: payload
+    });
+    return Promise.resolve(resp.data);
+  } catch (error: any) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to Login Shopify App User",
+      serverResponse: error
+    })
+  }
+}
+
 async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string, token?: string, payload?: any): Promise <any> {
   let params: RequestPayload = {
     url: "oms/groupFacilities",
@@ -456,5 +474,6 @@ export default {
   getUserPreference,
   setProductIdentificationPref,
   setUserTimeZone,
-  updateUserPreference
+  updateUserPreference,
+  shopifyAppUserLogin
 }

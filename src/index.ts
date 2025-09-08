@@ -1,7 +1,7 @@
 import { events, Product, Response, Stock, Order, OrderItem, OrderPart, OPERATOR, User } from './types'
 import api, { apiClient,client, getConfig, init, initialise, resetConfig, updateToken, updateInstanceUrl } from './api'
 import { getTelecomCountryCode, hasError, isError } from './util'
-import { askQuery, getAvailableTimeZones, getGitBookPage, getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getEComStoresByFacility, getEComStores, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, searchQuery, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale, setUserTimeZone} from './modules'
+import { askQuery, getAvailableTimeZones, getGitBookPage, getNotificationEnumIds, getNotificationUserPrefTypeIds, getUserFacilities, fetchGoodIdentificationTypes, fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, fetchProductsStock, fetchProductsStockAtFacility, getEComStoresByFacility, getEComStores, getOrderDetails, getProductIdentificationPref, getProfile, logout, removeClientRegistrationToken, searchQuery, setProductIdentificationPref, storeClientRegistrationToken, subscribeTopic, unsubscribeTopic, updateOrderStatus, getUserPreference, setUserPreference, setUserLocale, setUserTimeZone, shopifyAppUserLogin} from './modules'
 
 export {
   api,
@@ -53,5 +53,6 @@ export {
   getUserPreference,
   setUserPreference,
   setUserLocale,
-  setUserTimeZone
+  setUserTimeZone,
+  shopifyAppUserLogin
 }
