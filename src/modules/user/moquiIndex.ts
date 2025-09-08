@@ -28,7 +28,7 @@ const getAvailableTimeZones = async (): Promise <any>  => {
 const shopifyAppUserLogin = async (baseURL: string, payload: any): Promise <any> => {
   try {
     const resp: any = await client({
-      url: "/rest/s1/app-bridge/login",
+      url: "app-bridge/login",
       method: "post",
       baseURL,
       data: payload
