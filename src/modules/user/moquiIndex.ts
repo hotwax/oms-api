@@ -2,9 +2,40 @@ import api, { client } from "../../api";
 import { RequestPayload, Response } from "../../types";
 import { jsonParse } from "../../util";
 
-const setUserTimeZone = async (): Promise<any> => {
-  // TODO: add api support when available, currently we do not have an api to update userTimeZone
-  return Promise.resolve({})
+async function setUserTimeZone(payload: any): Promise<any> {
+  console.log("Payload in setUserTimeZone: ", payload);
+  try {
+    const resp = await api({
+      url: "admin/user/profile",
+      method: "POST",
+      data: payload,
+    }) as any;
+    return Promise.resolve(resp.data);
+  } catch (error: any) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to set user time zone",
+      serverResponse: error
+    });
+  }
+}
+
+async function setUserLocale(payload: any): Promise<any> {
+  payload.locale = payload.newLocale;
+  try {
+    const resp = await api({
+      url: "admin/user/profile",
+      method: "POST",
+      data: payload,
+    }) as any;
+    return Promise.resolve(resp.data);
+  } catch (error: any) {
+    return Promise.reject({
+      code: "error",
+      message: "Failed to set user locale",
+      serverResponse: error
+    });
+  }
 }
 
 const getAvailableTimeZones = async (): Promise <any>  => {
@@ -455,6 +486,7 @@ export default {
   getProductIdentificationPref,
   getUserPreference,
   setProductIdentificationPref,
+  setUserLocale,
   setUserTimeZone,
   updateUserPreference
 }
