@@ -161,6 +161,10 @@ async function unsubscribeTopic(topicName: string, applicationId: string) {
   }
 }
 
+async function loginShopifyAppUser(baseURL: string, payload: any) {
+  return await moquiIndex.loginShopifyAppUser(baseURL, payload);
+}
+
 async function setUserTimeZone(payload: any) {
   const apiConfig = getConfig() as any;
   if (apiConfig.systemType === "MOQUI") {
@@ -211,5 +215,6 @@ export {
   getUserPreference,
   setUserPreference,
   setUserLocale,
-  setUserTimeZone
+  setUserTimeZone,
+  loginShopifyAppUser
 }
