@@ -161,8 +161,8 @@ async function unsubscribeTopic(topicName: string, applicationId: string) {
   }
 }
 
-async function shopifyAppUserLogin(baseURL: string, payload: any) {
-  return await moquiIndex.shopifyAppUserLogin(baseURL, payload);
+async function loginShopifyAppUser(baseURL: string, payload: any) {
+  return await moquiIndex.loginShopifyAppUser(baseURL, payload);
 }
 
 export {
@@ -198,5 +198,5 @@ export {
   setUserPreference,
   setUserLocale,
   setUserTimeZone,
-  shopifyAppUserLogin
+  loginShopifyAppUser
 }

@@ -25,7 +25,7 @@ const getAvailableTimeZones = async (): Promise <any>  => {
   }
 }
 
-const shopifyAppUserLogin = async (baseURL: string, payload: any): Promise <any> => {
+const loginShopifyAppUser = async (baseURL: string, payload: any): Promise <any> => {
   try {
     const resp: any = await client({
       url: "app-bridge/login",
@@ -475,5 +475,5 @@ export default {
   setProductIdentificationPref,
   setUserTimeZone,
   updateUserPreference,
-  shopifyAppUserLogin
+  loginShopifyAppUser
 }
