@@ -1,6 +1,6 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
 import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes } from '../modules/product'
-import { getProfile, omsGetUserFacilities, logout, omsGetAvailableTimeZones, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref, omsSetUserPreference, omsGetUserPreference, setUserLocale, setUserTimeZone } from '../modules/user'
+import { getProfile, omsGetUserFacilities, logout, omsGetAvailableTimeZones, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref, omsSetUserPreference, omsGetUserPreference, omsSetUserLocale, omsSetUserTimeZone } from '../modules/user'
 import { omsGetNotificationEnumIds, omsGetNotificationUserPrefTypeIds, omsRemoveClientRegistrationToken, omsStoreClientRegistrationToken, omsSubscribeTopic, omsUnsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
 import { askQuery, getGitBookPage, searchQuery } from '../modules/gitbook'
@@ -163,6 +163,24 @@ async function unsubscribeTopic(topicName: string, applicationId: string) {
 
 async function loginShopifyAppUser(baseURL: string, payload: any) {
   return await moquiIndex.loginShopifyAppUser(baseURL, payload);
+}
+
+async function setUserTimeZone(payload: any) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.setUserTimeZone(payload);
+  } else {
+    return await omsSetUserTimeZone(payload);
+  }
+}
+
+async function setUserLocale(payload: any) {
+  const apiConfig = getConfig() as any;
+  if (apiConfig.systemType === "MOQUI") {
+    return await moquiIndex.setUserLocale(payload);
+  } else {
+    return await omsSetUserLocale(payload);
+  }
 }
 
 export {

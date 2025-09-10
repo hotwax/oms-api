@@ -290,7 +290,7 @@ async function omsSetUserPreference(payload: any): Promise<any> {
   }
 }
 
-const setUserLocale = async (payload: any): Promise<any> => {
+const omsSetUserLocale = async (payload: any): Promise<any> => {
   try {
     const resp: any = await api({
       url: "setUserLocale",
@@ -312,7 +312,7 @@ const setUserLocale = async (payload: any): Promise<any> => {
   }
 }
 
-const setUserTimeZone = async (payload: any): Promise<any> => {
+const omsSetUserTimeZone = async (payload: any): Promise<any> => {
   try {
     const resp: any = await api({
       url: "setUserTimeZone",
@@ -453,6 +453,6 @@ export {
   omsGetUserPreference,
   omsSetProductIdentificationPref,
   omsSetUserPreference,
-  setUserLocale,
-  setUserTimeZone
+  omsSetUserLocale,
+  omsSetUserTimeZone
 }
