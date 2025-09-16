@@ -7,7 +7,8 @@ const fetchGoodIdentificationTypes = async (parentTypeId = "HC_GOOD_ID_TYPE"): P
       url: "oms/goodIdentificationTypes",
       method: "get",
       params: {
-        parentTypeId
+        parentTypeId,
+        pageSize: 50
       }
     });
 
