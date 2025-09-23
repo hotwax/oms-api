@@ -32,6 +32,7 @@ async function getNotificationUserPrefTypeIds(applicationId: string, userId: str
   const params = {
     topicTypeId: applicationId,
     userId,
+    pageSize: 200,
     ...filterConditions
   }
 
