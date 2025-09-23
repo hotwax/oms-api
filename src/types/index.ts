@@ -33,6 +33,55 @@ enum OPERATOR {
   OR = 'OR',
 }
 
+enum STATUSCOLOR {
+  // ITEM
+  ITEM_APPROVED = "success",
+  ITEM_CANCELLED = "danger",
+  ITEM_CREATED = "medium",
+  ITEM_COMPLETED = "success",
+  ITEM_EXPIRED = "danger",
+  ITEM_HOLD = "warning",
+  ITEM_PENDING_FULFILL = "warning",
+  ITEM_PENDING_RECEIPT = "warning",
+  ITEM_REJECTED = "danger",
+  ITEM_REQ_CANCELATN = "warning",
+
+  // PAYMENT
+  PAYMENT_AUTHORIZED = "medium",
+  PAYMENT_CANCELLED = "danger",
+  PAYMENT_DECLINED = "danger",
+  PAYMENT_NOT_AUTH = "warning",
+  PAYMENT_NOT_RECEIVED = "warning",
+  PAYMENT_RECEIVED = "success",
+  PAYMENT_REFUNDED = "success",
+  PAYMENT_SETTLED = "success",
+
+  // ORDER
+  ORDER_APPROVED = "success",
+  ORDER_AUTHORIZED = "medium",
+  ORDER_CANCELLED = "danger",
+  ORDER_COMPLETED = "success",
+  ORDER_CREATED = "medium",
+  ORDER_EXPIRED = "danger",
+  ORDER_HOLD = "warning",
+  ORDER_PROCESSING = "warning",
+  ORDER_REJECTED = "danger",
+  ORDER_SENT = "medium",
+
+  // SHIPMENT
+  PICKUP_SCHEDULED = "warning",
+  SHIPMENT_APPROVED = "success",
+  SHIPMENT_CANCELLED = "danger",
+  SHIPMENT_DELIVERED = "success",
+  SHIPMENT_EXCEPTION = "danger",
+  SHIPMENT_INPUT = "medium",
+  SHIPMENT_IN_TRANSIT = "warning",
+  SHIPMENT_PACKED = "success",
+  SHIPMENT_PICKED = "success",
+  SHIPMENT_SCHEDULED = "warning",
+  SHIPMENT_SHIPPED = "success",
+}
+
 interface Response {
   code: string;
   message: string;
@@ -65,5 +114,6 @@ export {
   Status,
   Stock,
   Uom,
-  User
+  User,
+  STATUSCOLOR
 }
