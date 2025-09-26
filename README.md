@@ -32,7 +32,7 @@ npm i @hotwax/oms-api
 import { init } from '@hotwax/oms-api'
 ...
 ...
-init(token, instanceURL, cacheAge)
+init(token, oms, moqui, cacheAge)
 ```
 
 2. Add following method calls to clear the token and instance url when app unmounts. Also, you can use the same method whenever user logout from the app.
@@ -46,7 +46,7 @@ resetConfig()
 
 3. Update the token or instance URL whenever needed by using the following methods:
   - `updateToken`: For updating the token value
-  - `updateInstanceUrl`: For updating the instanceURL / backendURL.
+  - `updateUrls`: For updating the oms and moqui urls.
 
 4. Now you can use any method from the package by directly importing it from `@hotwax/oms-api`
 
