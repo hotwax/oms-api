@@ -49,8 +49,9 @@ const responseErrorInterceptor = (error: any) => {
 }
 
 const defaultConfig = {
-  token: '',
-  instanceUrl: '',
+  token: "",
+  oms: "",
+  maarg: "",
   cacheMaxAge: 0,
   events: {
     unauthorised: undefined,
@@ -108,17 +109,19 @@ function updateToken(key: string) {
   apiConfig.token = key
 }
 
-function updateInstanceUrl(url: string) {
-  apiConfig.instanceUrl = url
+function updateUrls(oms: string, maarg: string) {
+  apiConfig.oms = oms
+  apiConfig.maarg = maarg
 }
 
 function resetConfig() {
   apiConfig = { ...defaultConfig }
 }
 
-function init(key: string, url: string, cacheAge: number) {
+function init(key: string, oms: string, maarg: string, cacheAge: number) {
   apiConfig.token = key
-  apiConfig.instanceUrl = url
+  apiConfig.oms = oms
+  apiConfig.maarg = maarg
   apiConfig.cacheMaxAge = cacheAge
 }
 
@@ -159,18 +162,21 @@ const axiosCache = setupCache({
 const api = async (customConfig: any) => {
     // Prepare configuration
     const config: any = {
-        url: customConfig.url,
-        method: customConfig.method,
-        data: customConfig.data,
-        params: customConfig.params,
-        paramsSerializer
+      url: customConfig.url,
+      method: customConfig.method,
+      data: customConfig.data,
+      params: customConfig.params,
+      paramsSerializer
     }
 
     // if passing responseType in payload then only adding it as responseType
     if(customConfig.responseType) config['responseType'] = customConfig.responseType
 
-    if(apiConfig.instanceUrl && apiConfig.systemType === "MOQUI") config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/rest/s1') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/rest/s1/` : `https://${apiConfig.instanceUrl}.hotwax.io/rest/s1/`;
-    else if(apiConfig.instanceUrl) config.baseURL = apiConfig.instanceUrl.startsWith('http') ? apiConfig.instanceUrl.includes('/api') ? apiConfig.instanceUrl : `${apiConfig.instanceUrl}/api/` : `https://${apiConfig.instanceUrl}.hotwax.io/api/`;
+    // If we have received systemType at endpoint level honor the same, otherwise honor the systemType passed at init
+    const systemType = customConfig.systemType || apiConfig.systemType
+
+    if(systemType === "MOQUI" && apiConfig.maarg) config.baseURL = apiConfig.maarg.startsWith('http') ? apiConfig.maarg.includes('/rest/s1') ? apiConfig.maarg : `${apiConfig.maarg}/rest/s1/` : `https://${apiConfig.maarg}.hotwax.io/rest/s1/`;
+    else if(apiConfig.oms) config.baseURL = apiConfig.oms.startsWith('http') ? apiConfig.oms.includes('/api') ? apiConfig.oms : `${apiConfig.oms}/api/` : `https://${apiConfig.oms}.hotwax.io/api/`;
 
     if(customConfig.cache) config.adapter = axiosCache.adapter;
 
@@ -211,4 +217,4 @@ const apiClient = (config: any) => {
   return axiosClient.request({ paramsSerializer, ...config })
 }
 
-export { api as default, apiClient, initialise, client, axios, getConfig, init, updateToken, updateInstanceUrl, resetConfig };
+export { api as default, apiClient, initialise, client, axios, getConfig, init, updateToken, updateUrls, resetConfig };
