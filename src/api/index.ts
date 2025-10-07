@@ -48,6 +48,21 @@ const responseErrorInterceptor = (error: any) => {
   return Promise.reject(error);
 }
 
+const responseClientErrorInterceptor = (error: any) => {
+  if (apiConfig.events.responseError) apiConfig.events.responseError(error);
+  // As we have yet added support for logout on unauthorization hence emitting unauth event only in case of ofbiz app
+  if(error.response && apiConfig.systemType === "MOQUI") {
+      // TODO Handle case for failed queue request
+      const { status } = error.response;
+      if (status == StatusCodes.UNAUTHORIZED) {
+        if (apiConfig.events.unauthorised) apiConfig.events.unauthorised(error);
+      }
+  }
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  // Do something with response error
+  return Promise.reject(error);
+}
+
 const defaultConfig = {
   token: '',
   instanceUrl: '',
@@ -207,7 +222,7 @@ const client = (config: any) => {
  */
 const apiClient = (config: any) => {
   const axiosClient = axios.create()
-  axiosClient.interceptors.response.use(apiConfig.interceptor.response.success, apiConfig.interceptor.response.error);
+  axiosClient.interceptors.response.use(apiConfig.interceptor.response.success, responseClientErrorInterceptor);
   return axiosClient.request({ paramsSerializer, ...config })
 }
 
