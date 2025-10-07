@@ -155,6 +155,14 @@ async function fetchFacilities(token: string, baseURL: string, partyId: string, 
     }
   }
 
+  if(facilityIds.length) {
+    filters = {
+      facilityId: facilityIds.join(","),
+      facilityId_op: "in",
+      pageSize: facilityIds.length
+    }
+  }
+
   // Fetch the facilities associated with group
   if(facilityGroupId) {
     try {
