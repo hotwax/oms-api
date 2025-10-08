@@ -145,7 +145,7 @@ async function fetchFacilities(token: string, baseURL: string, partyId: string, 
   let resp = {} as any
 
   // Fetch the facilities associated with party
-  if(partyId) {
+  if(partyId && !isAdminUser) {
     try {
       resp = await fetchFacilitiesByParty(partyId, baseURL, token)
 
