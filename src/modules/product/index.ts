@@ -72,6 +72,56 @@ async function fetchProducts(params: any): Promise<any | Response> {
   }
 }
 
+async function searchProducts(params: {
+  keyword: string,
+  viewSize?: number,
+  viewIndex?: number,
+  filters?: { isVirtual?: boolean; isVariant?: boolean }
+  }): Promise<any> {
+
+  const data: any = {
+    keyword: params.keyword.trim(),
+    viewSize: params.viewSize ?? 100,
+    viewIndex: params.viewIndex ?? 0
+  }
+
+  // Add filters only if filters are passed
+  if (params.filters) {
+    const filterArray: string[] = []
+
+    if (params.filters.isVirtual !== undefined) {
+      filterArray.push(`isVirtual: ${params.filters.isVirtual}`)
+    }
+
+    if (params.filters.isVariant !== undefined) {
+      filterArray.push(`isVariant: ${params.filters.isVariant}`)
+    }
+
+    if (filterArray.length > 0) {
+      data.filters = filterArray
+    }
+  }
+
+  try {
+    const response = await api({
+      url: 'searchProducts',
+      method: 'post',
+      data,
+      cache: true
+    }) as any
+
+    if (response.status === 200 && response.docs) {
+      return response.docs
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.error('Error searching products:', error)
+    throw error
+  }
+}
+
+
 async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
 
   const payload = {
@@ -196,4 +246,4 @@ async function omsFetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_I
   }
 }
 
-export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes }
+export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes, searchProducts }
