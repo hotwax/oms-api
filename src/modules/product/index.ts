@@ -72,13 +72,7 @@ async function fetchProducts(params: any): Promise<any | Response> {
   }
 }
 
-async function searchProducts(params: {
-  keyword: string,
-  viewSize?: number,
-  viewIndex?: number,
-  filters?: { isVirtual?: boolean; isVariant?: boolean }
-  }): Promise<any> {
-
+async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
   const data: any = {
     keyword: params.keyword.trim(),
     viewSize: params.viewSize ?? 100,
@@ -103,21 +97,30 @@ async function searchProducts(params: {
   }
 
   try {
-    const response = await api({
+    const resp = await api({
       url: 'searchProducts',
       method: 'post',
       data,
       cache: true
     }) as any
 
-    if (response.status === 200 && response.docs) {
-      return response.docs
+    if (resp.status === 200 && resp.data.response.docs) {
+      return {
+        products: resp.data.response.docs,
+        total: resp?.data?.response?.numFound
+      }
     } else {
-      return []
+      return {
+        products: {},
+        total: 0
+      }
     }
   } catch (error) {
-    console.error('Error searching products:', error)
-    throw error
+    return Promise.reject({
+      code: 'error',
+      message: 'Failed to fetch products',
+      serverResponse: error
+    })
   }
 }
 
