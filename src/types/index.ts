@@ -39,7 +39,6 @@ enum STATUSCOLOR {
   ITEM_CANCELLED = "danger",
   ITEM_CREATED = "medium",
   ITEM_COMPLETED = "success",
-  ITEM_EXPIRED = "danger",
   ITEM_PENDING_FULFILL = "warning",
   ITEM_PENDING_RECEIPT = "warning",
   ITEM_REJECTED = "danger",
@@ -67,9 +66,7 @@ enum STATUSCOLOR {
   SHIPMENT_APPROVED = "success",
   SHIPMENT_CANCELLED = "danger",
   SHIPMENT_INPUT = "medium",
-  SHIPMENT_IN_TRANSIT = "warning",
   SHIPMENT_PACKED = "success",
-  SHIPMENT_PICKED = "success",
   SHIPMENT_SHIPPED = "success",
 }
 
