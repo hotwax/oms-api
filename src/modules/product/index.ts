@@ -73,27 +73,12 @@ async function fetchProducts(params: any): Promise<any | Response> {
 }
 
 async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
+  const filters = params?.filters as any;
   const data: any = {
     keyword: params.keyword.trim(),
     viewSize: params.viewSize ?? 100,
-    viewIndex: params.viewIndex ?? 0
-  }
-
-  // Add filters only if filters are passed
-  if (params.filters) {
-    const filterArray: string[] = []
-
-    if (params.filters.isVirtual !== undefined) {
-      filterArray.push(`isVirtual: ${params.filters.isVirtual}`)
-    }
-
-    if (params.filters.isVariant !== undefined) {
-      filterArray.push(`isVariant: ${params.filters.isVariant}`)
-    }
-
-    if (filterArray.length > 0) {
-      data.filters = filterArray
-    }
+    viewIndex: params.viewIndex ?? 0,
+    filters: [`isVirtual: ${filters.isVirtual !== undefined ? filters.isVirtual : false }`, `isVariant: ${filters.isVariant !== undefined ? filters.isVariant : true}`]
   }
 
   try {
@@ -104,10 +89,10 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
       cache: true
     }) as any
 
-    if (resp.status === 200 && resp.data.response.docs) {
+    if (resp.status === 200 && resp.data?.response?.docs.length) {
       return {
         products: resp.data.response.docs,
-        total: resp?.data?.response?.numFound
+        total: resp.data.response.numFound
       }
     } else {
       return {
@@ -123,7 +108,6 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
     })
   }
 }
-
 
 async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
 
