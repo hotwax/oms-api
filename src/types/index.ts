@@ -33,6 +33,43 @@ enum OPERATOR {
   OR = 'OR',
 }
 
+enum STATUSCOLOR {
+  // ITEM
+  ITEM_APPROVED = "success",
+  ITEM_CANCELLED = "danger",
+  ITEM_CREATED = "medium",
+  ITEM_COMPLETED = "success",
+  ITEM_PENDING_FULFILL = "warning",
+  ITEM_PENDING_RECEIPT = "warning",
+  ITEM_REJECTED = "danger",
+  ITEM_REQ_CANCELATN = "warning",
+
+  // PAYMENT
+  PAYMENT_AUTHORIZED = "medium",
+  PAYMENT_CANCELLED = "danger",
+  PAYMENT_DECLINED = "danger",
+  PAYMENT_NOT_AUTH = "warning",
+  PAYMENT_NOT_RECEIVED = "warning",
+  PAYMENT_RECEIVED = "success",
+  PAYMENT_REFUNDED = "success",
+  PAYMENT_SETTLED = "success",
+
+  // ORDER
+  ORDER_APPROVED = "success",
+  ORDER_CANCELLED = "danger",
+  ORDER_COMPLETED = "success",
+  ORDER_CREATED = "medium",
+  ORDER_HOLD = "warning",
+  ORDER_REJECTED = "danger",
+
+  // SHIPMENT
+  SHIPMENT_APPROVED = "success",
+  SHIPMENT_CANCELLED = "danger",
+  SHIPMENT_INPUT = "medium",
+  SHIPMENT_PACKED = "success",
+  SHIPMENT_SHIPPED = "success",
+}
+
 interface Response {
   code: string;
   message: string;
@@ -65,5 +102,6 @@ export {
   Status,
   Stock,
   Uom,
-  User
+  User,
+  STATUSCOLOR
 }
