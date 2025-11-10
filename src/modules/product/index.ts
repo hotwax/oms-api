@@ -72,6 +72,43 @@ async function fetchProducts(params: any): Promise<any | Response> {
   }
 }
 
+async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
+  const filters = params?.filters as any;
+  const data: any = {
+    keyword: params.keyword.trim(),
+    viewSize: params.viewSize ?? 100,
+    viewIndex: params.viewIndex ?? 0,
+    filters: [`isVirtual: ${filters.isVirtual !== undefined ? filters.isVirtual : false }`, `isVariant: ${filters.isVariant !== undefined ? filters.isVariant : true}`]
+  }
+
+  try {
+    const resp = await api({
+      url: 'searchProducts',
+      method: 'post',
+      data,
+      cache: true
+    }) as any
+
+    if (resp.status === 200 && resp.data?.response?.docs.length) {
+      return {
+        products: resp.data.response.docs,
+        total: resp.data.response.numFound
+      }
+    } else {
+      return {
+        products: {},
+        total: 0
+      }
+    }
+  } catch (error) {
+    return Promise.reject({
+      code: 'error',
+      message: 'Failed to fetch products',
+      serverResponse: error
+    })
+  }
+}
+
 async function fetchProductsGroupedBy(params: any): Promise<any | Response> {
 
   const payload = {
@@ -196,4 +233,4 @@ async function omsFetchGoodIdentificationTypes(parentTypeId: string = "HC_GOOD_I
   }
 }
 
-export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes }
+export { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes, searchProducts }

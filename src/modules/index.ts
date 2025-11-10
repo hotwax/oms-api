@@ -1,5 +1,5 @@
 import { getOrderDetails, updateOrderStatus } from '../modules/order'
-import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes } from '../modules/product'
+import { fetchProducts, fetchProductsGroupedBy, fetchProductsGroupedByParent, omsFetchGoodIdentificationTypes, searchProducts } from '../modules/product'
 import { getProfile, omsGetUserFacilities, logout, omsGetAvailableTimeZones, omsGetEComStores, omsGetEComStoresByFacility, omsGetProductIdentificationPref, omsSetProductIdentificationPref, omsSetUserPreference, omsGetUserPreference, omsSetUserLocale, omsSetUserTimeZone } from '../modules/user'
 import { omsGetNotificationEnumIds, omsGetNotificationUserPrefTypeIds, omsRemoveClientRegistrationToken, omsStoreClientRegistrationToken, omsSubscribeTopic, omsUnsubscribeTopic } from '../modules/notification'
 import { fetchProductsStock, fetchProductsStockAtFacility } from '../modules/stock'
@@ -190,6 +190,7 @@ export {
   fetchFacilitiesByParty,
   fetchGoodIdentificationTypes,
   fetchProducts,
+  searchProducts,
   fetchProductsGroupedBy,
   fetchProductsGroupedByParent,
   fetchProductsStock,
