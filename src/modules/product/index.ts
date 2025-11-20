@@ -74,24 +74,57 @@ async function fetchProducts(params: any): Promise<any | Response> {
 
 async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
   const filters = params?.filters as any;
-  const data: any = {
-    keyword: params.keyword.trim(),
-    viewSize: params.viewSize ?? 100,
-    viewIndex: params.viewIndex ?? 0,
-    filters: [`isVirtual: ${filters.isVirtual !== undefined ? filters.isVirtual : false }`, `isVariant: ${filters.isVariant !== undefined ? filters.isVariant : true}`]
+
+  const rows = params.viewSize ?? 100
+  const start = rows * (params.viewIndex ?? 0)
+  const keyword = params.keyword.trim();
+
+  const payload = {
+    "json": {
+      "params": {
+        rows,
+        start,
+        "qf": "productId^20 productName^40 internalName^30 search_goodIdentifications parentProductName",
+        "q.op": "AND",
+        "sort": "sort_productName asc",
+        "defType": "edismax"
+      },
+      "query": "*:*",
+      "filter": `docType: PRODUCT AND isVirtual: ${filters.isVirtual !== undefined ? filters.isVirtual : false } AND isVariant: ${filters.isVariant !== undefined ? filters.isVariant : true}`
+    }
+  }
+
+  let keywordString = ""
+
+  // When the searched keyword startWith \", we will consider that user want to make an exact search
+  // otherwise we will tokenize the keyword
+  if(keyword.startsWith('\"')) {
+    // Using multiple replace function as replaceAll does not work due to module type
+    keyword.replace('\"', "").replace('\"', "");
+  } else {
+    // create string in the format, abc* OR xyz* or qwe*
+    keywordString = keyword.split(" ").join("* OR ")
+    // adding the original searched string with
+    keywordString += `* OR \"${keyword}\"^100`
+  }
+
+  if(keywordString) {
+    payload.json.query = `(${keywordString})`
   }
 
   try {
     const resp = await api({
-      url: 'searchProducts',
-      method: 'post',
-      data,
-      cache: true
-    }) as any
+      url: "solr-query",
+      method: "post",
+      data: payload
+    }) as any;
 
-    if (resp.status === 200 && resp.data?.response?.docs.length) {
+    if (resp.status == 200 && !hasError(resp) && resp.data?.response?.numFound > 0) {
+
+      const product = resp.data.response.docs
+
       return {
-        products: resp.data.response.docs,
+        products: product,
         total: resp.data.response.numFound
       }
     } else {
@@ -100,11 +133,11 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
         total: 0
       }
     }
-  } catch (error) {
+  } catch (err) {
     return Promise.reject({
       code: 'error',
-      message: 'Failed to fetch products',
-      serverResponse: error
+      message: 'Something went wrong',
+      serverResponse: err
     })
   }
 }
