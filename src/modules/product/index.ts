@@ -73,7 +73,7 @@ async function fetchProducts(params: any): Promise<any | Response> {
 }
 
 async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
-  const filters = params?.filters as any;
+  const { isVirtual = false, isVariant = true } = params.filters ?? {};
 
   const rows = params.viewSize ?? 100
   const start = rows * (params.viewIndex ?? 0)
@@ -90,7 +90,7 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
         "defType": "edismax"
       },
       "query": "*:*",
-      "filter": `docType: PRODUCT AND isVirtual: ${filters.isVirtual !== undefined ? filters.isVirtual : false } AND isVariant: ${filters.isVariant !== undefined ? filters.isVariant : true}`
+      "filter": `docType: PRODUCT AND isVirtual: ${isVirtual} AND isVariant: ${isVariant}`
     }
   }
 
