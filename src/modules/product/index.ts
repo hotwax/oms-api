@@ -100,7 +100,7 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
   // otherwise we will tokenize the keyword
   if(keyword.startsWith('\"')) {
     // Using multiple replace function as replaceAll does not work due to module type
-    keyword.replace('\"', "").replace('\"', "");
+    keywordString = keyword.replace('\"', "").replace('\"', "");
   } else {
     // create string in the format, abc* OR xyz* or qwe*
     keywordString = keyword.split(" ").join("* OR ")
