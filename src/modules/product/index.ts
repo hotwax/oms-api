@@ -72,12 +72,10 @@ async function fetchProducts(params: any): Promise<any | Response> {
   }
 }
 
-async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
-  const { isVirtual = false, isVariant = true } = params.filters ?? {};
-
+async function searchProducts(params: { keyword?: string, sort?: string, qf?: string, viewSize?: number, viewIndex?: number, filters?: any }): Promise<any> {
   const rows = params.viewSize ?? 100
   const start = rows * (params.viewIndex ?? 0)
-  const keyword = params.keyword.trim();
+  const keyword = params.keyword?.trim();
 
   const payload = {
     "json": {
@@ -90,26 +88,48 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
         "defType": "edismax"
       },
       "query": "*:*",
-      "filter": `docType: PRODUCT AND isVirtual: ${isVirtual} AND isVariant: ${isVariant}`
+      "filter": "docType: PRODUCT"
     }
   }
 
   let keywordString = ""
 
-  // When the searched keyword startWith \", we will consider that user want to make an exact search
-  // otherwise we will tokenize the keyword
-  if(keyword.startsWith('\"')) {
-    // Using multiple replace function as replaceAll does not work due to module type
-    keywordString = keyword.replace('\"', "").replace('\"', "");
+  if(keyword) {
+    // When the searched keyword startWith \", we will consider that user want to make an exact search
+    // otherwise we will tokenize the keyword
+    if(keyword.startsWith('\"')) {
+      // Using multiple replace function as replaceAll does not work due to module type
+      keywordString = keyword.replace('\"', "").replace('\"', "");
+    } else {
+      // create string in the format, abc* OR xyz* or qwe*
+      keywordString = keyword.split(" ").join(`* ${OPERATOR.OR} `)
+      // adding the original searched string with
+      keywordString += `* ${OPERATOR.OR} \"${keyword}\"^100`
+    }
+  
+    if(keywordString) {
+      payload.json.query = `(${keywordString})`
+    }
   } else {
-    // create string in the format, abc* OR xyz* or qwe*
-    keywordString = keyword.split(" ").join("* OR ")
-    // adding the original searched string with
-    keywordString += `* OR \"${keyword}\"^100`
+    params.qf && (payload.json.params.qf = params.qf)
+    params.sort && (payload.json.params.sort = params.sort)
   }
 
-  if(keywordString) {
-    payload.json.query = `(${keywordString})`
+  if (params.filters) {
+    Object.keys(params.filters).forEach((key: any) => {
+      const filterValue = params.filters[key].value;
+
+      if (Array.isArray(filterValue)) {
+        const filterOperator = params.filters[key].op ? params.filters[key].op : OPERATOR.OR ;
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
+      } else {
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: ${filterValue}`
+      }
+    })
+  }
+
+  if(!params.filters.isVirtual && !params.filters.isVariant) {
+    payload.json.filter += ` ${OPERATOR.AND} isVirtual: false ${OPERATOR.AND} isVariant: true`
   }
 
   try {
