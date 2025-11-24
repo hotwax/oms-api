@@ -109,8 +109,8 @@ async function searchProducts(params: { keyword?: string, sort?: string, qf?: st
         const regEx = /[`!@#$%^&*()_+\-=\\|,.<>?~]/
         if(regEx.test(token)) {
           const matchedTokens = [...new Set(token.match(regEx))]
-          matchedTokens?.forEach((t: string) => {
-            tokens.push(token.split("-").join(`\\\\${t}`))
+          matchedTokens?.forEach((matchedToken: string) => {
+            tokens.push(token.split(matchedToken).join(`\\\\${matchedToken}`))
           })
         } else {
           tokens.push(token)
