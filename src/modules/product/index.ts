@@ -83,7 +83,6 @@ async function searchProducts(params: { keyword?: string, sort?: string, qf?: st
         rows,
         start,
         "qf": "productId^20 productName^40 internalName^30 search_goodIdentifications parentProductName",
-        "q.op": "AND",
         "sort": "sort_productName asc",
         "defType": "edismax"
       },
