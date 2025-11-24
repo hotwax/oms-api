@@ -72,26 +72,93 @@ async function fetchProducts(params: any): Promise<any | Response> {
   }
 }
 
-async function searchProducts(params: { keyword: string, viewSize?: number, viewIndex?: number, filters?: { isVirtual?: boolean; isVariant?: boolean } }): Promise<any> {
-  const filters = params?.filters as any;
-  const data: any = {
-    keyword: params.keyword.trim(),
-    viewSize: params.viewSize ?? 100,
-    viewIndex: params.viewIndex ?? 0,
-    filters: [`isVirtual: ${filters.isVirtual !== undefined ? filters.isVirtual : false }`, `isVariant: ${filters.isVariant !== undefined ? filters.isVariant : true}`]
+async function searchProducts(params: { keyword?: string, sort?: string, qf?: string, viewSize?: number, viewIndex?: number, filters?: any }): Promise<any> {
+  const rows = params.viewSize ?? 100
+  const start = rows * (params.viewIndex ?? 0)
+  const keyword = params.keyword?.trim();
+
+  const payload = {
+    "json": {
+      "params": {
+        rows,
+        start,
+        "qf": "productId^20 productName^40 internalName^30 search_goodIdentifications parentProductName",
+        "sort": "sort_productName asc",
+        "defType": "edismax"
+      },
+      "query": "*:*",
+      "filter": "docType: PRODUCT"
+    }
+  }
+
+  let keywordString = ""
+
+  if(keyword) {
+    // When the searched keyword startWith \", we will consider that user want to make an exact search
+    // otherwise we will tokenize the keyword
+    if(keyword.startsWith('\"')) {
+      // Using multiple replace function as replaceAll does not work due to module type
+      keywordString = keyword.replace('\"', "").replace('\"', "");
+    } else {
+      // create string in the format, abc* OR xyz* or qwe*
+      const keywordTokens = keyword.split(" ")
+      const tokens: Array<string> = []
+
+      keywordTokens.forEach((token: string) => {
+        const regEx = /[`!@#$%^&*()_+\-=\\|,.<>?~]/
+        if(regEx.test(token)) {
+          const matchedTokens = [...new Set(token.match(regEx))]
+          matchedTokens?.forEach((matchedToken: string) => {
+            tokens.push(token.split(matchedToken).join(`\\\\${matchedToken}`))
+          })
+        } else {
+          tokens.push(token)
+        }
+      })
+
+      keywordString = tokens.join(`* ${OPERATOR.OR} `)
+      // adding the original searched string with
+      keywordString += `* ${OPERATOR.OR} \"${keyword}\"^100`
+    }
+  
+    if(keywordString) {
+      payload.json.query = `(${keywordString})`
+    }
+  } else {
+    params.qf && (payload.json.params.qf = params.qf)
+    params.sort && (payload.json.params.sort = params.sort)
+  }
+
+  if (params.filters) {
+    Object.keys(params.filters).forEach((key: any) => {
+      const filterValue = params.filters[key].value;
+
+      if (Array.isArray(filterValue)) {
+        const filterOperator = params.filters[key].op ? params.filters[key].op : OPERATOR.OR ;
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: (${filterValue.join(' ' + filterOperator + ' ')})`
+      } else {
+        payload.json.filter += ` ${OPERATOR.AND} ${key}: ${filterValue}`
+      }
+    })
+  }
+
+  if(!params.filters.isVirtual && !params.filters.isVariant) {
+    payload.json.filter += ` ${OPERATOR.AND} isVirtual: false ${OPERATOR.AND} isVariant: true`
   }
 
   try {
     const resp = await api({
-      url: 'searchProducts',
-      method: 'post',
-      data,
-      cache: true
-    }) as any
+      url: "solr-query",
+      method: "post",
+      data: payload
+    }) as any;
 
-    if (resp.status === 200 && resp.data?.response?.docs.length) {
+    if (resp.status == 200 && !hasError(resp) && resp.data?.response?.numFound > 0) {
+
+      const product = resp.data.response.docs
+
       return {
-        products: resp.data.response.docs,
+        products: product,
         total: resp.data.response.numFound
       }
     } else {
@@ -100,11 +167,11 @@ async function searchProducts(params: { keyword: string, viewSize?: number, view
         total: 0
       }
     }
-  } catch (error) {
+  } catch (err) {
     return Promise.reject({
       code: 'error',
-      message: 'Failed to fetch products',
-      serverResponse: error
+      message: 'Something went wrong',
+      serverResponse: err
     })
   }
 }
