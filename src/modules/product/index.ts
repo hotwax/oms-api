@@ -102,7 +102,22 @@ async function searchProducts(params: { keyword?: string, sort?: string, qf?: st
       keywordString = keyword.replace('\"', "").replace('\"', "");
     } else {
       // create string in the format, abc* OR xyz* or qwe*
-      keywordString = keyword.split(" ").join(`* ${OPERATOR.OR} `)
+      const keywordTokens = keyword.split(" ")
+      const tokens: Array<string> = []
+
+      keywordTokens.forEach((token: string) => {
+        const regEx = /[`!@#$%^&*()_+\-=\\|,.<>?~]/
+        if(regEx.test(token)) {
+          const matchedTokens = [...new Set(token.match(regEx))]
+          matchedTokens?.forEach((t: string) => {
+            tokens.push(token.split("-").join(`\\\\${t}`))
+          })
+        } else {
+          tokens.push(token)
+        }
+      })
+
+      keywordString = tokens.join(`* ${OPERATOR.OR} `)
       // adding the original searched string with
       keywordString += `* ${OPERATOR.OR} \"${keyword}\"^100`
     }

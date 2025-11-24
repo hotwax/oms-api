@@ -3,7 +3,6 @@ import { RequestPayload, Response } from "../../types";
 import { jsonParse } from "../../util";
 
 async function setUserTimeZone(payload: any): Promise<any> {
-  console.log("Payload in setUserTimeZone: ", payload);
   try {
     const resp = await api({
       url: "admin/user/profile",
