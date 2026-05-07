@@ -117,7 +117,7 @@ async function fetchFacilitiesByGroup(facilityGroupId: string, baseURL?: string,
 
 async function fetchFacilitiesByParty(partyId: string, baseURL?: string, token?: string, payload?: any): Promise <Array<any> | Response> {
   let params: RequestPayload = {
-    url: `inventory-cycle-count/user/${partyId}/facilities`,
+    url: `admin/user/${partyId}/facilities`,
     method: "GET",
     params: {
       ...payload,
@@ -222,7 +222,7 @@ async function fetchFacilities(token: string, baseURL: string, partyId: string, 
   }
 
   let params: RequestPayload = {
-    url: "oms/facilities",
+    url: "admin/facilities",
     method: "GET",
     params: {
       pageSize: 500,
@@ -263,7 +263,7 @@ async function fetchFacilities(token: string, baseURL: string, partyId: string, 
 
 async function getEComStores(token?: string, baseURL?: string, pageSize = 100): Promise <any> {
   let params: RequestPayload = {
-    url: "oms/productStores",
+    url: "admin/productStores",
     method: "GET",
     params: {
       pageSize
@@ -423,7 +423,7 @@ async function getProductIdentificationPref(productStoreId: any): Promise<any> {
 
   try {
     const resp = await api({
-      url: `oms/productStores/${productStoreId}/settings`,
+      url: `admin/productStores/${productStoreId}/settings`,
       method: "GET",
       params: {
         productStoreId,
@@ -458,7 +458,7 @@ async function createProductIdentificationPref(productStoreId: string): Promise<
 
   try {
     await api({
-      url: `oms/productStores/${productStoreId}/settings`,
+      url: `admin/productStores/${productStoreId}/settings`,
       method: "POST",
       data: {
         productStoreId,
@@ -481,7 +481,7 @@ async function setProductIdentificationPref(productStoreId: string, productIdent
 
   try {
     resp = await api({
-      url: `oms/productStores/${productStoreId}/settings`,
+      url: `admin/productStores/${productStoreId}/settings`,
       method: "GET",
       params: {
         productStoreId,
@@ -504,7 +504,7 @@ async function setProductIdentificationPref(productStoreId: string, productIdent
 
   try {
     resp = await api({
-      url: `oms/productStores/${productStoreId}/settings`,
+      url: `admin/productStores/${productStoreId}/settings`,
       method: "POST",
       data: {
         productStoreId,
