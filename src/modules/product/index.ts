@@ -142,8 +142,8 @@ async function searchProducts(params: { keyword?: string, sort?: string, qf?: st
     })
   }
 
-  if(!params.filters.isVirtual && !params.filters.isVariant) {
-    payload.json.filter += ` ${OPERATOR.AND} isVirtual: false ${OPERATOR.AND} isVariant: true`
+  if(!params.filters?.isVirtual) {
+    payload.json.filter += ` ${OPERATOR.AND} isVirtual: false`
   }
 
   try {
